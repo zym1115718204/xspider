@@ -65,14 +65,17 @@ class Command(BaseCommand):
             try:
                 with open(spider_path, 'rb') as fp:
                     spider_script = fp.read().decode('utf8')
-
-                project = Project(name=_projectname,
-                                  info="",
-                                  script=spider_script,
-                                  generator_interval="60",
-                                  downloader_interval="60",
-                                  downloader_dispatch=1)
-                project.save()
+                project = Project.objects(name=_projectname).first()
+                if project:
+                    project.update(script=spider_path)
+                else:
+                    project = Project(name=_projectname,
+                                      info="",
+                                      script=spider_script,
+                                      generator_interval="60",
+                                      downloader_interval="60",
+                                      downloader_dispatch=1)
+                    project.save()
 
             except Exception:
                 reason = traceback.format_exc()
