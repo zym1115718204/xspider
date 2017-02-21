@@ -10,6 +10,8 @@ import traceback
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
+from collector.models import Project, Task, Result
+
 class Command(BaseCommand):
         help = 'Loading  Project Spider to Database.'
 
@@ -46,21 +48,32 @@ class Command(BaseCommand):
                     if not os.path.exists(spider_path):
                         print 'Failed to load project %s , Project does not exist! ' % (_projectname)
                     else:
-                        self.load_project(spider_path)
+                        self.load_project(_projectname, spider_path)
                         print 'Successfully load project %s !' %(_projectname)
 
                 except Exception:
-                    reason =  traceback.format_exc()
+                    reason = traceback.format_exc()
                     raise CommandError('Failed to create new project %s !, Reason: %s' % (_projectname, reason))
 
-        def load_project(self, spider_path):
+        @staticmethod
+        def load_project(_projectname, spider_path):
             """
             Load Project File to Database
             :param spider_path: project spider path
             :return:
             """
             try:
-                pass
+                with open(spider_path, 'rb') as fp:
+                    spider_script = fp.read().decode('utf8')
+
+                project = Project(name=_projectname,
+                                  info="",
+                                  script=spider_script,
+                                  generator_interval="60",
+                                  downloader_interval="60",
+                                  downloader_dispatch=1)
+                project.save()
+
             except Exception:
                 reason = traceback.format_exc()
                 raise CommandError('Failed to load project %s !, Reason: %s' % (spider_path, reason))

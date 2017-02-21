@@ -16,3 +16,21 @@ from common import *
 
 # Spiders Path
 PROJECTS_PTAH = os.path.join(os.path.dirname(BASE_DIR), "projects")
+
+
+MongoDBS = {
+    'xspider_project': {
+        'host': 'mongodb://localhost/xspider_project',
+    },
+    'xspider_task': {
+        'host': 'mongodb://localhost/xspider_task',
+    },
+    'xspider_result': {
+        'host': 'mongodb://localhost/xspider_result',
+    }
+}
+
+from mongoengine import connect  # noqa
+
+for name, db in MongoDBS.iteritems():
+    connect(host=db['host'], alias=name)

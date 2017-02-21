@@ -1,8 +1,12 @@
+#!usr/bin/env python
+# -*- coding:utf-8 -*-
+# Create on 2017.2.20
 from __future__ import unicode_literals
 
 import datetime
-from django.db import models
 from mongoengine import *
+from django.db import models
+
 
 # Create your models here.
 class Project(Document):
@@ -17,7 +21,7 @@ class Project(Document):
                      (PRIOR_5, u"4"),
                      (PRIOR_6, u"5"), )
     name = StringField(max_length=128)
-    status = IntField(default=STATUS_ON, choices=STATUS_CHOICES)
+    status = IntField(default=STATUS_DEBUG, choices=STATUS_CHOICES)
     priority = IntField(default=PRIOR_6, choices=PRIOR_CHOICES)
     info = StringField(max_length=1024)
     update_datetime = DateTimeField(default=datetime.datetime.now)
@@ -26,7 +30,7 @@ class Project(Document):
     downloader_interval = StringField(max_length=20)
     downloader_dispatch = IntField(default=60)
     meta = {
-        "db_alias": "xspider_source",
+        "db_alias": "xspider_project",
         "indexes": [
             "name"
         ]
