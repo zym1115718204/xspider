@@ -1,12 +1,13 @@
 from __future__ import unicode_literals
 
+import datetime
 from django.db import models
 from mongoengine import *
 
 # Create your models here.
 class Project(Document):
-    (STATUS_ON, STATUS_OFF) = range(1, 3)
-    STATUS_CHOICES = ((STATUS_ON, u"启用"), (STATUS_OFF, u"下线"), )
+    (STATUS_ON, STATUS_OFF, STATUS_DEBUG, STATUS_DELAY) = range(0, 4)
+    STATUS_CHOICES = ((STATUS_OFF, u"下线"), (STATUS_ON, u"启用"), (STATUS_DEBUG, u'调试'), (STATUS_DELAY, u'过期'))
     (PRIOR_0, PRIOR_1, PRIOR_2, PRIOR_3, PRIOR_4, PRIOR_5, PRIOR_6) = range(-1, 6)
     PRIOR_CHOICES = ((PRIOR_0, u"-1"),
                      (PRIOR_1, u"0"),
@@ -23,6 +24,7 @@ class Project(Document):
     script = StringField(max_length=40960)
     generator_interval = StringField(max_length=20)
     downloader_interval = StringField(max_length=20)
+    downloader_dispatch = IntField(default=60)
     meta = {
         "db_alias": "xspider_source",
         "indexes": [
@@ -31,7 +33,7 @@ class Project(Document):
     }
 
 class Task(Document):
-    (STATUS_LIVE, STATUS_DISPATCH, STATUS_PROCESS, STATUS_FAIL, STATUS_SUCCESS, STATUS_INVALID) = range(1, 7)
+    (STATUS_LIVE, STATUS_DISPATCH, STATUS_PROCESS, STATUS_FAIL, STATUS_SUCCESS, STATUS_INVALID) = range(0, 6)
     STATUS_CHOICES = ((STATUS_LIVE, u"新增"),
                       (STATUS_DISPATCH, u'分发中'),
                       (STATUS_PROCESS, u"进行中"),
@@ -49,6 +51,7 @@ class Task(Document):
     info = StringField(max_length=2048, null=True)    # 源数据的信息,如数据分类,公司名称,权限等
     retry_times = IntField(default=0)
     track_log = StringField(max_length=10240)
+    spend_time = StringField(max_length=120, default='0')
     meta = {
         "db_alias": "xspider_task",
         "indexes": ["status", [("project", 1), ("status", 1)], [("project", 1), ("status", 1), ("url", 1)]],
