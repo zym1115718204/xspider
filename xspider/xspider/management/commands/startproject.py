@@ -22,7 +22,7 @@ class Command(BaseCommand):
             parser.add_argument('projectname', nargs='+', type=str)
 
         @staticmethod
-        def handler(*args, **options):
+        def handle(*args, **options):
             """
             Create New Projects Handler
             :param args:
@@ -42,15 +42,15 @@ class Command(BaseCommand):
                     content = string.Template(raw).substitute(CREATE_TIME=create_time,
                                                               PROJECTS_NAME=_projectname,
                                                               START_URL='http://www.example.com')
+
                     spider_path = os.path.join(project_path, '%s_spider.py' % (_projectname))
-                    if os.path.exists(spider_path):
-                        print 'Failed create project %s , file already exists' % (_projectname)
-                    else:
+                    if not os.path.exists(spider_path):
                         with open(spider_path, 'w') as fp:
                             fp.write(content.encode('utf8'))
-
-                        print 'Successfully create a new project %s '%(_projectname)
+                        print 'Successfully create a new project %s !' %(_projectname)
+                    else:
+                        print 'Failed to create project %s , Project already exists! ' %(_projectname)
 
                 except Exception:
-                    print traceback.format_exc()
-                    raise CommandError('Failed to create new project %s' % (_projectname))
+                    reason =  traceback.format_exc()
+                    raise CommandError('Failed to create new project %s !, reason: %s' % (_projectname, reason))
