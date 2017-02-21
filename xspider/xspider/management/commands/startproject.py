@@ -1,6 +1,6 @@
 #!usr/bin/env python
 # -*- coding:utf-8 -*-
-# Create : 2017.2.20
+# Create on 2017.2.20
 
 import os
 import datetime
