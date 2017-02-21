@@ -97,3 +97,6 @@ ENV/
 # vim swp
 .swp
 .arc
+
+# Pyc
+.pyc
