@@ -14,15 +14,27 @@ class Command(BaseCommand):
         help = 'Start a new project for xspider.'
 
         def add_arguments(self, parser):
+            """
+            add arguments
+            :param parser:
+            :return:
+            """
             parser.add_argument('projectname', nargs='+', type=str)
 
-        def handle(self, *args, **options):
+        @staticmethod
+        def handler(*args, **options):
+            """
+            Create New Projects Handler
+            :param args:
+            :param options:
+            :return:
+            """
             for _projectname in options['projectname']:
                 try:
-                    # print settings.BASE_DIR, settings.PROJECTS_PTAH
-                    spider_path = os.path.join(settings.PROJECTS_PTAH, _projectname)
-                    if not os.path.exists(spider_path):
-                        os.makedirs(spider_path)
+                    project_path = os.path.join(settings.PROJECTS_PTAH, _projectname)
+                    if not os.path.exists(project_path):
+                        os.makedirs(project_path)
+
                     tmpl_path = os.path.join(settings.BASE_DIR, 'libs', 'template', 'spider.tmpl')
                     with open(tmpl_path, 'rb') as fp:
                         raw = fp.read().decode('utf8')
@@ -30,11 +42,11 @@ class Command(BaseCommand):
                     content = string.Template(raw).substitute(CREATE_TIME=create_time,
                                                               PROJECTS_NAME=_projectname,
                                                               START_URL='http://www.example.com')
-                    spider_file_path = os.path.join(spider_path, '%s_spider.py' % (_projectname))
-                    if os.path.exists(spider_file_path):
+                    spider_path = os.path.join(project_path, '%s_spider.py' % (_projectname))
+                    if os.path.exists(spider_path):
                         print 'Failed create project %s , file already exists' % (_projectname)
                     else:
-                        with open(spider_file_path, 'w') as fp:
+                        with open(spider_path, 'w') as fp:
                             fp.write(content.encode('utf8'))
 
                         print 'Successfully create a new project %s '%(_projectname)
