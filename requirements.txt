@@ -1,0 +1,5 @@
+ipython
+django
+requests
+celery
+mongoengine
