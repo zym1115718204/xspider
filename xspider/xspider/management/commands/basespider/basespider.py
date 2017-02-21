@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Created on __CREATE_TIME__
-# Project: __PROJECTS_NAME__
+# Created on 2017-02-21
+# Project: basespider
 
 import json
 import time
@@ -12,7 +12,7 @@ from requests.exceptions import ReadTimeout
 from requests.exceptions import ConnectionError
 
 
-class Generator(object):
+class BaseGenerator(object):
     """
     BaseSpider Generator
     """
@@ -31,7 +31,7 @@ class Generator(object):
         self.urls.append(url)
 
         for url in self.urls:
-            print json.dumps({"url":url, "args": 'None'})
+            print json.dumps({"url": url, "args": 'None'})
 
     def start_generator(self):
         """
@@ -42,7 +42,7 @@ class Generator(object):
         self.generate(start_url)
 
 
-class Downloader(object):
+class BaseDownloader(object):
     """
     BaseSpider Downloader
     """
@@ -78,7 +78,7 @@ class Downloader(object):
                 print traceback.format_exc()
 
 
-class Parser(object):
+class BaseParser(object):
     """
     BaseSpider Parser
     """
