@@ -47,6 +47,8 @@ class Task(Document):
     url = StringField(max_length=8000)
     args = StringField(max_length=2048, null=True)    # 存储cookie， header等信息
     info = StringField(max_length=2048, null=True)    # 源数据的信息,如数据分类,公司名称,权限等
+    retry_times = IntField(default=0)
+    track_log = StringField(max_length=10240)
     meta = {
         "db_alias": "xspider_task",
         "indexes": ["status", [("project", 1), ("status", 1)], [("project", 1), ("status", 1), ("url", 1)]],
