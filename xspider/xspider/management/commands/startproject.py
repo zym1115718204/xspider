@@ -31,6 +31,7 @@ class Command(BaseCommand):
             """
             for _projectname in options['projectname']:
                 try:
+                    _projectname = _projectname.lower()
                     project_path = os.path.join(settings.PROJECTS_PTAH, _projectname)
                     if not os.path.exists(project_path):
                         os.makedirs(project_path)
@@ -50,6 +51,23 @@ class Command(BaseCommand):
                         print 'Successfully create a new project %s !' %(_projectname)
                     else:
                         print 'Failed to create project %s , Project already exists! ' %(_projectname)
+
+                    tmpl_path = os.path.join(settings.BASE_DIR, 'libs', 'template', 'models.tmpl')
+                    with open(tmpl_path, 'rb') as fp:
+                        raw = fp.read().decode('utf8')
+                    create_time = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                    content = string.Template(raw).substitute(CREATE_TIME=create_time,
+                                                              PROJECTS_NAME=_projectname,
+                                                              PROJECTS_NAME_TASK=str(_projectname).capitalize() + 'Task',
+                                                              PROJECTS_NAME_RESULT=str(_projectname).capitalize() + 'Result')
+
+                    models_path = os.path.join(project_path, '%s_models.py' % (_projectname))
+                    if not os.path.exists(models_path):
+                        with open(models_path, 'w') as fp:
+                            fp.write(content.encode('utf8'))
+                        print 'Successfully create a new project models %s !' %(models_path)
+                    else:
+                        print 'Failed to create project %s , Project already exists! ' %(models_path)
 
                 except Exception:
                     reason =  traceback.format_exc()

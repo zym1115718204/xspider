@@ -7,39 +7,9 @@ from __future__ import unicode_literals
 import datetime
 from mongoengine import *
 from django.db import models
+from collector.models import Project
 
-
-# Create your models here.
-class Project(Document):
-    (STATUS_ON, STATUS_OFF, STATUS_DEBUG, STATUS_DELAY) = range(0, 4)
-    STATUS_CHOICES = ((STATUS_OFF, u"下线"), (STATUS_ON, u"启用"), (STATUS_DEBUG, u'调试'), (STATUS_DELAY, u'过期'))
-    (PRIOR_0, PRIOR_1, PRIOR_2, PRIOR_3, PRIOR_4, PRIOR_5, PRIOR_6) = range(-1, 6)
-    PRIOR_CHOICES = ((PRIOR_0, u"-1"),
-                     (PRIOR_1, u"0"),
-                     (PRIOR_2, u"1"),
-                     (PRIOR_3, u"2"),
-                     (PRIOR_4, u"3"),
-                     (PRIOR_5, u"4"),
-                     (PRIOR_6, u"5"), )
-    name = StringField(max_length=128)
-    status = IntField(default=STATUS_DEBUG, choices=STATUS_CHOICES)
-    priority = IntField(default=PRIOR_6, choices=PRIOR_CHOICES)
-    info = StringField(max_length=1024)
-    update_datetime = DateTimeField(default=datetime.datetime.now)
-    script = StringField(max_length=40960)
-    generator_interval = StringField(max_length=20)
-    downloader_interval = StringField(max_length=20)
-    downloader_dispatch = IntField(default=60)
-    meta = {
-        "allow_inheritance": True,
-        "db_alias": "xspider_project",
-        "indexes": [
-            "name"
-        ]
-    }
-
-
-class $PROJECTS_NAMETask(Document):
+class $PROJECTS_NAME_TASK (Document):
     (STATUS_LIVE, STATUS_DISPATCH, STATUS_PROCESS, STATUS_FAIL, STATUS_SUCCESS, STATUS_INVALID) = range(0, 6)
     STATUS_CHOICES = ((STATUS_LIVE, u"新增"),
                       (STATUS_DISPATCH, u'分发中'),
@@ -66,9 +36,9 @@ class $PROJECTS_NAMETask(Document):
     }    # 默认连接的数据库
 
 
-class $PROJECTS_NAMEResult(Document):
+class $PROJECTS_NAME_RESULT (Document):
     project = ReferenceField(Project)
-    task = ReferenceField($PROJECTS_NAMETask)
+    task = ReferenceField($PROJECTS_NAME_TASK)
     url = StringField(max_length=256)
     update_datetime = DateTimeField(default=datetime.datetime.now)
     result = StringField(max_length=10240)
