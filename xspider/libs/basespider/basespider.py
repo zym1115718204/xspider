@@ -21,23 +21,14 @@ class BaseGenerator(object):
         """
         Generator Initialization
         """
-        self.urls = []
+        pass
 
     def generate(self, url):
         """
         Obtain URI
         :return:
         """
-        urls = []
-        self.urls.append(url)
-
-        for url in self.urls:
-
-            urls.append({"url": url, "args": 'None'})
-            print {"url": url, "args": 'None'}
-
-        return urls
-
+        return {"url": url, "args": 'None'}
 
     def start_generator(self):
         """

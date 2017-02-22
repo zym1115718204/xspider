@@ -59,8 +59,9 @@ class Generator(object):
 
     def execute_task(self):
         """
-        Execute Spider Generator Task
-        :return:
+        Execute Spider Generator Tasks
+        :return: URL List
+        :example: [{"url":"http://www.example.com","args":None}]
         """
         project_name = self.project.name
         _generator = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
@@ -71,15 +72,20 @@ class Generator(object):
 
     def save_task(self, result):
         """
-        Save Generator Result to Task
+        Save Generator Result to Task Database
         :param result:
         :return:
         """
-        print result
+        if not isinstance(result,list):
+            raise TypeError("Generator Result Must Be List Type.")
+        for i in result:
+            if not isinstance(i,dict):
+                raise TypeError(("Generator URL result Must Be Dict Type."))
+            print i
 
     def run_generator(self):
         """
-        Run
+        Run Generator
         :return:
         """
         result = self.execute_task()
@@ -90,3 +96,4 @@ class Processor(object):
     """
      Processor Module
     """
+    pass

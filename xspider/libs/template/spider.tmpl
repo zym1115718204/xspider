@@ -14,12 +14,12 @@ class Generator(BaseGenerator):
     def start_generator(self):
         """
         Start Generator
-        :return:
+        :return: URL List
+        :example: [{"url":"http://www.example.com", "args":None}]
         """
         start_url = "$START_URL"
         result = self.generate(start_url)
         return result
-
 
 class Downloader(BaseDownloader):
     """
