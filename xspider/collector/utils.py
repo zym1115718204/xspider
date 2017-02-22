@@ -78,10 +78,19 @@ class Generator(object):
         """
         if not isinstance(result,list):
             raise TypeError("Generator Result Must Be List Type.")
+
         for i in result:
-            if not isinstance(i,dict):
-                raise TypeError(("Generator URL result Must Be Dict Type."))
-            print i
+            if not isinstance(i, dict):
+                raise TypeError(("Generator URL Result Must Be Dict Type."))
+
+            if self.project.status == 1:
+                # save to database
+                print i
+
+            elif self.project.status == 2:
+                # create task object for Web
+                # task_object = Baidu.objects()
+                return
 
     def run_generator(self):
         """
