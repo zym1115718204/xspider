@@ -37,10 +37,11 @@ class Command(BaseCommand):
                         os.makedirs(project_path)
 
                     spider_path = os.path.join(project_path, '%s_spider.py' % (_projectname))
-                    if not os.path.exists(spider_path):
+                    models_path = os.path.join(project_path, '%s_models.py' % (_projectname))
+                    if not os.path.exists(spider_path) or not os.path.exists(models_path):
                         print 'Failed to load project %s , Project does not exist! ' % (_projectname)
                     else:
-                        self.load_project(_projectname, spider_path)
+                        self.load_project(_projectname, spider_path, models_path)
                         print 'Successfully load project %s !' %(_projectname)
 
                 except Exception:
@@ -48,7 +49,7 @@ class Command(BaseCommand):
                     raise CommandError('Failed to create new project %s !, Reason: %s' % (_projectname, reason))
 
         @staticmethod
-        def load_project(_projectname, spider_path):
+        def load_project(_projectname, spider_path, models_path):
             """
             Load Project File to Database
             :param spider_path: project spider path
@@ -57,13 +58,17 @@ class Command(BaseCommand):
             try:
                 with open(spider_path, 'rb') as fp:
                     spider_script = fp.read().decode('utf8')
+                with open(models_path, 'rb') as fp:
+                    models_script = fp.read().decode('utf8')
                 project = Project.objects(name=_projectname).first()
                 if project:
                     project.update(script=spider_script)
+                    project.update(models=models_script)
                 else:
                     project = Project(name=_projectname,
                                       info="",
                                       script=spider_script,
+                                      models=models_script,
                                       generator_interval="60",
                                       downloader_interval="60",
                                       downloader_dispatch=1)
