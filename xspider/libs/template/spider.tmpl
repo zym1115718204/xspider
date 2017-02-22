@@ -17,8 +17,11 @@ class Generator(BaseGenerator):
         :return: URL List
         :example: [{"url":"http://www.example.com", "args":None}]
         """
+        result = []
         start_url = "$START_URL"
-        result = self.generate(start_url)
+        result_url = self.generate(start_url)
+        result.append(result_url)
+
         return result
 
 

@@ -50,8 +50,7 @@ class BaseDownloader(object):
         Downloader Initialization
         """
         self.reqst = requests.Session()
-        self.headers =
-            {'Accept': 'text/html, application/xhtml+xml, */*',
+        self.headers = {'Accept': 'text/html, application/xhtml+xml, */*',
              'Accept-Encoding': 'gzip, deflate',
              'Accept-Language': 'en-US, en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
              'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:39.0) Gecko/20100101 Firefox/39.0'}
