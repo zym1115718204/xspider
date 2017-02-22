@@ -49,14 +49,51 @@ class Generator(object):
     Generator Module
     """
 
-    def __init__(self):
+    def __init__(self, project):
         """
         Generator Module Initialization
         """
-        pass
+
+        self.project = project
+        InitSpider().load_spider(self.project)
+
+    def execute_task(self):
+        """
+        Execute Spider Generator Tasks
+        :return: URL List
+        :example: [{"url":"http://www.example.com","args":None}]
+        """
+        project_name = self.project.name
+        _generator = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
+        spider_generator = _generator.Generator()
+        result = spider_generator.start_generator()
+
+        return result
+
+    def save_task(self, result):
+        """
+        Save Generator Result to Task Database
+        :param result:
+        :return:
+        """
+        if not isinstance(result,list):
+            raise TypeError("Generator Result Must Be List Type.")
+        for i in result:
+            if not isinstance(i,dict):
+                raise TypeError(("Generator URL result Must Be Dict Type."))
+            print i
+
+    def run_generator(self):
+        """
+        Run Generator
+        :return:
+        """
+        result = self.execute_task()
+        self.save_task(result)
 
 
 class Processor(object):
     """
      Processor Module
     """
+    pass
