@@ -17,7 +17,8 @@ class Generator(BaseGenerator):
         :return:
         """
         start_url = "$START_URL"
-        self.generate(start_url)
+        result = self.generate(start_url)
+        return result
 
 
 class Downloader(BaseDownloader):

@@ -28,10 +28,16 @@ class BaseGenerator(object):
         Obtain URI
         :return:
         """
+        urls = []
         self.urls.append(url)
 
         for url in self.urls:
-            print json.dumps({"url": url, "args": 'None'})
+
+            urls.append({"url": url, "args": 'None'})
+            print {"url": url, "args": 'None'}
+
+        return urls
+
 
     def start_generator(self):
         """
@@ -39,7 +45,8 @@ class BaseGenerator(object):
         :return:
         """
         start_url = "__START_URL__"
-        self.generate(start_url)
+        result = self.generate(start_url)
+        return result
 
 
 class BaseDownloader(object):
