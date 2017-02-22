@@ -62,7 +62,7 @@ class Generator(object):
         self.project = project
         InitSpider().load_spider(self.project)
 
-    def execute_task(self):
+    def generate_task(self):
         """
         Execute Spider Generator Tasks
         :return: URL List
@@ -126,7 +126,7 @@ class Generator(object):
         Run Generator
         :return:
         """
-        result = self.execute_task()
+        result = self.generate_task()
         result = self.save_task(result)
         return result
 
@@ -135,4 +135,33 @@ class Processor(object):
     """
      Processor Module
     """
-    pass
+    def __init__(self, task):
+        """
+        Processor Module Initialization
+        :param object:
+        """
+        self.task = task
+
+    def process_task(self):
+        """
+        Downloader Module
+        :return: Result Dict
+        """
+        try:
+            task_url = self.task.url
+            args = self.task.args
+
+            project_name = self.task.project.name
+            _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
+            _downloader = _spider.Downloader()
+            _parser = _spider.Parser()
+
+            resp = _downloader.start_downloader(task_url, args)
+            result = _parser.start_parser(resp)
+
+            print result
+            # record log
+
+        except Exception:
+            print traceback.format_exc()
+            # record log
