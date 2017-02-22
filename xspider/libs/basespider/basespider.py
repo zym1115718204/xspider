@@ -49,31 +49,48 @@ class BaseDownloader(object):
         """
         Downloader Initialization
         """
-        self.reqst = requests.Session()
-        self.headers =
+        pass
+
+    def download(self, request):
+        """
+        Downloader Download By tools
+        :return: response object
+        """
+
+        tools = request.get('tools', 'requests')
+        if tools == "requests":
+            self.reqst = requests.Session()
+            self.headers =
             {'Accept': 'text/html, application/xhtml+xml, */*',
              'Accept-Encoding': 'gzip, deflate',
              'Accept-Language': 'en-US, en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
              'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:39.0) Gecko/20100101 Firefox/39.0'}
 
-    def download(self, url, tools="request", timeout=50, **kwargs):
-        """
-        Downloader Download By Type
-        :return: response object
-        """
-        if tools == "request":
-            start_time = time.time()
+            url = request.get('url')
+            method = request.get('method', 'GET')
+            kwargs = {
+                'headers': request.get('headers', self.headers),
+                'cookies': request.get('cookies', None),
+                'proxies': request.get('proxies', None),
+                'timeout': request.get('timeout', 30)}
+            if str(method).upper() == 'GET':
+                kwargs['params'] = request.get('params', {})
+            elif str(method).upper() == 'POST':
+                kwargs['data'] = request.get('data', {})
             try:
-                resp = self.reqst.get(url, timeout=timeout, **kwargs)
-                if resp.status_code != 200:
-                    resp = self.reqst.get(url, timeout=50)
-                    if resp.status_code != 200:
-                        raise ConnectionError
-                end_time = time.time()
+                resp = self.reqst.request(method=method, url=url, **kwargs)
                 return resp
-
             except Exception:
                 print traceback.format_exc()
+                raise Exception
+
+        elif tools == 'phantomjs':
+            """
+            Download by Phantomjs
+            """
+            # TODO
+            pass
+
 
 
 class BaseParser(object):
