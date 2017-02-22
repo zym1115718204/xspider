@@ -3,8 +3,8 @@
 # Create on 2017.2.20
 
 import os
-import datetime
 import string
+import datetime
 import traceback
 
 from django.core.management.base import BaseCommand, CommandError
@@ -36,14 +36,6 @@ class Command(BaseCommand):
                     if not os.path.exists(project_path):
                         os.makedirs(project_path)
 
-                    # tmpl_path = os.path.join(settings.BASE_DIR, 'libs', 'template', 'spider.tmpl')
-                    # with open(tmpl_path, 'rb') as fp:
-                    #     raw = fp.read().decode('utf8')
-                    # create_time = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-                    # content = string.Template(raw).substitute(CREATE_TIME=create_time,
-                    #                                           PROJECTS_NAME=_projectname,
-                    #                                           START_URL='http://www.example.com')
-
                     spider_path = os.path.join(project_path, '%s_spider.py' % (_projectname))
                     if not os.path.exists(spider_path):
                         print 'Failed to load project %s , Project does not exist! ' % (_projectname)
@@ -67,7 +59,7 @@ class Command(BaseCommand):
                     spider_script = fp.read().decode('utf8')
                 project = Project.objects(name=_projectname).first()
                 if project:
-                    project.update(script=spider_path)
+                    project.update(script=spider_script)
                 else:
                     project = Project(name=_projectname,
                                       info="",

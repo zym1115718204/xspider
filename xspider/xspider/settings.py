@@ -17,7 +17,10 @@ from common import *
 # Spiders Path
 PROJECTS_PTAH = os.path.join(os.path.dirname(BASE_DIR), "projects")
 
+# Execute Path
+EXECUTE_PATH = os.path.join(BASE_DIR, "execute")
 
+# Mongodb settings
 MongoDBS = {
     'xspider_project': {
         'host': 'mongodb://localhost/xspider_project',
