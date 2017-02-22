@@ -51,31 +51,28 @@ class BaseDownloader(object):
         """
         pass
 
-    def download(self, request):
+    def download(self, url, args={}, tools='requests', method='GET'):
         """
         Downloader Download By tools
         :return: response object
         """
 
-        tools = request.get('tools', 'requests')
+
         if tools == "requests":
             self.reqst = requests.Session()
             self.headers = {'Accept': 'text/html, application/xhtml+xml, */*',
              'Accept-Encoding': 'gzip, deflate',
              'Accept-Language': 'en-US, en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
              'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:39.0) Gecko/20100101 Firefox/39.0'}
-
-            url = request.get('url')
-            method = request.get('method', 'GET')
             kwargs = {
-                'headers': request.get('headers', self.headers),
-                'cookies': request.get('cookies', None),
-                'proxies': request.get('proxies', None),
-                'timeout': request.get('timeout', 30)}
+                'headers': args.get('headers', self.headers),
+                'cookies': args.get('cookies', None),
+                'proxies': args.get('proxies', None),
+                'timeout': args.get('timeout', 30)}
             if str(method).upper() == 'GET':
-                kwargs['params'] = request.get('params', {})
+                kwargs['params'] = args.get('params', {})
             elif str(method).upper() == 'POST':
-                kwargs['data'] = request.get('data', {})
+                kwargs['data'] = args.get('data', {})
             try:
                 resp = self.reqst.request(method=method, url=url, **kwargs)
                 return resp
@@ -83,7 +80,7 @@ class BaseDownloader(object):
                 print traceback.format_exc()
                 raise Exception
 
-        elif tools == 'phantomjs':
+        elif tools == 'js':
             """
             Download by Phantomjs
             """
