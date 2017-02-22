@@ -25,7 +25,8 @@ class Project(Document):
     priority = IntField(default=PRIOR_6, choices=PRIOR_CHOICES)
     info = StringField(max_length=1024)
     update_datetime = DateTimeField(default=datetime.datetime.now)
-    script = StringField(max_length=40960)
+    script = StringField(max_length=102400)
+    models = StringField(max_length=10240)
     generator_interval = StringField(max_length=20)
     downloader_interval = StringField(max_length=20)
     downloader_dispatch = IntField(default=60)
@@ -35,6 +36,7 @@ class Project(Document):
             "name"
         ]
     }
+
 
 class Task(Document):
     (STATUS_LIVE, STATUS_DISPATCH, STATUS_PROCESS, STATUS_FAIL, STATUS_SUCCESS, STATUS_INVALID) = range(0, 6)
