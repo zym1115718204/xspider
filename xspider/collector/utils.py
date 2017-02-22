@@ -105,6 +105,7 @@ class Generator(object):
                 task_object.task_id = task_id
                 task_object.status = 0
                 task_object.url = url
+                task_object.args = {}
 
                 return task_object
             else:
@@ -141,6 +142,7 @@ class Processor(object):
         :param object:
         """
         self.task = task
+        self.project = self.task.project
 
     def process_task(self):
         """
@@ -151,7 +153,7 @@ class Processor(object):
             task_url = self.task.url
             args = self.task.args
 
-            project_name = self.task.project.name
+            project_name = self.project.name
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
             _downloader = _spider.Downloader()
             _parser = _spider.Parser()
@@ -159,9 +161,34 @@ class Processor(object):
             resp = _downloader.start_downloader(task_url, args)
             result = _parser.start_parser(resp)
 
-            print result
+            return result
             # record log
 
         except Exception:
+
             print traceback.format_exc()
             # record log
+
+    def save_result(self, result):
+        """
+
+        :return:
+        """
+        # if not isinstance(result, dict):
+        #     raise TypeError(("Processor Result Must Be Dict Type."))
+        if self.project.status == 1:
+            # Save Task to Database
+            # TODO
+            pass
+        elif self.project.status == 2:
+            print result
+
+
+
+    def run_processor(self):
+        """
+
+        :return:
+        """
+        result = self.process_task()
+        self.save_result(result)

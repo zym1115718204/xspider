@@ -30,11 +30,11 @@ class Downloader(BaseDownloader):
     BaseSpider Downloader
     """
 
-    def start_downloader(self, url):
+    def start_downloader(self, url, args):
         """
         Start Downloader
         """
-        resp = self.download(url)
+        resp = self.download(url, args)
         return resp
 
 
@@ -58,6 +58,6 @@ class Parser(BaseParser):
         :return: dict
         """
 
-        result = response.text()
+        result = response.text
 
         return result
