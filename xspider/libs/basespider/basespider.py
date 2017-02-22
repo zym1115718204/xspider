@@ -52,21 +52,21 @@ class BaseDownloader(object):
         Downloader Initialization
         """
         self.reqst = requests.Session()
-        self.reqst.headers.update(
+        self.headers =
             {'Accept': 'text/html, application/xhtml+xml, */*',
              'Accept-Encoding': 'gzip, deflate',
              'Accept-Language': 'en-US, en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
-             'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:39.0) Gecko/20100101 Firefox/39.0'})
+             'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:39.0) Gecko/20100101 Firefox/39.0'}
 
-    def download(self, url, type="request", timeout=50):
+    def download(self, url, tools="request", timeout=50, **kwargs):
         """
         Downloader Download By Type
         :return: response object
         """
-        if type == "request":
+        if tools == "request":
             start_time = time.time()
             try:
-                resp = self.reqst.get(url, timeout=timeout)
+                resp = self.reqst.get(url, timeout=timeout, **kwargs)
                 if resp.status_code != 200:
                     resp = self.reqst.get(url, timeout=50)
                     if resp.status_code != 200:
