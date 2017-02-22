@@ -3,6 +3,7 @@
 # Create on 2017.2.21
 
 import os
+import hashlib
 import traceback
 from django.conf import settings
 
@@ -32,13 +33,17 @@ class InitSpider(object):
             project = Project.objects().first()
             project_name = project.name
             spider_script = project.script
-            execute_path = os.path.join(settings.EXECUTE_PATH, "%s_spider.py" %(project_name))
+            models_script = project.models
+            _spider_path = os.path.join(settings.EXECUTE_PATH, "%s_spider.py" %(project_name))
+            _models_path = os.path.join(settings.EXECUTE_PATH, "%s_models.py" %(project_name))
             execute_init = os.path.join(settings.EXECUTE_PATH, "__init__.py")
 
             with open(execute_init, 'w') as fp:
                 fp.write("")
-            with open(execute_path, 'w') as fp:
+            with open(_spider_path, 'w') as fp:
                 fp.write(spider_script.encode('utf8'))
+            with open(_models_path, 'w') as fp:
+                fp.write(models_script.encode('utf8'))
 
         except Exception:
             print traceback.format_exc()
@@ -76,21 +81,45 @@ class Generator(object):
         :param result:
         :return:
         """
-        if not isinstance(result,list):
+        if not isinstance(result, list):
             raise TypeError("Generator Result Must Be List Type.")
 
-        for i in result:
-            if not isinstance(i, dict):
+        for url_dict in result:
+            if not isinstance(url_dict, dict):
                 raise TypeError(("Generator URL Result Must Be Dict Type."))
 
             if self.project.status == 1:
-                # save to database
-                print i
+                # Save Task to Database
+                # TODO
+                return url_dict
 
             elif self.project.status == 2:
-                # create task object for Web
-                # task_object = Baidu.objects()
-                return
+                # Create Debug Task Object && Dynamic Import Models
+                exec("from execute.{0}_models import *".format(self.project.name))
+                exec("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+
+                url = url_dict.get("url")
+                task_id = self.str2md5(url_dict.get("url"))
+
+                task_object.project = self.project
+                task_object.task_id = task_id
+                task_object.status = 0
+                task_object.url = url
+
+                return task_object
+            else:
+                return url_dict
+
+    @staticmethod
+    def str2md5(string):
+        """
+        Convert Str to MD5
+        :return:
+        """
+        md5 = hashlib.md5()
+        md5.update(string)
+
+        return md5.hexdigest()
 
     def run_generator(self):
         """
@@ -98,7 +127,8 @@ class Generator(object):
         :return:
         """
         result = self.execute_task()
-        self.save_task(result)
+        result = self.save_task(result)
+        return result
 
 
 class Processor(object):
