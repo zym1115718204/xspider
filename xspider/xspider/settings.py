@@ -20,6 +20,9 @@ PROJECTS_PTAH = os.path.join(os.path.dirname(BASE_DIR), "projects")
 # Execute Path
 EXECUTE_PATH = os.path.join(BASE_DIR, "execute")
 
+# Redis Settings
+REDIS_URL = 'localhost:6379'
+
 # Mongodb settings
 MongoDBS = {
     'xspider_project': {
@@ -71,3 +74,5 @@ CELERY_ANNOTATIONS = {
 CELERY_IMPORTS = (
     'xworker.tasks',
 )
+
+
