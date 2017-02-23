@@ -3,6 +3,7 @@
 # Create on 2017.2.21
 
 import os
+import json
 import hashlib
 import traceback
 from django.conf import settings
@@ -54,12 +55,11 @@ class Generator(object):
     Generator Module
     """
 
-    def __init__(self, project):
+    def __init__(self, project_id):
         """
         Generator Module Initialization
         """
-
-        self.project = project
+        self.project = Project.objects(id=project_id).first()
         InitSpider().load_spider(self.project)
 
     def generate_task(self):
@@ -90,13 +90,8 @@ class Generator(object):
 
             if self.project.status == 1:
                 # Save Task to Database
-                # TODO
-                return url_dict
-
-            elif self.project.status == 2:
-                # Create Debug Task Object && Dynamic Import Models
-                exec("from execute.{0}_models import *".format(self.project.name))
-                exec("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+                exec ("from execute.{0}_models import *".format(self.project.name))
+                exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
 
                 url = url_dict.get("url")
                 task_id = self.str2md5(url_dict.get("url"))
@@ -105,9 +100,23 @@ class Generator(object):
                 task_object.task_id = task_id
                 task_object.status = 0
                 task_object.url = url
-                task_object.args = {}
+                task_object.save()
 
-                return task_object
+                # TODO
+
+            elif self.project.status == 2:
+                task_object = {}
+                # Create Debug Task Object && Dynamic Import Models
+                url = url_dict.get("url")
+                task_id = self.str2md5(url_dict.get("url"))
+
+                task_object["project"] = str(self.project.id)
+                task_object["task_id"] = task_id
+                task_object["status"] = 0
+                task_object["url"] = url
+                task_object["args"] = {}
+
+                return json.dumps(task_object)
             else:
                 return url_dict
 

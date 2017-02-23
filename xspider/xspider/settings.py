@@ -37,3 +37,37 @@ from mongoengine import connect  # noqa
 
 for name, db in MongoDBS.iteritems():
     connect(host=db['host'], alias=name)
+
+
+# Celery settings
+
+BROKER_URL = 'amqp://guest:guest@localhost//'
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+
+# BROKER_URL = 'amqp://'
+CELERY_RESULT_BACKEND = 'amqp://'
+
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TIMEZONE = 'Europe/Oslo'
+CELERY_ENABLE_UTC = True
+
+# CELERY_ROUTES = {
+#          'tasks.add': 'low-priority',
+#
+#  }
+
+CELERY_ANNOTATIONS = {
+    'xworker.tasks.generator': {'rate_limit': '60/m'},
+    'xworker.tasks.processor': {'rate_limit': '60/m'},
+    'xworker.tasks.add': {'rate_limit': '6/m'},
+    # 'xworker.task1.enterprise': {'rate_limit': '6/m'}
+
+}
+
+CELERY_IMPORTS = (
+    'xworker.tasks',
+)
