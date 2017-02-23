@@ -37,3 +37,5 @@ from mongoengine import connect  # noqa
 
 for name, db in MongoDBS.iteritems():
     connect(host=db['host'], alias=name)
+
+REDIS_URL = 'localhost:6379'
