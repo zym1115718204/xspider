@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'xspider',
     'collector',
     'scheduler',
+    'manager',
     'xworker',
 ]
 
