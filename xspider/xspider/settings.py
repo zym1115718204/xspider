@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import redis
 from common import *
 
 
@@ -21,7 +22,9 @@ PROJECTS_PTAH = os.path.join(os.path.dirname(BASE_DIR), "projects")
 EXECUTE_PATH = os.path.join(BASE_DIR, "execute")
 
 # Redis Settings
-REDIS_URL = 'localhost:6379'
+REDIS_IP = 'localhost'
+REDIS_PORT = '6379'
+REDIS_POOL = redis.ConnectionPool(host=REDIS_IP, port=REDIS_PORT)
 
 # Mongodb settings
 MongoDBS = {
