@@ -8,6 +8,7 @@ import time
 import socket
 import requests
 import traceback
+from pyquery import PyQuery
 from requests.exceptions import ReadTimeout
 from requests.exceptions import ConnectionError
 
@@ -28,7 +29,7 @@ class BaseGenerator(object):
         Obtain URI
         :return:
         """
-        return {"url": url, "args": 'None'}
+        return {"url": url, "args": {}}
 
     def start_generator(self):
         """
@@ -57,7 +58,6 @@ class BaseDownloader(object):
         :return: response object
         """
 
-
         if tools == "requests":
             self.reqst = requests.Session()
             self.headers = {'Accept': 'text/html, application/xhtml+xml, */*',
@@ -75,6 +75,7 @@ class BaseDownloader(object):
                 kwargs['data'] = args.get('data', {})
             try:
                 resp = self.reqst.request(method=method, url=url, **kwargs)
+                resp.doc = PyQuery(resp.content)
                 return resp
             except Exception:
                 print traceback.format_exc()
@@ -86,7 +87,6 @@ class BaseDownloader(object):
             """
             # TODO
             pass
-
 
 
 class BaseParser(object):

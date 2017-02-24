@@ -58,6 +58,8 @@ class Parser(BaseParser):
         :return: dict
         """
 
-        result = response.text
-
+        result = {
+            "url": response.url,
+            "title": response.doc('title').text(),
+        }
         return result

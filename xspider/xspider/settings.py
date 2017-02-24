@@ -58,21 +58,28 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TIMEZONE = 'Europe/Oslo'
 CELERY_ENABLE_UTC = True
 
-# CELERY_ROUTES = {
-#          'tasks.add': 'low-priority',
-#
-#  }
+CELERY_ROUTES = {
+         'xspider.celery.debug_task': 'test',
+         'xspider.celery.low_generator': 'low-generator',
+         'xspider.celery.high_generator': 'high-generator',
+         'xspider.celery.mid_generator': 'mid-generator',
+         'xspider.celery.low_processor': 'low-processor',
+         'xspider.celery.mid_processor': 'mid-processor',
+         'xspider.celery.high_processor': 'high-processor',
+ }
 
 CELERY_ANNOTATIONS = {
-    'xworker.tasks.generator': {'rate_limit': '60/m'},
-    'xworker.tasks.processor': {'rate_limit': '60/m'},
-    'xworker.tasks.add': {'rate_limit': '6/m'},
-    # 'xworker.task1.enterprise': {'rate_limit': '6/m'}
-
+    'xspider.celery.low_generator': {'rate_limit': '60/m'},
+    'xspider.celery.high_generator': {'rate_limit': '60/m'},
+    'xspider.celery.mid_generator': {'rate_limit': '60/m'},
+    'xspider.celery.low_processor': {'rate_limit': '60/m'},
+    'xspider.celery.high_processor': {'rate_limit': '60/m'},
+    'xspider.celery.mid_processor': {'rate_limit': '60/m'},
+    'xspider.celery.debug_task': {'rate_limit': '60/m'},
 }
 
 CELERY_IMPORTS = (
-    'xworker.tasks',
+    'xspider.celery',
 )
 
 
