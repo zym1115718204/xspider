@@ -16,7 +16,6 @@ from collector.models import Project, Task, Result
 from manager.manager import Manager
 
 
-
 class InitSpider(object):
     """
     Load Spider Script to Local File
@@ -36,7 +35,6 @@ class InitSpider(object):
         :return:
         """
         try:
-            project = Project.objects().first()
             project_name = project.name
             spider_script = project.script
             models_script = project.models
@@ -63,6 +61,7 @@ class Generator(object):
     def __init__(self, project_id):
         """
         Generator Module Initialization
+        :param str
         """
         self.project = Project.objects(id=project_id).first()
         InitSpider().load_spider(self.project)
@@ -108,12 +107,14 @@ class Generator(object):
                 exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
 
                 url = url_dict.get("url")
+                args = url_dict.get("args")
                 task_id = self.str2md5(url_dict.get("url"))
 
                 task_object.project = self.project
                 task_object.task_id = task_id
                 task_object.status = 0
                 task_object.url = url
+                task_object.args = args
                 task_object.save()
 
                 # TODO
@@ -162,10 +163,33 @@ class Processor(object):
     def __init__(self, task):
         """
         Processor Module Initialization
-        :param object:
+        :param Json
         """
-        self.task = task
-        self.project = self.task.project
+        task = json.loads(task)
+        project_id = task.get("project")
+        _task_id = task.get("id")
+        self.project = Project.objects(id=project_id).first()
+
+        if self.project.status == 1:
+            exec ("from execute.{0}_models import *".format(self.project.name))
+            # self.task = BaiduTask.objects(id=_task_id).first()
+            exec("self.task = {0}_Task.objects(id={1}).first()".format(str(self.project.name).capitalize(),_task_id))
+        elif self.project.status == 2:
+            exec ("from execute.{0}_models import *".format(self.project.name))
+            exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+
+            args = task.get("args")
+            url = task.get("url")
+            task_id = self.str2md5(task.get("url"))
+
+            task_object.project = self.project
+            task_object.task_id = task_id
+            task_object.args = args
+            task_object.status = 0
+            task_object.url = url
+            self.task = task_object
+        else:
+            raise TypeError("Project Status Must Be Running or Debug.")
 
     def process_task(self):
         """
@@ -224,8 +248,8 @@ class Processor(object):
             pass
         elif self.project.status == 2:
             print result
-
-
+        else:
+            print result
 
     def run_processor(self):
         """
@@ -234,3 +258,16 @@ class Processor(object):
         """
         result = self.process_task()
         self.save_result(result)
+        return result
+
+    @staticmethod
+    def str2md5(string):
+        """
+        Convert Str to MD5
+        :return:
+        """
+        md5 = hashlib.md5()
+        md5.update(string)
+
+        return md5.hexdigest()
+
