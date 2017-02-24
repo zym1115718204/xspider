@@ -3,7 +3,9 @@
 # Create on 2017.2.23
 
 import json
+import time
 import redis
+from datetime import datetime
 from collector.models import Project
 from django.conf import settings
 
@@ -17,17 +19,16 @@ class Manager (object):
         """
         self.ip = ip
         self.project_name = project_name
-        self.redis_r = redis.Redis(self.REDIS_POOL)
+        self.r = redis.Redis(settings.REDIS_POOL)
 
-    def _add_local_ip_record(reference_dict=None):
+    def _add_local_ip_record(self, reference_dict=None):
         if not reference_dict is None:
-            reference_dict.update{
-                self.ip: {
+            reference_dict.update({self.ip: {
                 "add_time": datetime.now(),
                 "last_used_time": datetime.now(),
                 "used_num": 1,
                 }
-            }
+            })
         if self.r.get(self.project_name):
             self.r.delete(self.project_name)
             self.r.set(self.project_name, json.dumps(reference_dict))
@@ -35,11 +36,15 @@ class Manager (object):
         else:
             self.r.set(self.project_name, json.dumps(reference_dict))
 
-    def _update_proxies_ip_record(selfreference_dict=None):
-        if not selfreference_dict is None:
+    def _update_proxies_ip_record(self, reference_dict=None):
+        if not reference_dict is None:
             self.r.delete(self.project_name)
-            self.r.set(self.project_name, json.dumps(selfreference_dict))
+            self.r.set(self.project_name, json.dumps(reference_dict))
             self.r.save()
+
+    def _get_now_timestamp(self):
+        now = datetime.now()
+        return time.mktime(now.timetuple())
 
     def _is_the_first_local_ip_can_use(self, target_dict=None, reference_dict=None):
             downloader_interval = float(target_dict.get('downloader_interval', 10.0))
@@ -77,15 +82,15 @@ class Manager (object):
 
         first_local_ip = reference_dict.get(self.ip)
         if first_local_ip:
-            is_granted, ip_port = _is_the_first_local_ip_can_use(target_dict, reference_dict)
+            is_granted, ip_port = self._is_the_first_local_ip_can_use(target_dict, reference_dict)
             if not is_granted:
-                is_granted, ip_port = _is_the_proxies_ip_can_use(target_dict, reference_dict)
+                is_granted, ip_port = self._is_the_proxies_ip_can_use(target_dict, reference_dict)
         else:
             self._add_local_ip_record(reference_dict=reference_dict)
             is_granted = True
             ip_port = self.ip
 
-        return json.dump({
+        return json.dumps({
             'is_granted': is_granted,
             'local_ip': self.ip,
             'proxies_ip': ip_port,
@@ -120,7 +125,7 @@ class Manager (object):
         """
         :return: a_dict
         """
-        reference_str = self.redis_r.get(self.project_name)
+        reference_str = self.r.get(self.project_name)
         if reference_str is None:
             return {}
         reference_dict = json.loads(reference_str)
