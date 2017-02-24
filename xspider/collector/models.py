@@ -28,6 +28,7 @@ class Project(Document):
     script = StringField(max_length=102400)
     models = StringField(max_length=10240)
     generator_interval = StringField(max_length=20)
+    last_generator_time = DateTimeField()
     downloader_interval = StringField(max_length=20)
     downloader_dispatch = IntField(default=60)
     meta = {

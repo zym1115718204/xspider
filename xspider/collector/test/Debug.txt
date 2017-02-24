@@ -1,0 +1,42 @@
+# Spider Single Debug
+
+from execute.baidu_spider import *
+generator = Generator()
+task = generator.start_generator()
+print task
+
+downloader = Downloader()
+resp = downloader.start_downloader(task[0].get("url"),task[0].get("args",{}))
+
+parser = Parser()
+result = parser.start_parser(resp)
+
+for k,v in result.items():
+    print k,v
+
+
+# Utils Debug
+
+from collector.utils import *
+from collector.models import Project
+
+project = Project.objects(name="sina").first()
+print project.name
+project_id = str(project.id)
+
+generator = Generator(project_id)
+task = generator.run_generator()
+
+processor = Processor(task)
+result = processor.run_processor()
+
+for k,v in result.items():
+    print k,v
+
+
+# Worker Queue Debug
+
+from xspider import celery
+a = celery.generator.delay("58ad4b174010109c73f19021")
+aa = celery.processor.delay(a.get())
+
