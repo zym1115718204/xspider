@@ -5,11 +5,16 @@
 import os
 import json
 import hashlib
+import socket
 import traceback
 from django.conf import settings
 
 # Database Models
 from collector.models import Project, Task, Result
+
+# Manager
+from manager.manager import Manager
+
 
 
 class InitSpider(object):
@@ -69,6 +74,15 @@ class Generator(object):
         :example: [{"url":"http://www.example.com","args":None}]
         """
         project_name = self.project.name
+
+        # 调用ip管理模块
+        manager = Manager(ip='localhost', project_name=project_name)
+        ip_tactics = manager.get_ip()
+        print ip_tactics
+        ip_tactics_dict = json.loads(ip_tactics)
+        if ip_tactics_dict.get('granted', False) is False:
+            return None
+
         _generator = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
         spider_generator = _generator.Generator()
         result = spider_generator.start_generator()
@@ -163,6 +177,25 @@ class Processor(object):
             args = self.task.args
 
             project_name = self.project.name
+
+            # 调用ip管理模块
+            # 获取本机电脑名
+            myname = socket.getfqdn(socket.gethostname())
+            # 获取本机ip
+            local_ip = socket.gethostbyname(myname)
+            manager = Manager(ip=local_ip, project_name=project_name)
+            ip_tactics = manager.get_ip()
+            print ip_tactics
+            ip_tactics_dict = json.loads(ip_tactics)
+            if ip_tactics_dict.get('is_granted', False) is False:
+                return None
+            else:
+                args = json.loads(args)
+                proxies_ip = ip_tactics_dict.get('proxies_ip', {})
+                if proxies_ip:
+                    args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
+                args = json.dumps(args)
+
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
             _downloader = _spider.Downloader()
             _parser = _spider.Parser()
