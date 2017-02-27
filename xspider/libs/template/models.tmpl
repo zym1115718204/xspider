@@ -34,7 +34,7 @@ class $PROJECTS_NAME_TASK (Document):
     meta = {
         "allow_inheritance": True,
         "db_alias": "xspider_task",
-        "indexes": ["status", [("project", 1), ("status", 1)], [("project", 1), ("status", 1), ("url", 1)]],
+        "indexes": ["task_id", "url", "status"],
     }    # 默认连接的数据库
 
 
@@ -48,5 +48,5 @@ class $PROJECTS_NAME_RESULT (Document):
     meta = {
         "allow_inheritance": True,
         "db_alias": "xspider_result",
-        "indexes": ["task", [("project", 1), ("task", 1)]]
+        "indexes": ["task"]
     }    # 默认连接的数据库

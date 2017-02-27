@@ -47,13 +47,14 @@ for name, db in MongoDBS.iteritems():
 
 # Celery settings
 
-BROKER_URL = 'amqp://guest:guest@localhost//'
+# BROKER_URL = 'amqp://guest:guest@localhost//'
+BROKER_URL = 'redis://localhost:6379/0'
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 
 # BROKER_URL = 'amqp://'
-CELERY_RESULT_BACKEND = 'amqp://'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
