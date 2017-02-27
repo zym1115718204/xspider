@@ -239,7 +239,7 @@ class Processor(object):
             return result
 
         except Exception:
-            self.task.update(status=4)
+            self.task.update(status=3)
             return traceback.format_exc()
             # record log
 

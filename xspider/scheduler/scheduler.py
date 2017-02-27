@@ -110,15 +110,15 @@ class XspiderScheduler(object):
         if _priority == -1:
             for task in tasks:
                 celery.high_processor.delay(str(task.id), str(project.id))
-                task.update(status=2)
+                task.update(status=1)
         elif _priority <= 3:
             for task in tasks:
                 celery.mid_processor.delay(str(task.id), str(project.id))
-                task.update(status=2)
+                task.update(status=1)
         else:
             for task in tasks:
                 celery.low_processor.delay(str(task.id), str(project.id))
-                task.update(status=2)
+                task.update(status=1)
 
         return {
             "project": str(project.name),
