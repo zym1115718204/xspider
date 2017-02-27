@@ -57,7 +57,8 @@ class BaseDownloader(object):
         Downloader Download By tools
         :return: response object
         """
-
+        if isinstance(args, basestring):
+            args = json.loads(args)
         if tools == "requests":
             self.reqst = requests.Session()
             self.headers = {'Accept': 'text/html, application/xhtml+xml, */*',

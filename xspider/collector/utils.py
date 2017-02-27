@@ -75,12 +75,12 @@ class Generator(object):
         project_name = self.project.name
 
         # 调用ip管理模块
-        manager = Manager(ip='127.0.0.1', project_name=project_name)
-        ip_tactics = manager.get_ip()
-        print ip_tactics
-        ip_tactics_dict = json.loads(ip_tactics)
-        if ip_tactics_dict.get('granted', False) is False:
-            return None
+        # manager = Manager(ip='127.0.0.1', project_name=project_name)
+        # ip_tactics = manager.get_ip()
+        # print 'ip_tactics:', ip_tactics
+        # ip_tactics_dict = json.loads(ip_tactics)
+        # if ip_tactics_dict.get('granted', False) is False:
+        #     return None
 
         _generator = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
         spider_generator = _generator.Generator()
@@ -179,6 +179,7 @@ class Processor(object):
             exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
 
             args = task.get("args")
+            print 'type(args), args: %s %s' % (type(args), args)
             url = task.get("url")
             task_id = self.str2md5(task.get("url"))
 
@@ -214,7 +215,8 @@ class Processor(object):
             if ip_tactics_dict.get('is_granted', False) is False:
                 return None
             else:
-                args = json.loads(args)
+                if isinstance(args, basestring):
+                    args = json.loads(args)
                 proxies_ip = ip_tactics_dict.get('proxies_ip', {})
                 if proxies_ip:
                     args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
