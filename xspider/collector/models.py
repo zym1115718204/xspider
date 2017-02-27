@@ -61,8 +61,9 @@ class Task(Document):
     spend_time = StringField(max_length=120, default='0')
     meta = {
         "db_alias": "xspider_task",
-        "indexes": ["status", [("project", 1), ("status", 1)], [("project", 1), ("status", 1), ("url", 1)]],
+        "indexes": ["task_id", "url", "status"],
     }    # 默认连接的数据库
+
 
 class Result(Document):
     project = ReferenceField(Project)
@@ -72,5 +73,5 @@ class Result(Document):
     result = StringField(max_length=10240)
     meta = {
         "db_alias": "xspider_result",
-        "indexes": ["task", [("project", 1), ("task", 1)]]
+        "indexes": ["task"]
     }    # 默认连接的数据库
