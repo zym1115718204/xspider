@@ -38,6 +38,7 @@ class XspiderScheduler(object):
             last = project.last_generator_time
             interval = int(project.generator_interval)
             if not project.last_generator_time:
+                projects.append(project)
                 project.update(last_generator_time=now)
                 continue
             next = last + datetime.timedelta(seconds=interval)
