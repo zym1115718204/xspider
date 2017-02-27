@@ -34,7 +34,18 @@ for k,v in result.items():
     print k,v
 
 
-# Worker Queue Debug
+## Worker Queue Debug
+
+# start worker
+ celery worker --app=xspider -l info -n worker1@%h -Q low-generator
+ celery worker --app=xspider -l info -n worker2@%h -Q low-processor
+
+
+# start flower
+celery -A xspider flower
+
+
+# scheduler debug
 
 from scheduler.scheduler import XspiderScheduler
 
