@@ -26,12 +26,12 @@ class XspiderScheduler(object):
         pass
 
     @staticmethod
-    def _filter_projects():
+    def _filter_generator_projects():
         """
         Projects Filter
         :return:
         """
-        _projects = Project.objects(status=Project.STATUS_DEBUG).order_by('+priority')
+        _projects = Project.objects(status=Project.STATUS_ON).order_by('+priority')
         projects = []
         for project in _projects:
             now = datetime.datetime.now()
@@ -49,16 +49,26 @@ class XspiderScheduler(object):
 
         return projects
 
-    def generator_dispatch(self):
+    @staticmethod
+    def _filter_processor_projects():
+        """
+        Projects Filter
+        :return:
+        """
+        _projects = Project.objects(status=Project.STATUS_ON).order_by('+priority')
+        projects = []
+        for project in _projects:
+            projects.append(project)
+
+        return projects
+
+    def run_generator_dispatch(self):
         """
         Generator Dispatch
         :return:
         """
-        projects = self._filter_projects()
-        print projects
+        projects = self._filter_generator_projects()
         for project in projects:
-            print project.name
-            print project.priority
             _priority = project.priority
             if _priority == -1:
                 celery.high_generator.delay(str(project.id))
@@ -67,10 +77,13 @@ class XspiderScheduler(object):
             else:
                 celery.low_generator.delay(str(project.id))
 
-        return {
+        result = {
             'status': True,
             "projects": len(projects)
         }
+
+        print "[{0}]::{1}".format(datetime.datetime.now(), result)
+        return result
 
     @staticmethod
     def _filter_tasks(project):
@@ -92,35 +105,39 @@ class XspiderScheduler(object):
         Dispatch Tasks by Project
         :return:
         """
-        _priority = project.priority_pro
+        _priority = project.priority
         if _priority == -1:
             for task in tasks:
-                celery.high_processor.delay(str(task.id))
+                celery.high_processor.delay(str(task.id), str(project.id))
+                task.update(status=2)
         elif _priority <= 3:
             for task in tasks:
-                celery.mid_processor.delay(str(task.id))
+                celery.mid_processor.delay(str(task.id), str(project.id))
+                task.update(status=2)
         else:
             for task in tasks:
-                celery.low_processor.delay(str(task.id))
+                celery.low_processor.delay(str(task.id), str(project.id))
+                task.update(status=2)
 
         return {
             "project": str(project.name),
             "tasks": len(tasks)
          }
 
-    def processor_dispatch(self):
+    def run_processor_dispatch(self):
         """
         Processor Dispatch
         :return:
         """
         results = []
-        projects = self._filter_projects()
-        print projects
+        projects = self._filter_processor_projects()
+
         for project in projects:
             tasks = self._filter_tasks(project)
             result = self._processor_tasks(project, tasks)
             results.append(result)
 
+        print "[{0}]::{1}".format(datetime.datetime.now(),results)
         return results
 
     @staticmethod
@@ -130,11 +147,8 @@ class XspiderScheduler(object):
         # print threading.enumerate()
 
     def run(self):
-        schedule.every(10).seconds.do(self.run_threaded, self.generator_dispatch)
-        # schedule.every(self.generator_dispatch_interval).seconds.do(self.run_threaded, self.generator_dispatch)
-        # schedule.every(self.downloader_dispatch_interval).seconds.do(self.run_threaded, self.downloader_dispatch)
-        # schedule.every(self.structure_dispatch_interval).seconds.do(self.run_threaded, self.parser_dispatch)
-        # schedule.every(self.extracter_dispatch_interval).seconds.do(self.run_threaded, self.extracter_dispatch)
+        schedule.every(1).seconds.do(self.run_threaded, self.run_generator_dispatch)
+        schedule.every(1).seconds.do(self.run_threaded, self.run_processor_dispatch)
 
         while True:
             schedule.run_pending()

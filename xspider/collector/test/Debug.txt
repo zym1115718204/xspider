@@ -20,14 +20,14 @@ for k,v in result.items():
 from collector.utils import *
 from collector.models import Project
 
-project = Project.objects(name="sina").first()
+project = Project.objects(name="chinacourt").first()
 print project.name
 project_id = str(project.id)
 
 generator = Generator(project_id)
 task = generator.run_generator()
 
-processor = Processor(task)
+processor = Processor(task=task)
 result = processor.run_processor()
 
 for k,v in result.items():
@@ -36,7 +36,10 @@ for k,v in result.items():
 
 # Worker Queue Debug
 
-from xspider import celery
-a = celery.generator.delay("58ad4b174010109c73f19021")
-aa = celery.processor.delay(a.get())
+from scheduler.scheduler import XspiderScheduler
+
+xs = XspiderScheduler()
+xs.run_generator_dispatch()
+xs.run_processor_dispatch()
+
 

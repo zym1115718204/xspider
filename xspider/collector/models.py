@@ -10,7 +10,7 @@ from django.db import models
 
 # Create your models here.
 class Project(Document):
-    (STATUS_ON, STATUS_OFF, STATUS_DEBUG, STATUS_DELAY) = range(0, 4)
+    (STATUS_OFF, STATUS_ON, STATUS_DEBUG, STATUS_DELAY) = range(0, 4)
     STATUS_CHOICES = ((STATUS_OFF, u"下线"), (STATUS_ON, u"启用"), (STATUS_DEBUG, u'调试'), (STATUS_DELAY, u'过期'))
     (PRIOR_0, PRIOR_1, PRIOR_2, PRIOR_3, PRIOR_4, PRIOR_5, PRIOR_6) = range(-1, 6)
     PRIOR_CHOICES = ((PRIOR_0, u"-1"),

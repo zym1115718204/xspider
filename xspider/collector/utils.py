@@ -114,10 +114,10 @@ class Generator(object):
                 task_object.task_id = task_id
                 task_object.status = 0
                 task_object.url = url
-                task_object.args = args
+                task_object.args = json.dumps(args)
                 task_object.save()
 
-                # TODO
+
 
             elif self.project.status == 2:
                 task_object = {}
@@ -131,7 +131,7 @@ class Generator(object):
                 task_object["url"] = url
                 task_object["args"] = {}
 
-                return json.dumps(task_object)
+                return task_object
             else:
                 return url_dict
 
@@ -160,23 +160,28 @@ class Processor(object):
     """
      Processor Module
     """
-    def __init__(self, task):
+    def __init__(self, task=None, _id=None, project_id=None):
         """
         Processor Module Initialization
         :param Json
         """
-        task = json.loads(task)
-        project_id = task.get("project")
-        _task_id = task.get("id")
-        self.project = Project.objects(id=project_id).first()
+        if isinstance(task, dict):
+            project_id = task.get("project")
+            self.project = Project.objects(id=project_id).first()
+        elif _id and project_id:
+            self.project = Project.objects(id=project_id).first()
+        else:
+            raise TypeError("Bad Parameters.")
 
-        if self.project.status == 1:
-            exec ("from execute.{0}_models import *".format(self.project.name))
-            # self.task = BaiduTask.objects(id=_task_id).first()
-            exec("self.task = {0}_Task.objects(id={1}).first()".format(str(self.project.name).capitalize(),_task_id))
-        elif self.project.status == 2:
-            exec ("from execute.{0}_models import *".format(self.project.name))
-            exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+        _name = self.project.name
+        _status = self.project.status
+
+        if _status == 1:
+            exec ("from execute.{0}_models import *".format(_name))
+            exec('self.task = {0}Task.objects(id="{1}").first()'.format(str(_name).capitalize(), _id))
+        elif _status == 2:
+            exec ("from execute.{0}_models import *".format(_name))
+            exec ("task_object = {0}{1}()".format(str(_name).capitalize(), "Task"))
 
             args = task.get("args")
             url = task.get("url")
@@ -184,12 +189,12 @@ class Processor(object):
 
             task_object.project = self.project
             task_object.task_id = task_id
-            task_object.args = args
+            task_object.args = json.dumps(args)
             task_object.status = 0
             task_object.url = url
             self.task = task_object
         else:
-            raise TypeError("Project Status Must Be Running or Debug.")
+            raise TypeError("Project Status Must Be On or Debug.")
 
     def process_task(self):
         """
@@ -198,27 +203,27 @@ class Processor(object):
         """
         try:
             task_url = self.task.url
-            args = self.task.args
+            args = json.loads(self.task.args)
 
             project_name = self.project.name
 
-            # 调用ip管理模块
-            # 获取本机电脑名
-            myname = socket.getfqdn(socket.gethostname())
-            # 获取本机ip
-            local_ip = socket.gethostbyname(myname)
-            manager = Manager(ip=local_ip, project_name=project_name)
-            ip_tactics = manager.get_ip()
-            print ip_tactics
-            ip_tactics_dict = json.loads(ip_tactics)
-            if ip_tactics_dict.get('is_granted', False) is False:
-                return None
-            else:
-                args = json.loads(args)
-                proxies_ip = ip_tactics_dict.get('proxies_ip', {})
-                if proxies_ip:
-                    args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
-                args = json.dumps(args)
+            # # 调用ip管理模块
+            # # 获取本机电脑名
+            # myname = socket.getfqdn(socket.gethostname())
+            # # 获取本机ip
+            # local_ip = socket.gethostbyname(myname)
+            # manager = Manager(ip=local_ip, project_name=project_name)
+            # ip_tactics = manager.get_ip()
+            # print ip_tactics
+            # ip_tactics_dict = json.loads(ip_tactics)
+            # if ip_tactics_dict.get('is_granted', False) is False:
+            #     return None
+            # else:
+            #     args = json.loads(args)
+            #     proxies_ip = ip_tactics_dict.get('proxies_ip', {})
+            #     if proxies_ip:
+            #         args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
+            #     args = json.dumps(args)
 
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
             _downloader = _spider.Downloader()
@@ -227,12 +232,13 @@ class Processor(object):
             resp = _downloader.start_downloader(task_url, args)
             result = _parser.start_parser(resp)
 
+            self.task.update(status=4)
+
             return result
-            # record log
 
         except Exception:
-
-            print traceback.format_exc()
+            self.task.update(status=4)
+            return traceback.format_exc()
             # record log
 
     def save_result(self, result):
@@ -253,7 +259,6 @@ class Processor(object):
 
     def run_processor(self):
         """
-
         :return:
         """
         result = self.process_task()

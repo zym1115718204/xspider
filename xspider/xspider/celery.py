@@ -58,33 +58,33 @@ def high_generator(project_id):
 
 
 @app.task()
-def low_processor(task):
+def low_processor(_id, project_id):
     """
     Celery Processor Task
     :return:
     """
-    processor = Processor(task)
+    processor = Processor(_id=_id, project_id=project_id)
     result = processor.run_processor()
     return result
 
 
 @app.task()
-def mid_processor(task):
+def mid_processor(_id, project_id):
     """
     Celery Processor Task
     :return:
     """
-    processor = Processor(task)
+    processor = Processor(_id=_id, project_id=project_id)
     result = processor.run_processor()
     return result
 
 
 @app.task()
-def high_processor(task):
+def high_processor(_id, project_id):
     """
     Celery Processor Task
     :return:
     """
-    processor = Processor(task)
+    processor = Processor(_id=_id, project_id=project_id)
     result = processor.run_processor()
     return result
