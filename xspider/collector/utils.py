@@ -75,12 +75,12 @@ class Generator(object):
         project_name = self.project.name
 
         # 调用ip管理模块
-        manager = Manager(ip='localhost', project_name=project_name)
-        ip_tactics = manager.get_ip()
-        print ip_tactics
-        ip_tactics_dict = json.loads(ip_tactics)
-        if ip_tactics_dict.get('granted', False) is False:
-            return None
+        # manager = Manager(ip='localhost', project_name=project_name)
+        # ip_tactics = manager.get_ip()
+        # print ip_tactics
+        # ip_tactics_dict = json.loads(ip_tactics)
+        # if ip_tactics_dict.get('granted', False) is False:
+        #     return None
 
         _generator = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
         spider_generator = _generator.Generator()
