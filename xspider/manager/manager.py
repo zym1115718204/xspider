@@ -19,13 +19,13 @@ class Manager (object):
         """
         self.ip = ip
         self.project_name = project_name
-        self.r = redis.Redis(settings.REDIS_POOL)
+        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT)
 
     def _add_local_ip_record(self, reference_dict=None):
         if not reference_dict is None:
             reference_dict.update({self.ip: {
-                "add_time": datetime.now(),
-                "last_used_time": datetime.now(),
+                "add_time": self._get_now_timestamp(),
+                "last_used_time": self._get_now_timestamp(),
                 "used_num": 1,
                 }
             })
@@ -125,7 +125,7 @@ class Manager (object):
         """
         :return: a_dict
         """
-        reference_str = self.r.get(self.project_name)
+        reference_str = self.r.get(str(self.project_name))
         if reference_str is None:
             return {}
         reference_dict = json.loads(reference_str)
