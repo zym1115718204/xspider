@@ -179,6 +179,14 @@ class Processor(object):
             resp = _downloader.start_downloader(task_url, args)
             result = _parser.start_parser(resp)
 
+            # Circle Spider
+            if result["new_urls"]:
+                if not isinstance(result["new_url"], list):
+                    raise TypeError("Generator Result Must Be List Type.")
+                for _url in result['new_urls']:
+                    self.storage.store_task(_url)
+            result["new_url"].delete()
+
             end = time.time()
             spend_time = end - start
             self.storage.update_task(
