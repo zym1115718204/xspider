@@ -198,12 +198,18 @@ class Processor(object):
                 track_log="success",
                 spend_time=str(spend_time)
             )
-
-            return {
-                "status": True,
-                "store_task": True,
-                "result": result
-            }
+            if self.project.status == 1:
+                return {
+                    "status": True,
+                    "store_result": True,
+                    "result": result
+                }
+            else:
+                return {
+                    "status": True,
+                    "store_result": False,
+                    "result": result
+                }
 
         except Exception:
             end = time.time()
@@ -218,7 +224,7 @@ class Processor(object):
 
             return  {
                 "status": False,
-                "store_task": False,
+                "store_result": False,
                 "result": None,
                 "reason": traceback.format_exc(),
             }
@@ -263,25 +269,33 @@ class Storage(object):
         :Porject    ON,  Store Status Dict
         """
         if self.project.status == 1:
+            
             # Save Task to Database
-            exec ("from execute.{0}_models import *".format(self.project.name))
-            exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
-
             url = url_dict.get("url")
             args = url_dict.get("args")
             task_id = self.str2md5(url_dict.get("url"))
+            exec ("from execute.{0}_models import *".format(self.project.name))
+            exec("repeat = {0}{1}.objects(task_id=task_id).first()".format(str(self.project.name).capitalize(), "Task"))
+            
+            if repeat:
+                return{
+                    "status":True,
+                    "store_task":False,
+                    "repeat":True,
+                }
+            else:
+                exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+                task_object.project = self.project
+                task_object.task_id = task_id
+                task_object.status = 0
+                task_object.url = url
+                task_object.args = json.dumps(args)
+                task_object.save()
 
-            task_object.project = self.project
-            task_object.task_id = task_id
-            task_object.status = 0
-            task_object.url = url
-            task_object.args = json.dumps(args)
-            task_object.save()
-
-            return {
-                "status": True,
-                "store_task": True
-            }
+                return {
+                    "status": True,
+                    "store_task": True
+                }
 
         elif self.project.status == 2:
             task_object = {}
