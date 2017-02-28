@@ -4,8 +4,10 @@
 
 import os
 import json
-import hashlib
+import time
 import socket
+import hashlib
+import datetime
 import traceback
 from django.conf import settings
 
@@ -65,6 +67,7 @@ class Generator(object):
         """
         self.project = Project.objects(id=project_id).first()
         InitSpider().load_spider(self.project)
+        self.storage = Storage(self.project)
 
     def generate_task(self):
         """
@@ -101,39 +104,9 @@ class Generator(object):
             if not isinstance(url_dict, dict):
                 raise TypeError(("Generator URL Result Must Be Dict Type."))
 
-            if self.project.status == 1:
-                # Save Task to Database
-                exec ("from execute.{0}_models import *".format(self.project.name))
-                exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+            result = self.storage.store_task(url_dict)
 
-                url = url_dict.get("url")
-                args = url_dict.get("args")
-                task_id = self.str2md5(url_dict.get("url"))
-
-                task_object.project = self.project
-                task_object.task_id = task_id
-                task_object.status = 0
-                task_object.url = url
-                task_object.args = json.dumps(args)
-                task_object.save()
-
-
-
-            elif self.project.status == 2:
-                task_object = {}
-                # Create Debug Task Object && Dynamic Import Models
-                url = url_dict.get("url")
-                task_id = self.str2md5(url_dict.get("url"))
-
-                task_object["project"] = str(self.project.id)
-                task_object["task_id"] = task_id
-                task_object["status"] = 0
-                task_object["url"] = url
-                task_object["args"] = {}
-
-                return task_object
-            else:
-                return url_dict
+            return result
 
     @staticmethod
     def str2md5(string):
@@ -153,6 +126,7 @@ class Generator(object):
         """
         result = self.generate_task()
         result = self.save_task(result)
+
         return result
 
 
@@ -165,67 +139,49 @@ class Processor(object):
         Processor Module Initialization
         :param Json
         """
+        # Debug Status
         if isinstance(task, dict):
             project_id = task.get("project")
             self.project = Project.objects(id=project_id).first()
+            self.storage = Storage(self.project)
+            self.task = self.storage.package_task(task=task)
+        # Run Status
         elif _id and project_id:
             self.project = Project.objects(id=project_id).first()
+            self.storage = Storage(self.project)
+            self.task = self.storage.package_task(_id=_id)
         else:
             raise TypeError("Bad Parameters.")
-
-        _name = self.project.name
-        _status = self.project.status
-
-        if _status == 1:
-            exec ("from execute.{0}_models import *".format(_name))
-            exec('self.task = {0}Task.objects(id="{1}").first()'.format(str(_name).capitalize(), _id))
-        elif _status == 2:
-            exec ("from execute.{0}_models import *".format(_name))
-            exec ("task_object = {0}{1}()".format(str(_name).capitalize(), "Task"))
-
-            args = task.get("args")
-            print 'type(args), args: %s %s' % (type(args), args)
-            url = task.get("url")
-            task_id = self.str2md5(task.get("url"))
-
-            task_object.project = self.project
-            task_object.task_id = task_id
-            task_object.args = json.dumps(args)
-            task_object.status = 0
-            task_object.url = url
-            self.task = task_object
-        else:
-            raise TypeError("Project Status Must Be On or Debug.")
 
     def process_task(self):
         """
         Downloader Module
         :return: Result Dict
         """
+        start = time.time()
         try:
             task_url = self.task.url
             args = json.loads(self.task.args)
-
             project_name = self.project.name
 
             # 调用ip管理模块
             # 获取本机电脑名
-            myname = socket.getfqdn(socket.gethostname())
-            # 获取本机ip
-            local_ip = socket.gethostbyname(myname)
-            manager = Manager(ip=local_ip, project_name=project_name)
-            ip_tactics = manager.get_ip()
-            print ip_tactics
-            ip_tactics_dict = json.loads(ip_tactics)
-            if ip_tactics_dict.get('is_granted', False) is False:
-                return None
-            else:
-                if isinstance(args, basestring):
-                    args = json.loads(args)
-                proxies_ip = ip_tactics_dict.get('proxies_ip', {})
-                if proxies_ip:
-                    args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
-                args = json.dumps(args)
+            # myname = socket.getfqdn(socket.gethostname())
+            # # 获取本机ip
+            # local_ip = socket.gethostbyname(myname)
+            # manager = Manager(ip=local_ip, project_name=project_name)
+            # ip_tactics = manager.get_ip()
+            # print ip_tactics
+            # ip_tactics_dict = json.loads(ip_tactics)
+            # if ip_tactics_dict.get('is_granted', False) is False:
+            #     return None
+            # else:
+            #     if isinstance(args, basestring):
+            #         args = json.loads(args)
+            #     proxies_ip = ip_tactics_dict.get('proxies_ip', {})
+            #     if proxies_ip:
+            #         args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
+            #     args = json.dumps(args)
 
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
             _downloader = _spider.Downloader()
@@ -234,37 +190,46 @@ class Processor(object):
             resp = _downloader.start_downloader(task_url, args)
             result = _parser.start_parser(resp)
 
-            self.task.update(status=4)
+            end = time.time()
+            spend_time = end - start
+            self.storage.update_task(
+                task=self.task,
+                status=4,
+                track_log="success",
+                spend_time=str(spend_time)
+            )
 
-            return result
+            return {
+                "status": True,
+                "store_task": True,
+                "result": result
+            }
 
         except Exception:
-            self.task.update(status=3)
-            return traceback.format_exc()
-            # record log
+            end = time.time()
+            spend_time = end - start
+            self.task = self.storage.update_task(
+                task=self.task,
+                status=3,
+                track_log=traceback.format_exc(),
+                spend_time=str(spend_time),
+                retry_times=self.task.retry_times + 1,
+            )
 
-    def save_result(self, result):
-        """
-
-        :return:
-        """
-        # if not isinstance(result, dict):
-        #     raise TypeError(("Processor Result Must Be Dict Type."))
-        if self.project.status == 1:
-            # Save Task to Database
-            # TODO
-            pass
-        elif self.project.status == 2:
-            print result
-        else:
-            print result
+            return  {
+                "status": False,
+                "store_task": False,
+                "result": None,
+                "reason": traceback.format_exc(),
+            }
 
     def run_processor(self):
         """
         :return:
         """
         result = self.process_task()
-        self.save_result(result)
+        if result["status"]:
+            self.storage.store_result(result["result"])
         return result
 
     @staticmethod
@@ -278,3 +243,168 @@ class Processor(object):
 
         return md5.hexdigest()
 
+
+class Storage(object):
+    """
+    Storage Module
+    """
+
+    def __init__(self, project):
+        """
+        Initialization
+        """
+        self.project = project
+
+    def store_task(self, url_dict):
+        """
+        Store Generator Task
+        :return:
+        :Porject Debug,  Task Dict
+        :Porject    ON,  Store Status Dict
+        """
+        if self.project.status == 1:
+            # Save Task to Database
+            exec ("from execute.{0}_models import *".format(self.project.name))
+            exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+
+            url = url_dict.get("url")
+            args = url_dict.get("args")
+            task_id = self.str2md5(url_dict.get("url"))
+
+            task_object.project = self.project
+            task_object.task_id = task_id
+            task_object.status = 0
+            task_object.url = url
+            task_object.args = json.dumps(args)
+            task_object.save()
+
+            return {
+                "status": True,
+                "store_task": True
+            }
+
+        elif self.project.status == 2:
+            task_object = {}
+
+            # Create Debug Task Object && Dynamic Import Models
+            url = url_dict.get("url")
+            task_id = self.str2md5(url_dict.get("url"))
+
+            task_object["project"] = str(self.project.id)
+            task_object["task_id"] = task_id
+            task_object["status"] = 0
+            task_object["url"] = url
+            task_object["args"] = {}
+
+            return {
+                "status": True,
+                "store_task": False,
+                "result": task_object
+            }
+        else:
+            raise TypeError("Project Status Must Be On or Debug.")
+
+    def package_task(self, task=None, _id=None):
+        """
+        Package Task
+        :return:
+        """
+        _name = self.project.name
+        _status = self.project.status
+
+        if _status == 1:
+            exec ("from execute.{0}_models import *".format(_name))
+            exec ('self.task = {0}Task.objects(id="{1}").first()'.format(str(_name).capitalize(), _id))
+            return self.task
+
+        elif _status == 2:
+            exec ("from execute.{0}_models import *".format(_name))
+            exec ("task_object = {0}{1}()".format(str(_name).capitalize(), "Task"))
+
+            args = task.get("args")
+            url = task.get("url")
+            task_id = self.str2md5(task.get("url"))
+
+            task_object.project = self.project
+            task_object.task_id = task_id
+            task_object.args = json.dumps(args)
+            task_object.status = 0
+            task_object.url = url
+            self.task = task_object
+
+            return self.task
+        else:
+            raise TypeError("Project Status Must Be Run or Debug.")
+
+    def update_task(self, task, status, track_log, spend_time, retry_times=0):
+        """
+        Update Task
+        :return:
+        """
+        if self.project.status == 1:
+            task.update(
+                status=status,
+                track_log=track_log,
+                update_time=datetime.datetime.now(),
+                spend_time=spend_time,
+                retry_times=retry_times,
+            )
+            return task
+
+        elif self.project.status == 2:
+            task.status = status,
+            task.track_log = track_log,
+            task.update_time = datetime.datetime.now(),
+            task.spend_time = spend_time,
+            task.retry_times = retry_times
+
+            return task
+        else:
+            raise TypeError("Project Status Must Be Run or Debug.")
+
+    def store_result(self, result):
+        """
+        Store Result
+        :return:
+        """
+        if self.project.status == 1:
+            # Save Task Result to Database
+            exec ("from execute.{0}_models import *".format(self.project.name))
+            exec ("task_result = {0}{1}()".format(str(self.project.name).capitalize(), "Result"))
+
+            task_result.project = self.project
+            task_result.task = self.task
+            task_result.url = self.task.url
+            task_result.update_datetime = datetime.datetime.now()
+            task_result.result = json.dumps(result)
+            task_result.save()
+
+            return {
+                "store_result": True
+            }
+
+        elif self.project.status == 2:
+            # Save Task Result to Object
+            exec ("from execute.{0}_models import *".format(self.project.name))
+            exec ("task_result = {0}{1}()".format(str(self.project.name).capitalize(), "Result"))
+
+            task_result.project = self.project
+            task_result.task = self.task
+            task_result.url = self.task.url
+            task_result.update_datetime = datetime.datetime.now()
+            task_result.result = result
+
+            return task_result
+        else:
+            raise TypeError("Project Status Must Be On or Debug.")
+
+    @staticmethod
+    def str2md5(string):
+        """
+        Convert Str to MD5
+        :return:
+        """
+        md5 = hashlib.md5()
+        md5.update(string)
+
+        return md5.hexdigest()
