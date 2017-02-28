@@ -74,13 +74,14 @@ class BaseDownloader(object):
                 kwargs['params'] = args.get('params', {})
             elif str(method).upper() == 'POST':
                 kwargs['data'] = args.get('data', {})
-            try:
-                resp = self.reqst.request(method=method, url=url, **kwargs)
-                resp.doc = PyQuery(resp.content)
-                return resp
-            except Exception:
-                print traceback.format_exc()
-                raise Exception
+
+            # try:
+            resp = self.reqst.request(method=method, url=url, **kwargs)
+            resp.doc = PyQuery(resp.content)
+            return resp
+            # except Exception:
+            #     print traceback.format_exc()
+            #     raise Exception
 
         elif tools == 'js':
             """

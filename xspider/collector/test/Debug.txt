@@ -20,18 +20,37 @@ for k,v in result.items():
 from collector.utils import *
 from collector.models import Project
 
-project = Project.objects(name="chinacourt").first()
+project = Project.objects(name="sina").first()
 print project.name
 project_id = str(project.id)
+project.update(status=2)
 
 generator = Generator(project_id)
 task = generator.run_generator()
+print task
 
-processor = Processor(task=task)
+processor = Processor(task=task["result"])
 result = processor.run_processor()
+print result
 
-for k,v in result.items():
-    print k,v
+# Utils Run
+
+from collector.utils import *
+from collector.models import Project
+
+project = Project.objects(name="sina").first()
+print project.name
+project_id = str(project.id)
+project.update(status=1)
+
+generator = Generator(project_id)
+task = generator.run_generator()
+print task
+
+processor = Processor(_id="58b501ba401010ee54168f07",project_id="58b3de424010104df43f7313")
+result = processor.run_processor()
+print result
+
 
 
 ## Worker Queue Debug
