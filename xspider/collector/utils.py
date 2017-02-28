@@ -266,9 +266,9 @@ class Storage(object):
             
             if repeat:
                 return{
-                    "status":True,
-                    "store_task":False,
-                    "repeat":True,
+                    "status": True,
+                    "store_task": False,
+                    "repeat": True,
                 }
             else:
                 exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
