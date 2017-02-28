@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'collector',
     'scheduler',
     'manager',
-    'xworker',
 ]
 
 MIDDLEWARE = [
