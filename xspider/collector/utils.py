@@ -108,17 +108,6 @@ class Generator(object):
 
             return result
 
-    @staticmethod
-    def str2md5(string):
-        """
-        Convert Str to MD5
-        :return:
-        """
-        md5 = hashlib.md5()
-        md5.update(string)
-
-        return md5.hexdigest()
-
     def run_generator(self):
         """
         Run Generator
@@ -238,17 +227,6 @@ class Processor(object):
             self.storage.store_result(result["result"])
         return result
 
-    @staticmethod
-    def str2md5(string):
-        """
-        Convert Str to MD5
-        :return:
-        """
-        md5 = hashlib.md5()
-        md5.update(string)
-
-        return md5.hexdigest()
-
 
 class Storage(object):
     """
@@ -274,6 +252,7 @@ class Storage(object):
             url = url_dict.get("url")
             args = url_dict.get("args")
             task_id = self.str2md5(url_dict.get("url"))
+
             exec ("from execute.{0}_models import *".format(self.project.name))
             exec("repeat = {0}{1}.objects(task_id=task_id).first()".format(str(self.project.name).capitalize(), "Task"))
             
