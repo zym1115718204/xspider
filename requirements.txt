@@ -3,3 +3,6 @@ django
 requests
 celery
 mongoengine
+flower
+pyquery
+beautifulsoup4
