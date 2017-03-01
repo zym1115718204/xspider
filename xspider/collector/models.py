@@ -54,15 +54,17 @@ class Task(Document):
     update_time = DateTimeField(default=datetime.datetime.now)
     schedule = StringField(max_length=1024)
     url = StringField(max_length=8000)
-    args = StringField(max_length=2048, null=True)    # 存储cookie， header等信息
-    info = StringField(max_length=2048, null=True)    # 源数据的信息,如数据分类,公司名称,权限等
+    args = StringField(max_length=2048, null=True)  # 存储cookie， header等信息
+    info = StringField(max_length=2048, null=True)  # 源数据的信息,如数据分类,公司名称,权限等
     retry_times = IntField(default=0)
+    callback = StringField(max_length=120)
     track_log = StringField(max_length=10240)
     spend_time = StringField(max_length=120, default='0')
     meta = {
+        "allow_inheritance": True,
         "db_alias": "xspider_task",
         "indexes": ["task_id", "url", "status"],
-    }    # 默认连接的数据库
+    }  # 默认连接的数据库
 
 
 class Result(Document):

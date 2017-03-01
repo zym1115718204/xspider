@@ -13,7 +13,7 @@ from requests.exceptions import ReadTimeout
 from requests.exceptions import ConnectionError
 
 
-class BaseGenerator(object):
+class BaseSpider(object):
     """
     BaseSpider Generator
     """
@@ -24,33 +24,12 @@ class BaseGenerator(object):
         """
         pass
 
-    def generate(self, url):
+    def generate(self, url, callback):
         """
         Obtain URI
         :return:
         """
-        return {"url": url, "args": {}}
-
-    def start_generator(self):
-        """
-        Start Generator
-        :return:
-        """
-        start_url = "__START_URL__"
-        result = self.generate(start_url)
-        return result
-
-
-class BaseDownloader(object):
-    """
-    BaseSpider Downloader
-    """
-
-    def __init__(self):
-        """
-        Downloader Initialization
-        """
-        pass
+        return {"url": url, "args": {}, "callback": callback.__name__}
 
     def download(self, url, args={}, tools='requests', method='GET'):
         """
@@ -90,18 +69,6 @@ class BaseDownloader(object):
             # TODO
             pass
 
-
-class BaseParser(object):
-    """
-    BaseSpider Parser
-    """
-
-    def __init__(self):
-        """
-        Parser Initialization
-        """
-        pass
-
     def parser(self, resp):
         """
         Paeser resp content
@@ -109,5 +76,6 @@ class BaseParser(object):
         :return:
         """
         return resp
+
 
 

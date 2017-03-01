@@ -85,9 +85,9 @@ class Generator(object):
         # if ip_tactics_dict.get('granted', False) is False:
         #     return None
 
-        _generator = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
-        spider_generator = _generator.Generator()
-        result = spider_generator.start_generator()
+        _spider= __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
+        spider = _spider.Spider()
+        result = spider.start_generator()
 
         return result
 
@@ -173,19 +173,20 @@ class Processor(object):
             #     args = json.dumps(args)
 
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
-            _downloader = _spider.Downloader()
-            _parser = _spider.Parser()
+            spider = _spider.Spider()
 
-            resp = _downloader.start_downloader(task_url, args)
-            result = _parser.start_parser(resp)
+            resp = spider.start_downloader(task_url, args)
+            exec("result = spider.start_parser(resp, spider.{0})".format(self.task.callback))
 
-            # Circle Spider
-            if result["new_urls"]:
-                if not isinstance(result["new_url"], list):
-                    raise TypeError("Generator Result Must Be List Type.")
-                for _url in result['new_urls']:
-                    self.storage.store_task(_url)
-            result["new_url"].delete()
+            # print result
+
+            # # Circle Spider
+            # if result.get("generator_urls", None):
+            #     if not isinstance(result["generator_urls"], list):
+            #         raise TypeError("Generator Result Must Be List Type.")
+            #     for _url in result['generator_urls']:
+            #         self.storage.store_task(_url)
+            # # result.pop('generator_urls', None)
 
             end = time.time()
             spend_time = end - start
@@ -231,8 +232,12 @@ class Processor(object):
         :return:
         """
         result = self.process_task()
-        if result["status"]:
+        if result["status"] and result.get("callback", False)and result.get("urls". False):
+            for url_dict in result["urls"]:
+                self.storage.store_task(url_dict)
+        elif result["status"]:
             self.storage.store_result(result["result"])
+
         return result
 
 
@@ -259,6 +264,7 @@ class Storage(object):
             # Save Task to Database
             url = url_dict.get("url")
             args = url_dict.get("args")
+            callback = url_dict.get("callback")
             task_id = self.str2md5(url_dict.get("url"))
 
             exec ("from execute.{0}_models import *".format(self.project.name))
@@ -273,10 +279,12 @@ class Storage(object):
             else:
                 exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
                 task_object.project = self.project
+                task_object.args = json.dumps(args)
+                task_object.callback = callback
                 task_object.task_id = task_id
                 task_object.status = 0
                 task_object.url = url
-                task_object.args = json.dumps(args)
+
                 task_object.save()
 
                 return {
@@ -289,13 +297,17 @@ class Storage(object):
 
             # Create Debug Task Object && Dynamic Import Models
             url = url_dict.get("url")
+            args = url_dict.get("args")
+            callback = url_dict.get("callback")
             task_id = self.str2md5(url_dict.get("url"))
 
             task_object["project"] = str(self.project.id)
+            task_object["args"] = json.dumps(args)
+            task_object["callback"] = callback
             task_object["task_id"] = task_id
             task_object["status"] = 0
             task_object["url"] = url
-            task_object["args"] = {}
+
 
             return {
                 "status": True,
@@ -324,10 +336,12 @@ class Storage(object):
 
             args = task.get("args")
             url = task.get("url")
+            callback = task.get("callback")
             task_id = self.str2md5(task.get("url"))
 
             task_object.project = self.project
             task_object.task_id = task_id
+            task_object.callback = callback
             task_object.args = json.dumps(args)
             task_object.status = 0
             task_object.url = url

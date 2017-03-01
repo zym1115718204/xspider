@@ -1,15 +1,13 @@
 # Spider Single Debug
 
-from execute.baidu_spider import *
-generator = Generator()
-task = generator.start_generator()
+from execute.douban_spider import *
+spider = Spider()
+task = spider.start_generator()
 print task
 
-downloader = Downloader()
-resp = downloader.start_downloader(task[0].get("url"),task[0].get("args",{}))
+resp = spider.start_downloader(task[0].get("url"),task[0].get("args",{}))
 
-parser = Parser()
-result = parser.start_parser(resp)
+result = spider.start_parser(resp,spider.parser)
 
 for k,v in result.items():
     print k,v
@@ -20,7 +18,7 @@ for k,v in result.items():
 from collector.utils import *
 from collector.models import Project
 
-project = Project.objects(name="sina").first()
+project = Project.objects(name="douban").first()
 print project.name
 project_id = str(project.id)
 project.update(status=2)

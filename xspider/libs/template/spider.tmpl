@@ -6,7 +6,7 @@
 from libs.basespider.basespider import *
 
 
-class Generator(BaseGenerator):
+class Spider(BaseSpider):
     """
     Spider Generator
     """
@@ -15,20 +15,15 @@ class Generator(BaseGenerator):
         """
         Start Generator
         :return: URL List
-        :example: [{"url":"http://www.example.com", "args":None}]
+        :example: [{"url":"http://www.example.com", "args":None, "callback":"parser_detail"}]
         """
         result = []
-        start_url = "$START_URL"
-        result_url = self.generate(start_url)
+
+        start_url = "__START_URL__"
+        result_url = self.generate(start_url, callback=self.parser)
         result.append(result_url)
 
         return result
-
-
-class Downloader(BaseDownloader):
-    """
-    BaseSpider Downloader
-    """
 
     def start_downloader(self, url, args):
         """
@@ -37,17 +32,11 @@ class Downloader(BaseDownloader):
         resp = self.download(url, args)
         return resp
 
-
-class Parser(BaseParser):
-    """
-    BaseSpider Parser
-    """
-
-    def start_parser(self, response):
+    def start_parser(self, response, callback):
         """
         Start Parser
         """
-        result = self.parser(response)
+        result = callback(response)
 
         return result
 
@@ -57,7 +46,6 @@ class Parser(BaseParser):
         :param response:
         :return: dict
         """
-
         result = {
             "url": response.url,
             "title": response.doc('title').text(),
