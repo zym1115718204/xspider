@@ -24,7 +24,8 @@ class BaseSpider(object):
         """
         pass
 
-    def generate(self, url, callback):
+    @staticmethod
+    def generate(url, callback):
         """
         Obtain URI
         :return:
@@ -69,16 +70,29 @@ class BaseSpider(object):
             # TODO
             pass
 
+    @staticmethod
+    def parser(response):
+        """
+        Parser Response to Result
+        :param response:
+        :return: dict
+        """
+        result = {
+            "url": response.url,
+            "title": response.doc('title').text(),
+        }
+        return result
+
     def start_generator(self):
         """
         Start Generator
         :return: URL List
-        :example: [{"url":"http://www.example.com", "args":None, "callback":"parser_detail"}]
+        :example: [{"url":"http://www.example.com", "args":None, "callback":"parser"}]
         """
         result = []
 
         start_url = "__START_URL__"
-        result_url = self.generate(start_url, callback=self.parser_item)
+        result_url = self.generate(start_url, callback=self.parser)
         result.append(result_url)
 
         return result

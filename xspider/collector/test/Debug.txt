@@ -1,13 +1,13 @@
 # Spider Single Debug
 
-from execute.douban_spider import *
+from execute.baidu_spider import *
 spider = Spider()
 task = spider.start_generator()
 print task
 
 resp = spider.start_downloader(task[0].get("url"),task[0].get("args",{}))
 
-result = spider.start_parser(resp,spider.parser_1)
+result = spider.start_parser(resp,spider.parser_index)
 
 for k,v in result.items():
     print k,v
@@ -45,7 +45,7 @@ generator = Generator(project_id)
 task = generator.run_generator()
 print task
 
-processor = Processor(_id="58b501ba401010ee54168f07",project_id="58b3de424010104df43f7313")
+processor = Processor(_id="58b799734010101c8a0302d3",project_id="58b7981d401010203d401883")
 result = processor.run_processor()
 print result
 

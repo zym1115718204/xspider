@@ -11,11 +11,8 @@ import datetime
 import traceback
 from django.conf import settings
 
-# Database Models
-from collector.models import Project, Task, Result
-
-# Manager
 from manager.manager import Manager
+from collector.models import Project, Task, Result
 
 
 class InitSpider(object):
@@ -176,17 +173,8 @@ class Processor(object):
             spider = _spider.Spider()
 
             resp = spider.start_downloader(task_url, args)
+            result = None
             exec("result = spider.start_parser(resp, spider.{0})".format(self.task.callback))
-
-            # print result
-
-            # # Circle Spider
-            # if result.get("generator_urls", None):
-            #     if not isinstance(result["generator_urls"], list):
-            #         raise TypeError("Generator Result Must Be List Type.")
-            #     for _url in result['generator_urls']:
-            #         self.storage.store_task(_url)
-            # # result.pop('generator_urls', None)
 
             end = time.time()
             spend_time = end - start
@@ -237,7 +225,7 @@ class Processor(object):
             for url_dict in result["result"]["urls"]:
                 _result = self.storage.store_task(url_dict)
                 _task.append(_result)
-            result = _task
+            result["result"] = _task
 
         elif result["status"]:
             result["result"] = self.storage.store_result(result["result"])
@@ -263,7 +251,8 @@ class Storage(object):
         :Porject Debug,  Task Dict
         :Porject    ON,  Store Status Dict
         """
-        if self.project.status == 1:
+        _status = self.project.status
+        if _status == 1:
             
             # Save Task to Database
             url = url_dict.get("url")
@@ -271,6 +260,8 @@ class Storage(object):
             callback = url_dict.get("callback")
             task_id = self.str2md5(url_dict.get("url"))
 
+            repeat = None
+            task_object = None
             exec ("from execute.{0}_models import *".format(self.project.name))
             exec("repeat = {0}{1}.objects(task_id=task_id).first()".format(str(self.project.name).capitalize(), "Task"))
             
@@ -296,7 +287,7 @@ class Storage(object):
                     "store_task": True
                 }
 
-        elif self.project.status == 2:
+        elif _status == 2:
             task_object = {}
 
             # Create Debug Task Object && Dynamic Import Models
@@ -311,7 +302,6 @@ class Storage(object):
             task_object["task_id"] = task_id
             task_object["status"] = 0
             task_object["url"] = url
-
 
             return {
                 "status": True,
@@ -335,6 +325,7 @@ class Storage(object):
             return self.task
 
         elif _status == 2:
+            task_object = None
             exec ("from execute.{0}_models import *".format(_name))
             exec ("task_object = {0}{1}()".format(str(_name).capitalize(), "Task"))
 
@@ -360,7 +351,8 @@ class Storage(object):
         Update Task
         :return:
         """
-        if self.project.status == 1:
+        _status = self.project.status
+        if _status == 1:
             task.update(
                 status=status,
                 track_log=track_log,
@@ -370,7 +362,7 @@ class Storage(object):
             )
             return task
 
-        elif self.project.status == 2:
+        elif _status== 2:
             task.status = status,
             task.track_log = track_log,
             task.update_time = datetime.datetime.now(),
@@ -386,8 +378,10 @@ class Storage(object):
         Store Result
         :return:
         """
-        if self.project.status == 1:
+        _status = self.project.status
+        if _status == 1:
             # Save Task Result to Database
+            task_result = None
             exec ("from execute.{0}_models import *".format(self.project.name))
             exec ("task_result = {0}{1}()".format(str(self.project.name).capitalize(), "Result"))
 
@@ -402,7 +396,7 @@ class Storage(object):
                 "store_result": True
             }
 
-        elif self.project.status == 2:
+        elif _status == 2:
 
             # Save Task Result to Object
             # exec ("from execute.{0}_models import *".format(self.project.name))
