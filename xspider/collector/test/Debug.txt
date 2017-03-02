@@ -7,7 +7,7 @@ print task
 
 resp = spider.start_downloader(task[0].get("url"),task[0].get("args",{}))
 
-result = spider.start_parser(resp,spider.parser)
+result = spider.start_parser(resp,spider.parser_1)
 
 for k,v in result.items():
     print k,v

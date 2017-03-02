@@ -220,7 +220,7 @@ class Processor(object):
                 retry_times=self.task.retry_times + 1,
             )
 
-            return  {
+            return {
                 "status": False,
                 "store_result": False,
                 "result": None,
@@ -232,11 +232,15 @@ class Processor(object):
         :return:
         """
         result = self.process_task()
-        if result["status"] and result.get("callback", False)and result.get("urls". False):
-            for url_dict in result["urls"]:
-                self.storage.store_task(url_dict)
+        if result["status"] and result["result"].get("urls", False):
+            _task = []
+            for url_dict in result["result"]["urls"]:
+                _result = self.storage.store_task(url_dict)
+                _task.append(_result)
+            result = _task
+
         elif result["status"]:
-            self.storage.store_result(result["result"])
+            result["result"] = self.storage.store_result(result["result"])
 
         return result
 
@@ -399,15 +403,21 @@ class Storage(object):
             }
 
         elif self.project.status == 2:
-            # Save Task Result to Object
-            exec ("from execute.{0}_models import *".format(self.project.name))
-            exec ("task_result = {0}{1}()".format(str(self.project.name).capitalize(), "Result"))
 
-            task_result.project = self.project
-            task_result.task = self.task
-            task_result.url = self.task.url
-            task_result.update_datetime = datetime.datetime.now()
-            task_result.result = result
+            # Save Task Result to Object
+            # exec ("from execute.{0}_models import *".format(self.project.name))
+            # exec ("task_result = {0}{1}()".format(str(self.project.name).capitalize(), "Result"))
+            # task_result.project = self.project
+            # task_result.task = self.task
+            # task_result.url = self.task.url
+            # task_result.update_datetime = datetime.datetime.now()
+            # task_result.result = result
+
+            task_result = {}
+            task_result["project"] = str(self.project.id)
+            task_result["url"] = self.task.url
+            task_result["update_datetime"] = datetime.datetime.now()
+            task_result["result"] = result
 
             return task_result
         else:

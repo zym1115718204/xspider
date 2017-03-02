@@ -69,13 +69,34 @@ class BaseSpider(object):
             # TODO
             pass
 
-    def parser(self, resp):
+    def start_generator(self):
         """
-        Paeser resp content
-        :param resp:
-        :return:
+        Start Generator
+        :return: URL List
+        :example: [{"url":"http://www.example.com", "args":None, "callback":"parser_detail"}]
         """
+        result = []
+
+        start_url = "__START_URL__"
+        result_url = self.generate(start_url, callback=self.parser_item)
+        result.append(result_url)
+
+        return result
+
+    def start_downloader(self, url, args):
+        """
+        Start Downloader
+        """
+        resp = self.download(url, args)
         return resp
+
+    def start_parser(self, response, callback):
+        """
+        Start Parser
+        """
+        result = callback(response)
+
+        return result
 
 
 
