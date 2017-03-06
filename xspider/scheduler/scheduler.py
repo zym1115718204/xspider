@@ -83,7 +83,7 @@ class XspiderScheduler(object):
             "projects": len(projects)
         }
 
-        print "[{0}]::{1}".format(datetime.datetime.now(), result)
+        print "[{0}]::Generator Dispatch::{1}".format(datetime.datetime.now(), result)
         return result
 
     @staticmethod
@@ -138,7 +138,7 @@ class XspiderScheduler(object):
             result = self._processor_tasks(project, tasks)
             results.append(result)
 
-        print "[{0}]::{1}".format(datetime.datetime.now(),results)
+        print "[{0}]::Processor Dispatch::{1}".format(datetime.datetime.now(),results)
         return results
 
     @staticmethod
