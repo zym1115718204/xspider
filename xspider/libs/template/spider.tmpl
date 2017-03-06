@@ -20,7 +20,7 @@ class Spider(BaseSpider):
         result = []
 
         start_url = "__START_URL__"
-        result_url = self.generate(start_url, callback=self.parser)
+        result_url = self.generate(start_url, callback=self.parser_index)
         result.append(result_url)
 
         return result
@@ -40,9 +40,25 @@ class Spider(BaseSpider):
 
         return result
 
-    def parser(self, response):
+    def parser_index(self, response):
         """
-        Parser Response to Result
+        Parser Index Page to Result
+        :param response:
+        :return: dict
+        """
+        urls = []
+        for each in response.doc('a[href^="http"]').items():
+            _url = self.generate(each.attr.href, callback=self.parser_detail)
+            urls.append(_url)
+
+        result = {
+            "urls": urls
+        }
+        return result
+
+    def parser_detail(self, response):
+        """
+        Parser Detail Page to Result
         :param response:
         :return: dict
         """
