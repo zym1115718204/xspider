@@ -12,6 +12,7 @@ import traceback
 from django.conf import settings
 
 from manager.manager import Manager
+from libs.error.custom_error import IPLimitError
 from collector.models import Project, Task, Result
 
 
@@ -150,24 +151,23 @@ class Processor(object):
             args = json.loads(self.task.args)
             project_name = self.project.name
 
-            # 调用ip管理模块
-            # 获取本机电脑名
-            # myname = socket.getfqdn(socket.gethostname())
-            # # 获取本机ip
-            # local_ip = socket.gethostbyname(myname)
-            # manager = Manager(ip=local_ip, project_name=project_name)
-            # ip_tactics = manager.get_ip()
-            # print ip_tactics
-            # ip_tactics_dict = json.loads(ip_tactics)
-            # if ip_tactics_dict.get('is_granted', False) is False:
-            #     return None
-            # else:
-            #     if isinstance(args, basestring):
-            #         args = json.loads(args)
-            #     proxies_ip = ip_tactics_dict.get('proxies_ip', {})
-            #     if proxies_ip:
-            #         args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
-            #     args = json.dumps(args)
+            # Manager Module
+            localhost = socket.getfqdn(socket.gethostname())
+            local_ip = socket.gethostbyname(localhost)
+            manager = Manager(ip=local_ip, project_name=project_name)
+            ip_tactics = manager.get_ip()
+
+            print ip_tactics
+            ip_tactics_dict = json.loads(ip_tactics)
+            if ip_tactics_dict.get('is_granted', False) is False:
+                raise IPLimitError("IP Access is Limited, Please Wait for Access Permission.")
+            else:
+                if isinstance(args, basestring):
+                    args = json.loads(args)
+                proxies_ip = ip_tactics_dict.get('proxies_ip', {})
+                if proxies_ip:
+                    args.update({'proxies': {'http': 'http://%s' % (proxies_ip)}})
+                args = json.dumps(args)
 
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
             spider = _spider.Spider()
@@ -196,6 +196,23 @@ class Processor(object):
                     "store_result": False,
                     "result": result
                 }
+        except IPLimitError:
+            end = time.time()
+            spend_time = end - start
+            self.task = self.storage.update_task(
+                task=self.task,
+                status=1,
+                track_log=traceback.format_exc(),
+                spend_time=str(spend_time),
+                retry_times=self.task.retry_times + 1,
+            )
+
+            return {
+                "status": False,
+                "store_result": False,
+                "result": None,
+                "reason": traceback.format_exc(),
+            }
 
         except Exception:
             end = time.time()
