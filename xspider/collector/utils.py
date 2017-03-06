@@ -201,7 +201,7 @@ class Processor(object):
             spend_time = end - start
             self.task = self.storage.update_task(
                 task=self.task,
-                status=1,
+                status=0,
                 track_log=traceback.format_exc(),
                 spend_time=str(spend_time),
                 retry_times=self.task.retry_times + 1,
