@@ -21,10 +21,12 @@ class Project(Document):
                      (PRIOR_5, u"4"),
                      (PRIOR_6, u"5"), )
     name = StringField(max_length=128)
+    timeout = IntField(default=200)
     status = IntField(default=STATUS_DEBUG, choices=STATUS_CHOICES)
     priority = IntField(default=PRIOR_6, choices=PRIOR_CHOICES)
     info = StringField(max_length=1024)
     update_datetime = DateTimeField(default=datetime.datetime.now)
+    add_datetime = DateTimeField(default=datetime.datetime.now)
     script = StringField(max_length=102400)
     models = StringField(max_length=10240)
     generator_interval = StringField(max_length=20)

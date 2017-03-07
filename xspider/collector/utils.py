@@ -89,22 +89,24 @@ class Generator(object):
 
         return result
 
-    def save_task(self, result):
+    def save_task(self, data):
         """
         Save Generator Result to Task Database
         :param result:
         :return:
         """
-        if not isinstance(result, list):
+        result = []
+        if not isinstance(data, list):
             raise TypeError("Generator Result Must Be List Type.")
 
-        for url_dict in result:
+        for url_dict in data:
             if not isinstance(url_dict, dict):
-                raise TypeError(("Generator URL Result Must Be Dict Type."))
+                raise TypeError("Generator URL Result Must Be Dict Type.")
 
-            result = self.storage.store_task(url_dict)
+            _result = self.storage.store_task(url_dict)
+            result.append(_result)
 
-            return result
+        return result
 
     def run_generator(self):
         """
