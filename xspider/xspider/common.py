@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'collector',
     'scheduler',
     'manager',
-    'webclient',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +74,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'xspider.wsgi.application'
 
+
+TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '../dashboard', 'templates').replace('\\', '/'),)
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -122,4 +124,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/' 
+STATIC_URL = '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (os.path.join(os.path.dirname(__file__), '../dashboard/static').replace('\\', '/'), )
