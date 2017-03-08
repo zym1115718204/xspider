@@ -44,10 +44,10 @@ def index(request):
     return render_to_response("index.html", {'projects': projects, 'tasks': None, 'profile': None})
 
 
-def index2(request):
+def test(request):
     """
     Dashboard Index Page
     :param request:
     :return:
     """
-    return render_to_response("dashboard2.html", {'jobs': None, 'tasks': None, 'profile': None})
+    return render_to_response("dashboard.html", {'jobs': None, 'tasks': None, 'profile': None})

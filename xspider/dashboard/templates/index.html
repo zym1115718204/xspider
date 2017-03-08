@@ -180,7 +180,17 @@
 								<tr>
 									<td>Demo</td>
 									<td>{{ project.name }}</td>
-									<td>{{ project.status }}</td>
+									<td>
+										{% if project.status == 0 %}
+										<span class="label label-muted">Closed</span>
+										{% elif project.status == 1 %}
+										<span class="label label-success">Running</span>
+										{% elif project.status == 2 %}
+										<span class="label label-info">Debug</span>
+										{% elif project.status == 3 %}
+										<span class="label label-warning">Delay</span>
+										{% endif %}
+									</td>
 									<td>{{ project.interval }} </td>
 									<td>{{ project.speed }} </td>
 									<td>{{ project.iplimit }}</td>
@@ -193,16 +203,12 @@ failed(): 	{{ project.failed }}">
 										<div class="progress" >
 											<div class="progress-text">5mins : {{ project.total }}</div>
 											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
-												<!--<span class="sr-only">47.5% Complete (new)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
-												<!--<span class="sr-only">47.9% Complete (success)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
-												<!--<span class="sr-only">4.6% Complete (retry)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
-												<!--<span class="sr-only">0.1% Complete (failed)</span>-->
 											</div>
 										</div>
 
@@ -215,16 +221,12 @@ failed(): 	{{ project.failed }}">
 										<div class="progress" >
 											<div class="progress-text">1hour : {{ project.total }}</div>
 											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
-												<!--<span class="sr-only">47.5% Complete (new)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
-												<!--<span class="sr-only">47.9% Complete (success)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
-												<!--<span class="sr-only">4.6% Complete (retry)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
-												<!--<span class="sr-only">0.1% Complete (failed)</span>-->
 											</div>
 										</div>
 									</td>
@@ -236,16 +238,12 @@ failed(): 	{{ project.failed }}">
 										<div class="progress" >
 											<div class="progress-text">1day : {{ project.total }}</div>
 											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
-												<!--<span class="sr-only">47.5% Complete (new)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
-												<!--<span class="sr-only">47.9% Complete (success)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
-												<!--<span class="sr-only">4.6% Complete (retry)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
-												<!--<span class="sr-only">0.1% Complete (failed)</span>-->
 											</div>
 										</div>
 									</td>
@@ -257,80 +255,37 @@ failed(): 	{{ project.failed }}">
 										<div class="progress" >
 											<div class="progress-text">Total : {{ project.total }}</div>
 											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
-												<!--<span class="sr-only">47.5% Complete (new)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
-												<!--<span class="sr-only">47.9% Complete (success)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
-												<!--<span class="sr-only">4.6% Complete (retry)</span>-->
 											</div>
 											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
-												<!--<span class="sr-only">0.1% Complete (failed)</span>-->
 											</div>
 										</div>
 									</td>
 									<td>
+										<a href="javascript:;" onclick="jQuery('#{{ project.name }}').modal('show', {backdrop: 'static'});" class="btn btn-white  btn-sm btn-icon icon-left ">Edit</a>
+
 										<a href="#" class=" btn btn-white  btn-sm btn-icon icon-left">
-											Edit
+											Task
 										</a>
-										<a href="#" class="btn btn-info btn-sm btn-icon icon-left">
-											Profile
+										<a href="#" class=" btn btn-white  btn-sm btn-icon icon-left">
+											Result
 										</a>
+										<!--<a href="#" class="btn btn-info btn-sm btn-icon icon-left">-->
+											<!--Profile-->
+										<!--</a>-->
 									</td>
 								</tr>
-
 								{% endfor %}
+
 							</tbody>
 						</table>
 					</div>
 
 				<!--</div>-->
             </div>
-
-			<!--<div class="form-group">-->
-					<!--<label class="control-label">Templating</label>-->
-
-					<!--<script type="text/javascript">-->
-						<!--jQuery(document).ready(function($)-->
-						<!--{-->
-							<!--$("#s2example-3").select2({-->
-								<!--placeholder: 'Select country...',-->
-								<!--allowClear: true,-->
-								<!--minimumResultsForSearch: -1, // Hide the search bar-->
-								<!--formatResult: function(state)-->
-								<!--{-->
-									<!--return '<div style="background:url(http://www.geonames.org/flags/x/' + state.id + '.gif) no-repeat center center;background-size:100%;display:inline-block;position:relative;width:20px;height:15px;margin-right: 10px;top:2px;"></div>'-->
-											<!--+ state.text;-->
-								<!--}-->
-							<!--}).on('select2-open', function()-->
-							<!--{-->
-								<!--// Adding Custom Scrollbar-->
-								<!--$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();-->
-							<!--});-->
-						<!--});-->
-					<!--</script>-->
-
-					<!--<div class="select2-container form-control select2-allowclear" id="s2id_s2example-3">-->
-						<!--<a href="javascript:void(0)" class="select2-choice" tabindex="-1">-->
-							<!--<span class="select2-chosen" id="select2-chosen-3">DEBUG</span>-->
-							<!--<abbr class="select2-search-choice-close"></abbr>-->
-							<!--<span class="select2-arrow" role="presentation"><b role="presentation"></b></span>-->
-						<!--</a>-->
-						<!--<label for="s2id_autogen3" class="select2-offscreen">-->
-						<!--</label>-->
-						<!--<input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-3" id="s2id_autogen3">-->
-					<!--</div>-->
-					<!--<select class="form-control select2-offscreen" id="s2example-3" tabindex="-1" title="">-->
-						<!--<option></option>-->
-						<!--<option value="0">RUNNING</option>-->
-						<!--<option value="1">CLOSED</option>-->
-						<!--<option value="2">DEBUG</option>-->
-						<!--<option value="3">DELAY</option>-->
-					<!--</select>-->
-
-			<!--</div>-->
-
 
             <div class="row">
 			<!--<div class="jumbotron">-->
@@ -696,7 +651,6 @@ failed(): 	{{ project.failed }}">
 
 					<!-- Add your copyright text here -->
 
-
 					<!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
 					<div class="go-up">
 
@@ -713,28 +667,158 @@ failed(): 	{{ project.failed }}">
 
 	</div>
 
-
-	 <!--Imported styles on this page-->
-	<!--<link rel="stylesheet" href="{% static 'assets/js/daterangepicker/daterangepicker-bs3.css' %}">-->
-	<!--<link rel="stylesheet" href="{% static 'assets/js/select2/select2.css' %}">-->
-	<!--<link rel="stylesheet" href="{% static 'assets/js/select2/select2-bootstrap.css' %}">-->
-	<!--<link rel="stylesheet" href="{% static 'assets/js/multiselect/css/multi-select.css' %}">-->
-
-	<!--&lt;!&ndash; Imported scripts on this page &ndash;&gt;-->
-	<!--<script src="{% static 'assets/js/daterangepicker/daterangepicker.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/datepicker/bootstrap-datepicker.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/timepicker/bootstrap-timepicker.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/colorpicker/bootstrap-colorpicker.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/select2/select2.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/jquery-ui/jquery-ui.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/selectboxit/jquery.selectBoxIt.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/tagsinput/bootstrap-tagsinput.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/typeahead.bundle.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/handlebars.min.js' %}"></script>-->
-	<!--<script src="{% static 'assets/js/multiselect/js/jquery.multi-select.js' %}"></script>-->
+	<!-- Modal 6 (Long Modal)-->
+	{% for project in projects %}
+		<div class="modal fade" id="{{ project.name }}">
 
 
+			<div class="modal-dialog">
+				<div class="modal-content">
 
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title"><strong>Project Settings</strong><br /></h4>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-md-6">
+
+								<div class="form-group">
+									<label for="field-1" class="control-label"><strong>Group</strong><br /></label>
+									<input type="text" class="form-control" id="field-1" placeholder="{{ project.name}}">
+								</div>
+
+							</div>
+
+							<div class="col-md-6">
+
+								<div class="form-group">
+									<label for="field-2" class="control-label"><strong>Name</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-2" placeholder="{{ project.name }}">
+								</div>
+
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+
+								<div class="form-group">
+									<label for="field-3" class="control-label"><strong>Information</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-3" placeholder="{{ project.info}}">
+								</div>
+
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-4">
+
+								<div class="form-group">
+									<label for="field-4" class="control-label"><strong>Generate Interval</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-4" placeholder="{{ project.interval }}">
+								</div>
+
+							</div>
+
+							<div class="col-md-4">
+
+								<div class="form-group">
+									<label for="field-5" class="control-label"><strong>Dispatch Number</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-5" placeholder="{{ project.speed }}">
+								</div>
+
+							</div>
+
+							<div class="col-md-4">
+
+								<div class="form-group">
+									<label for="field-6" class="control-label"><strong>IP Limit Interval</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-6" placeholder="{{ project.iplimit }}">
+								</div>
+
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<strong>Status</strong>
+								<br />
+								<br />
+							</div>
+
+							<div class="col-sm-6">
+
+								<ul class="icheck-list">
+									<li>
+										{% if project.status == 0 %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="0" checked>
+										{% else  %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="0" >
+										{% endif %}
+										<label>Closed</label>
+									</li>
+									<li>
+										{% if project.status == 1 %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="1" checked>
+										{% else  %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="1" >
+										{% endif %}
+										<label>Running</label>
+									</li>
+								</ul>
+
+							</div>
+
+							<div class="col-sm-6">
+
+								<ul class="icheck-list">
+									<li>
+										{% if project.status == 2 %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="2" checked>
+										{% else  %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="2" >
+										{% endif %}
+										<label>Debug</label>
+									</li>
+									<li>
+										{% if project.status == 3 %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="3" checked>
+										{% else  %}
+											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="3" >
+										{% endif %}
+										<label>Delay</label>
+									</li>
+								</ul>
+
+							</div>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
+						<a href="" onclick="return false" project-id='{{ project.id }}' class="btn btn-info edit-project">Save changes</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+
+	<!-- Imported styles on this page -->
+	<link rel="stylesheet" href="{% static 'assets/js/icheck/skins/all.css' %}">
+
+	<!-- Imported scripts on this page -->
+	<script src="{% static 'assets/js/icheck/icheck.min.js' %}"></script>
 
 	<!-- Bottom Scripts -->
 	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
@@ -747,6 +831,7 @@ failed(): 	{{ project.failed }}">
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
+	<script src="{% static 'assets/js/xspider.js' %}"></script>
 
 </body>
 </html>
