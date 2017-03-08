@@ -41,8 +41,8 @@
 			<!-- Navbar Brand -->
 			<div class="navbar-brand">
 				<a href="#" class="logo">
-					<img src="{% static 'assets/images/logo-white-bg@2x.png' %}" width="80" alt="" class="hidden-xs" />
-					<img src="{% static 'assets/images/logo@2x.png' %}" width="80" alt="" class="visible-xs" />
+					<img src="{% static 'assets/images/logo@3x.png' %}" width="80" alt="" class="hidden-xs" />
+					<img src="{% static 'assets/images/logo-white-bg@3x.png' %}" width="80" alt="" class="visible-xs" />
 				</a>
 			</div>
 
@@ -96,12 +96,12 @@
 						<span class="title">Data</span>
 					</a>
 				</li>
-				<!--<li>-->
-					<!--<a href="#">-->
-						<!--<i class="linecons-params"></i>-->
-						<!--<span class="title"></span>-->
-					<!--</a>-->
-				<!--</li>-->
+				<li>
+					<a href="http://127.0.0.1:5555/" target="_blank">
+						<i class="linecons-params"></i>
+						<span class="title">Flower</span>
+					</a>
+				</li>
 				<li>
 					<a href="">
 						<i class="linecons-diamond"></i>
@@ -287,6 +287,50 @@ failed(): 	{{ project.failed }}">
 
 				<!--</div>-->
             </div>
+
+			<!--<div class="form-group">-->
+					<!--<label class="control-label">Templating</label>-->
+
+					<!--<script type="text/javascript">-->
+						<!--jQuery(document).ready(function($)-->
+						<!--{-->
+							<!--$("#s2example-3").select2({-->
+								<!--placeholder: 'Select country...',-->
+								<!--allowClear: true,-->
+								<!--minimumResultsForSearch: -1, // Hide the search bar-->
+								<!--formatResult: function(state)-->
+								<!--{-->
+									<!--return '<div style="background:url(http://www.geonames.org/flags/x/' + state.id + '.gif) no-repeat center center;background-size:100%;display:inline-block;position:relative;width:20px;height:15px;margin-right: 10px;top:2px;"></div>'-->
+											<!--+ state.text;-->
+								<!--}-->
+							<!--}).on('select2-open', function()-->
+							<!--{-->
+								<!--// Adding Custom Scrollbar-->
+								<!--$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();-->
+							<!--});-->
+						<!--});-->
+					<!--</script>-->
+
+					<!--<div class="select2-container form-control select2-allowclear" id="s2id_s2example-3">-->
+						<!--<a href="javascript:void(0)" class="select2-choice" tabindex="-1">-->
+							<!--<span class="select2-chosen" id="select2-chosen-3">DEBUG</span>-->
+							<!--<abbr class="select2-search-choice-close"></abbr>-->
+							<!--<span class="select2-arrow" role="presentation"><b role="presentation"></b></span>-->
+						<!--</a>-->
+						<!--<label for="s2id_autogen3" class="select2-offscreen">-->
+						<!--</label>-->
+						<!--<input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-3" id="s2id_autogen3">-->
+					<!--</div>-->
+					<!--<select class="form-control select2-offscreen" id="s2example-3" tabindex="-1" title="">-->
+						<!--<option></option>-->
+						<!--<option value="0">RUNNING</option>-->
+						<!--<option value="1">CLOSED</option>-->
+						<!--<option value="2">DEBUG</option>-->
+						<!--<option value="3">DELAY</option>-->
+					<!--</select>-->
+
+			<!--</div>-->
+
 
             <div class="row">
 			<!--<div class="jumbotron">-->
@@ -670,6 +714,24 @@ failed(): 	{{ project.failed }}">
 	</div>
 
 
+	 <!--Imported styles on this page-->
+	<!--<link rel="stylesheet" href="{% static 'assets/js/daterangepicker/daterangepicker-bs3.css' %}">-->
+	<!--<link rel="stylesheet" href="{% static 'assets/js/select2/select2.css' %}">-->
+	<!--<link rel="stylesheet" href="{% static 'assets/js/select2/select2-bootstrap.css' %}">-->
+	<!--<link rel="stylesheet" href="{% static 'assets/js/multiselect/css/multi-select.css' %}">-->
+
+	<!--&lt;!&ndash; Imported scripts on this page &ndash;&gt;-->
+	<!--<script src="{% static 'assets/js/daterangepicker/daterangepicker.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/datepicker/bootstrap-datepicker.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/timepicker/bootstrap-timepicker.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/colorpicker/bootstrap-colorpicker.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/select2/select2.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/jquery-ui/jquery-ui.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/selectboxit/jquery.selectBoxIt.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/tagsinput/bootstrap-tagsinput.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/typeahead.bundle.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/handlebars.min.js' %}"></script>-->
+	<!--<script src="{% static 'assets/js/multiselect/js/jquery.multi-select.js' %}"></script>-->
 
 
 

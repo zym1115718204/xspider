@@ -59,7 +59,7 @@ ROOT_URLCONF = 'xspider.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(os.path.dirname(__file__), '../dashboard', 'templates').replace('\\', '/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'xspider.wsgi.application'
 
 
-TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '../dashboard', 'templates').replace('\\', '/'),)
+# TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '../dashboard', 'templates').replace('\\', '/'),)
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
