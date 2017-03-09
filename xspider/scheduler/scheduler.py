@@ -10,6 +10,7 @@ import threading
 
 from xspider import celery
 from collector.models import Project
+from dashboard.handler import Handler
 
 from django.conf import settings
 
@@ -83,7 +84,7 @@ class XspiderScheduler(object):
             "projects": len(projects)
         }
 
-        print "[{0}]::Generator Dispatch::{1}".format(datetime.datetime.now(), result)
+        print "[{0}]::Generator Dispatch::{1}".format(str(datetime.datetime.now())[:-4], result)
         return result
 
     @staticmethod
@@ -138,8 +139,18 @@ class XspiderScheduler(object):
             result = self._processor_tasks(project, tasks)
             results.append(result)
 
-        print "[{0}]::Processor Dispatch::{1}".format(datetime.datetime.now(),results)
+        print "[{0}]::Processor Dispatch::{1}".format(str(datetime.datetime.now())[:-4], results)
         return results
+
+    @staticmethod
+    def run_query_project_status():
+        """
+        Run Query Project Status to Redis
+        :return:
+        """
+        handler = Handler()
+        results = handler.query_all_projects_status(None, "--all")
+        print "[{0}]::Analysis  Dispatch::{1} Updated Success".format(str(datetime.datetime.now())[:-4], len(results))
 
     @staticmethod
     def run_threaded(job_func):
@@ -150,6 +161,7 @@ class XspiderScheduler(object):
     def run(self):
         schedule.every(1).seconds.do(self.run_threaded, self.run_generator_dispatch)
         schedule.every(1).seconds.do(self.run_threaded, self.run_processor_dispatch)
+        schedule.every(1).seconds.do(self.run_threaded, self.run_query_project_status)
 
         while True:
             schedule.run_pending()
