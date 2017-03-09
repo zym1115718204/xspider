@@ -10,7 +10,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 
-	<title>Xenon - Horizontal Menu Minimal</title>
+	<title>XSpider</title>
 
 	<!--<link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">-->
 	<link rel="stylesheet" href="{% static 'assets/css/fonts/linecons/css/linecons.css' %}">
@@ -182,13 +182,13 @@
 									<td>{{ project.name }}</td>
 									<td>
 										{% if project.status == 0 %}
-										<span class="label label-muted">Closed</span>
+										<span class="label label-muted" value="0">Closed</span>
 										{% elif project.status == 1 %}
-										<span class="label label-success">Running</span>
+										<span class="label label-success" value="1">Running</span>
 										{% elif project.status == 2 %}
-										<span class="label label-info">Debug</span>
+										<span class="label label-info" value="2">Debug</span>
 										{% elif project.status == 3 %}
-										<span class="label label-warning">Delay</span>
+										<span class="label label-warning" value="3">Delay</span>
 										{% endif %}
 									</td>
 									<td>{{ project.interval }} </td>
@@ -265,7 +265,8 @@ failed(): 	{{ project.failed }}">
 										</div>
 									</td>
 									<td>
-										<a href="javascript:;" onclick="jQuery('#{{ project.name }}').modal('show', {backdrop: 'static'});" class="btn btn-white  btn-sm btn-icon icon-left ">Edit</a>
+										<!--<a href="javascript:;" onclick="jQuery('#edit-page').modal('show', {backdrop: 'static'});" class="btn btn-white  btn-sm btn-icon icon-left edit-btn">Edit</a>-->
+										<a href="#" onclick="return false" class="btn btn-white  btn-sm btn-icon icon-left edit-btn">Edit</a>
 
 										<a href="#" class=" btn btn-white  btn-sm btn-icon icon-left">
 											Task
@@ -668,8 +669,7 @@ failed(): 	{{ project.failed }}">
 	</div>
 
 	<!-- Modal 6 (Long Modal)-->
-	{% for project in projects %}
-		<div class="modal fade" id="{{ project.name }}">
+		<div class="modal fade" id="edit-page">
 
 
 			<div class="modal-dialog">
@@ -687,7 +687,7 @@ failed(): 	{{ project.failed }}">
 
 								<div class="form-group">
 									<label for="field-1" class="control-label"><strong>Group</strong><br /></label>
-									<input type="text" class="form-control" id="field-1" placeholder="{{ project.name}}">
+									<input type="text" class="form-control" id="field-1" placeholder="">
 								</div>
 
 							</div>
@@ -697,23 +697,23 @@ failed(): 	{{ project.failed }}">
 								<div class="form-group">
 									<label for="field-2" class="control-label"><strong>Name</strong><br /></label>
 
-									<input type="text" class="form-control" id="field-2" placeholder="{{ project.name }}">
+									<input type="text"   class="form-control" id="field-2" placeholder="" disabled>
 								</div>
 
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-md-12">
+						<!--<div class="row">-->
+							<!--<div class="col-md-12">-->
 
-								<div class="form-group">
-									<label for="field-3" class="control-label"><strong>Information</strong><br /></label>
+								<!--<div class="form-group">-->
+									<!--<label for="field-3" class="control-label"><strong>Information</strong><br /></label>-->
 
-									<input type="text" class="form-control" id="field-3" placeholder="{{ project.info}}">
-								</div>
+									<!--<input type="text" class="form-control" id="field-3" placeholder="">-->
+								<!--</div>-->
 
-							</div>
-						</div>
+							<!--</div>-->
+						<!--</div>-->
 
 						<div class="row">
 							<div class="col-md-4">
@@ -721,7 +721,7 @@ failed(): 	{{ project.failed }}">
 								<div class="form-group">
 									<label for="field-4" class="control-label"><strong>Generate Interval</strong><br /></label>
 
-									<input type="text" class="form-control" id="field-4" placeholder="{{ project.interval }}">
+									<input type="text" class="form-control" id="field-4" placeholder="">
 								</div>
 
 							</div>
@@ -731,7 +731,7 @@ failed(): 	{{ project.failed }}">
 								<div class="form-group">
 									<label for="field-5" class="control-label"><strong>Dispatch Number</strong><br /></label>
 
-									<input type="text" class="form-control" id="field-5" placeholder="{{ project.speed }}">
+									<input type="text" class="form-control" id="field-5" placeholder="">
 								</div>
 
 							</div>
@@ -741,36 +741,36 @@ failed(): 	{{ project.failed }}">
 								<div class="form-group">
 									<label for="field-6" class="control-label"><strong>IP Limit Interval</strong><br /></label>
 
-									<input type="text" class="form-control" id="field-6" placeholder="{{ project.iplimit }}">
+									<input type="text" class="form-control" id="field-6" placeholder="">
 								</div>
 
 							</div>
 						</div>
 
-						<div class="row">
+						<div class="row" id="field-7" value="">
 							<div class="col-md-12">
 								<strong>Status</strong>
 								<br />
 								<br />
 							</div>
 
-							<div class="col-sm-6">
+							<div class="col-sm-6" >
 
-								<ul class="icheck-list">
+								<ul class="icheck-list" >
 									<li>
-										{% if project.status == 0 %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="0" checked>
-										{% else  %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="0" >
-										{% endif %}
+
+
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="0">
+
 										<label>Closed</label>
 									</li>
 									<li>
-										{% if project.status == 1 %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="1" checked>
-										{% else  %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="1" >
-										{% endif %}
+
+
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="1" >
+
 										<label>Running</label>
 									</li>
 								</ul>
@@ -781,19 +781,17 @@ failed(): 	{{ project.failed }}">
 
 								<ul class="icheck-list">
 									<li>
-										{% if project.status == 2 %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="2" checked>
-										{% else  %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="2" >
-										{% endif %}
+
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="2" >
+
 										<label>Debug</label>
 									</li>
 									<li>
-										{% if project.status == 3 %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="3" checked>
-										{% else  %}
-											<input class="icheck-11" type="radio" name="minimal-radio-{{ project.name }}" value="3" >
-										{% endif %}
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="3">
+
+
 										<label>Delay</label>
 									</li>
 								</ul>
@@ -806,12 +804,12 @@ failed(): 	{{ project.failed }}">
 					<div class="modal-footer">
 						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
 						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
-						<a href="" onclick="return false" project-id='{{ project.id }}' class="btn btn-info edit-project">Save changes</a>
+						<a href="" onclick="return false" project-id='{{ project.id }}' class="btn btn-info edit-save">Save changes</a>
 					</div>
 				</div>
 			</div>
 		</div>
-	{% endfor %}
+
 
 
 	<!-- Imported styles on this page -->
@@ -828,7 +826,8 @@ failed(): 	{{ project.failed }}">
 	<script src="{% static 'assets/js/xenon-api.js' %}"></script>
 	<script src="{% static 'assets/js/xenon-toggles.js' %}"></script>
 
-
+    <!-- Imported scripts on  message-->
+    <script src="{% static 'assets/js/toastr/toastr.min.js' %}"></script>
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
 	<script src="{% static 'assets/js/xspider.js' %}"></script>

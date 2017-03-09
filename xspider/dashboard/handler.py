@@ -55,7 +55,6 @@ class Handler(object):
     """
     Xspider Handler Module
     """
-
     def __init__(self):
         """
         Parameters Initialization
@@ -177,6 +176,7 @@ class Handler(object):
 
         return projects
 
+
 class Query(object):
     """
     Query Handler
@@ -191,10 +191,9 @@ class Query(object):
     @staticmethod
     def query_projects_by_name(name):
         """
-        Get jobs by exact query
+        Get Projects by Name
         :return: jobs list
         """
-        # 参数检查并转字符串
         name = smart_unicode(name)
         if not name:
             return
@@ -202,4 +201,5 @@ class Query(object):
             projects = Project.objects()
         else:
             projects = Project.objects(name=name)
+
         return projects
