@@ -154,8 +154,9 @@ class Processor(object):
             project_name = self.project.name
 
             # Manager Module
-            localhost = socket.getfqdn(socket.gethostname())
-            local_ip = socket.gethostbyname(localhost)
+            # localhost = socket.getfqdn(socket.gethostname())
+            # local_ip = socket.gethostbyname(localhost)
+            local_ip = '127.0.0.1'
             manager = Manager(ip=local_ip, project_name=project_name)
             ip_tactics = manager.get_ip()
 

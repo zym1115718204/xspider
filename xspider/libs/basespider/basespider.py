@@ -11,6 +11,9 @@ import traceback
 from pyquery import PyQuery
 from requests.exceptions import ReadTimeout
 from requests.exceptions import ConnectionError
+from requests.models import Response
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class BaseSpider(object):
@@ -63,12 +66,37 @@ class BaseSpider(object):
             #     print traceback.format_exc()
             #     raise Exception
 
-        elif tools == 'js':
+        elif tools == 'phantomjs':
             """
             Download by Phantomjs
             """
-            # TODO
-            pass
+            dcap = dict(DesiredCapabilities.PHANTOMJS)
+            dcap['phantomjs.page.settings.userAgent'] = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")
+            # driver = webdriver.PhantomJS(desired_capabilities=dcap)  # 指定使用的浏览器
+            # driver = webdriver.PhantomJS()
+            driver = webdriver.Chrome()
+            try:  
+                print 'new get url: %s' % (url)
+                driver.get(url)
+                time.sleep(4)
+                js = args.get('js_code', "var q=document.body.scrollTop=10000")
+                driver.execute_script(js)  # 可执行js，模仿用户操作。此处为将页面拉至最底端。
+                time.sleep(5)
+                body = driver.page_source.encode('utf-8')
+                print (u"访问" + url)
+            except Exception as e:
+                body = u'<html>有异常出现了</html>'.encode('utf-8')
+                print str(e)
+                traceback.print_exc() 
+            finally:
+                current_url = driver.current_url
+                driver.close()
+            resp = Response()
+            # resp.status_code = 200
+            resp._content = body
+            resp.url = current_url
+            resp.doc = PyQuery(body)
+            return resp
 
     @staticmethod
     def parser(response):

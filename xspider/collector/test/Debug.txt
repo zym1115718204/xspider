@@ -36,16 +36,16 @@ print result
 from collector.utils import *
 from collector.models import Project
 
-project = Project.objects(name="sina").first()
+project = Project.objects(name="guangdong").first()
 print project.name
 project_id = str(project.id)
-project.update(status=1)
+project.update(status=2)
 
 generator = Generator(project_id)
 task = generator.run_generator()
 print task
 
-processor = Processor(_id="58b799734010101c8a0302d3",project_id="58b7981d401010203d401883")
+processor = Processor(_id="6d0910748acea081c712e11aa2b30117",project_id="58c0e8cfc3666ea5c5a64c64")
 result = processor.run_processor()
 print result
 
@@ -69,5 +69,9 @@ from scheduler.scheduler import XspiderScheduler
 xs = XspiderScheduler()
 xs.run_generator_dispatch()
 xs.run_processor_dispatch()
+
+
+
+{'status': True, 'store_result': False, 'result': [{'status': True, 'result': {'status': 0, 'task_id': '0cb60b83f35e63a673c9a097428565b0', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_DKli4RiDTBqhbPFB4hqGVnukQ3SwqB5K7XYhmaXqbn3d0PpFYqxL2oAfIw3emjqF-7vusEl1hPU+qjV70QwcUXQ==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': '2be930affd39b4357475094bd5353fca', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_XU7FHx/cQXHobVQpuW92YXyTsD4x5ElzwM1kH/viA5lTAOYLpc4gxgb5a3wjX8k3-tW1llJHHy4kGSDGzt23RLw==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': '005169456b01e4af56b181409dcaea36', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_XU7FHx/cQXHobVQpuW92YeItjzCAlG+8FA984FKIaShTAOYLpc4gxgb5a3wjX8k3-0+8NaSYps1N3bIoeOmacsg==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': 'fa3b2ddfaee9bd0dffd78db27ff6673a', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_0Whcgi6YNkrnPb0Z2+2Jd9zOqKr204FkiNBul+DD6glTAOYLpc4gxgb5a3wjX8k3-pHtpDjV9NrMyre6wTUifMQ==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': 'e76295b3401cbfa448dee11f28eb35c4', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_Nu/0lt9DVeqTr8347BUtKv7H/6kpFADsNYQmv+qx1gF/b7Nu9BMBoHVJID/2btVY-tW1llJHHy4kGSDGzt23RLw==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': 'ea49cfde326e6fbef4f4d3dbd2a9b2b2', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_uaDNTNdmdwVy671/WcmcjxSRF3sRGWgPI2aZY5mIzs5TAOYLpc4gxgb5a3wjX8k3-0+8NaSYps1N3bIoeOmacsg==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': '5b73e80b8c2dddf5a6e467b3dcb02bee', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_8GXDoVeD/f8fuvLbiG8Tkoc6Kzm9X5AYaChmTxuXHINTAOYLpc4gxgb5a3wjX8k3-tW1llJHHy4kGSDGzt23RLw==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': 'c99074af2e26068fcdb0e14efef4ccff', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_raDUMLkd8y89MWX3s+LSRriXVmeu4CW8l6q98bRsNLhTAOYLpc4gxgb5a3wjX8k3-tW1llJHHy4kGSDGzt23RLw==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': '01f30f918239a98d202d4e69d6021c97', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_ghhwGjakKuy4u9BoT1Y8i6CBsdTelk20qPKu3oP9hqlTAOYLpc4gxgb5a3wjX8k3-0+8NaSYps1N3bIoeOmacsg==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}, {'status': True, 'result': {'status': 0, 'task_id': '010848043700a45923c7bbb5633c1e7b', 'url': u'http://gd.gsxt.gov.cn/aiccips/GSpublicity/GSpublicityList.html?service=entInfo_ghhwGjakKuy4u9BoT1Y8iypsve744CpPjOYqDvWtx/FTAOYLpc4gxgb5a3wjX8k3-0+8NaSYps1N3bIoeOmacsg==', 'args': '{}', 'project': '58c0e8cfc3666ea5c5a64c64', 'callback': 'parser_detail'}, 'store_task': False}]}
 
 
