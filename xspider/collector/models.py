@@ -20,6 +20,7 @@ class Project(Document):
                      (PRIOR_4, u"3"),
                      (PRIOR_5, u"4"),
                      (PRIOR_6, u"5"), )
+    group = StringField(max_length=128, default="None")
     name = StringField(max_length=128)
     timeout = IntField(default=200)
     status = IntField(default=STATUS_DEBUG, choices=STATUS_CHOICES)

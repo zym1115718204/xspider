@@ -21,8 +21,6 @@ jQuery(document).ready(function($)
         "hideMethod": "fadeOut"
     };
 
-
-
     // Edit Page
     $('.edit-btn').click(function () {
 
@@ -56,15 +54,20 @@ jQuery(document).ready(function($)
     // Edit Submit
     $('.edit-save').click(function () {
 
-        var data = {};
         var flag = null;
         var inputs = $("#edit-page").find("input");
         var group = inputs.eq(0).val();
-        var name = inputs.eq(1).val();
+        var name = inputs.eq(1).attr('placeholder');
         var interval = inputs.eq(2).val();
         var number = inputs.eq(3).val();
         var ip_limit = inputs.eq(4).val();
         var status = $("#field-7").attr("value");
+
+        var data = {
+            command: true,
+            project: name
+        };
+
         $("#field-7 input").each(function(){
 
             if($(this).prop('checked')){
@@ -81,37 +84,38 @@ jQuery(document).ready(function($)
                 //console.log(_status);
             }
           });
-        console.log($('#field-7 input[value=0]').prop('checked'));
-        console.log($('#field-7 input[value=1]').prop('checked'));
-        console.log($('#field-7 input[value=2]').prop('checked'));
-        console.log($('#field-7 input[value=3]').prop('checked'));
-
-
+        // console.log($('#field-7 input[value=0]').prop('checked'));
+        // console.log($('#field-7 input[value=1]').prop('checked'));
+        // console.log($('#field-7 input[value=2]').prop('checked'));
+        // console.log($('#field-7 input[value=3]').prop('checked'));
 
         if(group){
             data['group']=group;
-            flag = true;
+            flag = true
         }
         else{
             //console.log(group);
         }
         if(interval){
             data['interval']=interval;
-            flag = true;
+            flag = true
+
         }
         else{
             //console.log(interval);
         }
         if(number){
             data['number']=number;
-            flag = true;
+            flag = true
+
         }
         else{
             //console.log(number);
         }
         if(ip_limit){
             data['ip_limit']=ip_limit;
-            flag = true;
+            flag = true
+
         }
         else{
             //console.log(ip_limit);
@@ -121,7 +125,7 @@ jQuery(document).ready(function($)
 
         if(flag){
             $.ajax({
-                url: "{% url 'clawer.apis.command.open_job' %}",
+                url: "/dashboard/api/edit",
                 method: 'POST',
                 dataType: 'json',
                 data: data,
@@ -130,16 +134,14 @@ jQuery(document).ready(function($)
                         delay: .5,
                         pct: 100,
                         finish: function () {
-
                             // Redirect after successful login page (when progress bar reaches 100%)
-                            if (resp.accessGranted == true) {
-                                toastr.success(resp.reason, "Message:", opts);
-                                //setTimeout(function(){ window.location.reload();},1000);
+                            if (resp.status == true) {
+                                toastr.success(resp.message, "Message:", opts);
+                                setTimeout(function(){ window.location.reload();},600);
                             }
                             else {
                                 // alert(resp.reason);
-                                toastr.error(resp.reason, "Message:", opts);
-
+                                toastr.error(resp.message, "Message:", opts);
                             }
                         }
                     });
@@ -149,9 +151,7 @@ jQuery(document).ready(function($)
                                     delay: .5,
                                     pct: 100,
                                     finish: function () {
-
                                         toastr.error("Network error.", "Message:", opts);
-
                                     }
                                 });
                             }

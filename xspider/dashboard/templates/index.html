@@ -178,11 +178,11 @@
 							<tbody>
 								{% for project in projects	%}
 								<tr>
-									<td>Demo</td>
+									<td>{{ project.group}}</td>
 									<td>{{ project.name }}</td>
 									<td>
 										{% if project.status == 0 %}
-										<span class="label label-muted" value="0">Closed</span>
+										<span class="label label-danger" value="0">Closed</span>
 										{% elif project.status == 1 %}
 										<span class="label label-success" value="1">Running</span>
 										{% elif project.status == 2 %}
@@ -804,7 +804,7 @@ failed(): 	{{ project.failed }}">
 					<div class="modal-footer">
 						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
 						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
-						<a href="" onclick="return false" project-id='{{ project.id }}' class="btn btn-info edit-save">Save changes</a>
+						<a href="" onclick="return false" class="btn btn-info edit-save">Save changes</a>
 					</div>
 				</div>
 			</div>

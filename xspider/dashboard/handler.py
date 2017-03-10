@@ -6,6 +6,7 @@
 import os
 import json
 import redis
+import datetime
 import traceback
 
 from django.conf import settings
@@ -53,13 +54,14 @@ class InitSpider(object):
 
 class Handler(object):
     """
-    Xspider Handler Module
+    Xspider Handler Route Module
     """
     def __init__(self):
         """
         Parameters Initialization
         """
         self._query = Query()
+        self._command = Command()
 
     def query_all_projects_status(self, request, name="--all"):
         """
@@ -69,6 +71,7 @@ class Handler(object):
         projects = []
         for project in _projects:
             name = project.name
+            group = project.group
             model = "{0}Task".format(str(name).capitalize())
             # Notice: Checking
             exec ("from execute.{0}_models import *".format(name))
@@ -90,6 +93,7 @@ class Handler(object):
             job_dict = {
                 'id': str(project.id),
                 'name': name,
+                'group': group,
                 'info': project.info,
                 'status': status,
                 'priority': priority,
@@ -124,9 +128,7 @@ class Handler(object):
          :return:
          data:
         {
-            'job_name1':{
-                        'id':id,
-                    },
+            'job_name1':{'id':id,},
             'job_name2':{},
         }
         """
@@ -154,6 +156,7 @@ class Handler(object):
             job_dict = {
                 'id': str(project.id),
                 'name': project.name,
+                'group': project.group,
                 'info': project.info,
                 'status': project.status,
                 'priority': project.priority,
@@ -175,6 +178,15 @@ class Handler(object):
             projects.append(job_dict)
 
         return projects
+
+    def edit_project_settings(self, data):
+        """
+        Edit Project Settings Route
+        :param data:
+        :return:
+        """
+        result = self._command.edit_project_settings(data)
+        return result
 
 
 class Query(object):
@@ -203,3 +215,87 @@ class Query(object):
             projects = Project.objects(name=name)
 
         return projects
+
+
+class Command(object):
+    """
+    Command Handler
+    """
+
+    def __init__(self):
+        """
+        Initialization
+        """
+        pass
+
+    def edit_project_settings(self, data):
+        """
+        Edit Project Settings
+        :return:
+        """
+
+        name = data.get("project")
+        project = Project.objects(name=name).first()
+        if project is None:
+            return {
+                "status": False,
+                "project": name,
+                "message": "Bab Parameters",
+                "code": 4002,
+            }
+        else:
+            try:
+                if data.get("group", False):
+                    project.update(group=str(data.get("group")))
+                if data.get("timeout", False):
+                    project.update(timeout=int(data.get("timeout")))
+                if data.get("status", False):
+                    project.update(status=int(data.get("status")))
+                if data.get("priority", False):
+                    project.update(priority=int(data.get("priority")))
+                if data.get("info", False):
+                    project.update(info=str(data.get("info")))
+                if data.get("script", False):
+                    project.update(script=str(data.get("script")))
+                if data.get("interval", False):
+                    project.update(generator_interval=str(int(data.get("interval"))))
+                if data.get("ip_limit", False):
+                    project.update(downloader_interval=str(int(data.get("ip_limit"))))
+                if data.get("number", False):
+                    project.update(downloader_dispatch=int(data.get("number")))
+
+                project.update(update_datetime=datetime.datetime.now())
+
+            except ValueError:
+                return {
+                    "status": False,
+                    "project": name,
+                    "message": "Bad Parameters",
+                    "code": 4003,
+                }
+            except Exception:
+                return {
+                    "status": False,
+                    "project": name,
+                    "message": "Internal Server Error",
+                    "code": 5001
+                }
+
+        return {
+            "status": True,
+            "project": name,
+            "message": "Operation Succeeded",
+            "code": 2001
+        }
+
+
+
+
+
+
+
+
+
+
+
+

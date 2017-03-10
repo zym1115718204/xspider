@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^test$', views.test),
     url(r'^time/$', views.test_current_datetime),
+    url(r'^api/edit$', views.edit_project),
 ]

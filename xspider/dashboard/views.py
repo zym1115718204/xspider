@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
 import datetime
 
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from dashboard.handler import Handler
+from libs.decorator.decorator import render_json
+
+from django.views.decorators.csrf import csrf_exempt
+
+
 
 import os
 
@@ -41,7 +47,45 @@ def index(request):
             project['invalid_rate'] = 0
             project['schedule'] = 0
 
-    return render_to_response("index.html", {'projects': projects, 'tasks': None, 'profile': None})
+    return render_to_response("index.html", {'projects': projects, 'tasks': None, 'profile': None,})
+
+
+@csrf_exempt
+@render_json
+def edit_project(request):
+    """
+    Edit Command API
+    :param request:
+    :return:
+    """
+    data = request.POST
+    command = data.get("command")
+    group = data.get("group")
+    name = data.get("project")
+    timeout = data.get("timeout")
+    status = data.get("status")
+    priority = data.get("priority")
+    info = data.get("info")
+    script = data.get("script")
+
+    interval = data.get("interval")
+    number = data.get("number")
+    ip_limit = data.get("ip_limit")
+
+
+    if command and name and (
+        group or timeout or status or priority or info or script or interval or number or ip_limit):
+        handler = Handler()
+        result = handler.edit_project_settings(data)
+    else:
+        result = {
+            "status": False,
+            "project": name,
+            "message": "Bad Parameters",
+            "code": 4001,
+        }
+
+    return result
 
 
 def test(request):
