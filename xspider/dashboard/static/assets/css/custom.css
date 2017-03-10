@@ -78,3 +78,15 @@ Xspider Dashboard Page Progress-bar
   font-size: 17px;
   border-bottom: 2px solid #f5f5f5;
 }
+
+.btn + .btn {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+/*
+Debug No-padding
+*/
+.no-padding-textarea {
+    padding-left:0px;
+}

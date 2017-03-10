@@ -287,15 +287,3 @@ class Command(object):
             "message": "Operation Succeeded",
             "code": 2001
         }
-
-
-
-
-
-
-
-
-
-
-
-

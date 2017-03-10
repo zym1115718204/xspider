@@ -72,7 +72,6 @@ def edit_project(request):
     number = data.get("number")
     ip_limit = data.get("ip_limit")
 
-
     if command and name and (
         group or timeout or status or priority or info or script or interval or number or ip_limit):
         handler = Handler()
@@ -86,6 +85,31 @@ def edit_project(request):
         }
 
     return result
+
+@csrf_exempt
+@render_json
+def debug(request, name):
+    """
+    Edit Command API
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request, name=name)
+    project = projects[0]
+
+    return render_to_response("debug.html", {'project': project})
+
+
+@csrf_exempt
+@render_json
+def create_project(request):
+    """
+    Edit Command API
+    :param request:
+    :return:
+    """
+    pass
 
 
 def test(request):

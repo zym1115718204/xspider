@@ -179,7 +179,11 @@
 								{% for project in projects	%}
 								<tr>
 									<td>{{ project.group}}</td>
-									<td>{{ project.name }}</td>
+									<td>
+										<a href="/dashboard/debug/{{ project.name }}" >
+                                        <strong class="text-secondary">{{ project.name }}</strong>
+										</a>
+									</td>
 									<td>
 										{% if project.status == 0 %}
 										<span class="label label-danger" value="0">Closed</span>
