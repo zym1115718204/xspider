@@ -28,20 +28,22 @@ class BaseSpider(object):
         pass
 
     @staticmethod
-    def generate(url, callback):
+    def generate(url, callback=None, args=None):
         """
         Obtain URI
         :return:
         """
-        return {"url": url, "args": {}, "callback": callback.__name__}
+        return {"url": url, "args": args if args else {}, "callback": callback.__name__}
 
-    def download(self, url, args={}, tools='requests', method='GET'):
+    def download(self, url, args={}):
         """
         Downloader Download By tools
         :return: response object
         """
         if isinstance(args, basestring):
             args = json.loads(args)
+        tools = args.get('tools', 'requests')
+        method = args.get('method', 'GET')
         if tools == "requests":
             self.reqst = requests.Session()
             self.headers = {'Accept': 'text/html, application/xhtml+xml, */*',

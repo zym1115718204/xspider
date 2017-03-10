@@ -18,7 +18,7 @@ for k,v in result.items():
 from collector.utils import *
 from collector.models import Project
 
-project = Project.objects(name="douban").first()
+project = Project.objects(name="guangdong").first()
 print project.name
 project_id = str(project.id)
 project.update(status=2)
@@ -45,7 +45,7 @@ generator = Generator(project_id)
 task = generator.run_generator()
 print task
 
-processor = Processor(_id="6d0910748acea081c712e11aa2b30117",project_id="58c0e8cfc3666ea5c5a64c64")
+processor = Processor(task=task)
 result = processor.run_processor()
 print result
 
