@@ -6,6 +6,7 @@
 import os
 import json
 import redis
+import string
 import datetime
 import traceback
 
@@ -188,6 +189,16 @@ class Handler(object):
         result = self._command.edit_project_settings(data)
         return result
 
+    def create_project(self, project, host="http://www.example.com"):
+        """
+        Create Project Route
+        :param project:
+        :param host:
+        :return:
+        """
+        result = self._command.create_project(project, host)
+        return result
+
 
 class Query(object):
     """
@@ -287,3 +298,162 @@ class Command(object):
             "message": "Operation Succeeded",
             "code": 2001
         }
+
+    def create_project(self, project_name, host="http://www.example.com"):
+        """
+        Create Project
+        :return:
+        """
+        project_name = project_name.strip()
+        result = self.start_project(project_name, host)
+        if result["status"] is True:
+            result = self.load_project(project_name)
+            return result
+        else:
+            return result
+
+    @staticmethod
+    def start_project(project_name, host="http://www.example.com"):
+        """
+        Start Project
+        :return:
+        """
+        try:
+            _projectname = project_name.lower()
+            project_path = os.path.join(settings.PROJECTS_PTAH, _projectname)
+            if not os.path.exists(project_path):
+                os.makedirs(project_path)
+
+            tmpl_path = os.path.join(settings.BASE_DIR, 'libs', 'template', 'spider.tmpl')
+            with open(tmpl_path, 'rb') as fp:
+                raw = fp.read().decode('utf8')
+            create_time = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            content = string.Template(raw).substitute(CREATE_TIME=create_time,
+                                                      PROJECTS_NAME=_projectname,
+                                                      START_URL=host)
+
+            spider_path = os.path.join(project_path, '%s_spider.py' % (_projectname))
+            if not os.path.exists(spider_path):
+                with open(spider_path, 'w') as fp:
+                    fp.write(content.encode('utf8'))
+                msg = 'Successfully create a new project %s !' % (_projectname)
+                print msg
+            else:
+                msg = 'Failed to create project %s , Project already exists! ' % (_projectname)
+                return {
+                    "status": False,
+                    "reason": msg,
+                    "msg": msg
+                }
+
+            tmpl_path = os.path.join(settings.BASE_DIR, 'libs', 'template', 'models.tmpl')
+            with open(tmpl_path, 'rb') as fp:
+                raw = fp.read().decode('utf8')
+            create_time = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            content = string.Template(raw).substitute(CREATE_TIME=create_time,
+                                                      PROJECTS_NAME=_projectname,
+                                                      PROJECTS_NAME_TASK=str(_projectname).capitalize() + 'Task',
+                                                      PROJECTS_NAME_RESULT=str(
+                                                          _projectname).capitalize() + 'Result')
+
+            models_path = os.path.join(project_path, '%s_models.py' % (_projectname))
+            if not os.path.exists(models_path):
+                with open(models_path, 'w') as fp:
+                    fp.write(content.encode('utf8'))
+                msg = 'Successfully create a new project models %s !' % (models_path)
+                return {
+                    "status": True,
+                    "reason": msg,
+                    "msg": msg
+                }
+            else:
+                msg = 'Failed to create project %s , Project already exists! ' % (models_path)
+                return {
+                    "status": False,
+                    "reason": msg,
+                    "msg": msg
+                }
+
+        except Exception:
+            reason = traceback.format_exc()
+            msg = 'Failed to create new project %s !, reason: %s' % (project_name, reason)
+            return {
+                "status": False,
+                "reason": reason,
+                "msg": msg
+            }
+
+    def load_project(self, project_name):
+        """
+        Load Project
+        :return:
+        """
+        try:
+            project_path = os.path.join(settings.PROJECTS_PTAH, project_name)
+            if not os.path.exists(project_path):
+                os.makedirs(project_path)
+
+            spider_path = os.path.join(project_path, '%s_spider.py' % (project_name))
+            models_path = os.path.join(project_path, '%s_models.py' % (project_name))
+            if not os.path.exists(spider_path) or not os.path.exists(models_path):
+                msg = 'Failed to load project %s , Project does not exist! ' % (project_name)
+                return {
+                    "status": False,
+                    "reason": msg,
+                    "msg": msg
+                }
+            else:
+                result = self._load_project(project_name, spider_path, models_path)
+                return result
+
+        except Exception:
+            reason = traceback.format_exc()
+            msg = ('Failed to create new project %s !, Reason: %s' % (project_name, reason))
+
+            return {
+                "status": False,
+                "reason": reason,
+                "msg": msg
+            }
+
+    def _load_project(self, project_name, spider_path, models_path):
+        """
+        _load project
+        :param project_name:
+        :param spider_path:
+        :param models_path:
+        :return:
+        """
+        try:
+            with open(spider_path, 'rb') as fp:
+                spider_script = fp.read().decode('utf8')
+            with open(models_path, 'rb') as fp:
+                models_script = fp.read().decode('utf8')
+            project = Project.objects(name=project_name).first()
+            if project:
+                project.update(script=spider_script)
+                project.update(models=models_script)
+            else:
+                project = Project(name=project_name,
+                                  info="",
+                                  script=spider_script,
+                                  models=models_script,
+                                  generator_interval="60",
+                                  downloader_interval="60",
+                                  downloader_dispatch=1)
+                project.save()
+            msg = 'Successfully load project %s !' % (project_name)
+            return {
+                "status": True,
+                "reason": msg,
+                "msg": msg
+            }
+
+        except Exception:
+            reason = traceback.format_exc()
+            msg = 'Failed to load project %s !, Reason: %s' % (spider_path, reason)
+            return {
+                "status": False,
+                "reason": msg,
+                "msg": msg
+            }

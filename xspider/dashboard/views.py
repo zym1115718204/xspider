@@ -54,7 +54,7 @@ def index(request):
 @render_json
 def edit_project(request):
     """
-    Edit Command API
+    Edit Project Command API
     :param request:
     :return:
     """
@@ -67,7 +67,6 @@ def edit_project(request):
     priority = data.get("priority")
     info = data.get("info")
     script = data.get("script")
-
     interval = data.get("interval")
     number = data.get("number")
     ip_limit = data.get("ip_limit")
@@ -86,11 +85,12 @@ def edit_project(request):
 
     return result
 
+
 @csrf_exempt
 @render_json
 def debug(request, name):
     """
-    Edit Command API
+    Debug Command API
     :param request:
     :return:
     """
@@ -105,7 +105,7 @@ def debug(request, name):
 @render_json
 def create_project(request):
     """
-    Edit Command API
+    Create Project Command API
     :param request:
     :return:
     """
