@@ -199,7 +199,7 @@ jQuery(document).ready(function($)
         //     alert('Bad');
         // }
 
-        if(/^[a-zA-Z0-9]+$/.test(name)){
+        if(/^[a-zA-Z]+$/.test(name)){
             $.ajax({
                 url: "/dashboard/api/create",
                 method: 'POST',
@@ -234,7 +234,7 @@ jQuery(document).ready(function($)
             });
         }
         else{
-            toastr.warning("Project name is invalid. Must be [-zA-Z0-9_]+", "Message:", opts);
+            toastr.warning("Project name is invalid. Must be a-Z", "Message:", opts);
         }
 
     });
