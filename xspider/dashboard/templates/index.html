@@ -151,7 +151,7 @@
 
 							<div class="panel-options">
 
-                                <button class="btn btn-purple btn-icon btn-sm float-right">
+                                <button class="btn btn-purple btn-icon btn-sm float-right create-btn">
 									<span>Create</span>
 									<i class="fa-pencil"></i>
 								</button>
@@ -814,6 +814,103 @@ failed(): 	{{ project.failed }}">
 			</div>
 		</div>
 
+    <!-- Modal 6 (Long Modal)-->
+		<div class="modal fade" id="create-page">
+
+
+			<div class="modal-dialog">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title"><strong>New Project</strong><br /></h4>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-md-8">
+
+								<div class="form-group">
+									<label for="field-8" class="control-label"><strong>Name</strong><br /></label>
+									<input type="text" class="form-control" id="field-8" placeholder="Project Name">
+								</div>
+
+							</div>
+							<div class="col-md-12">
+
+								<div class="form-group">
+									<label for="field-9" class="control-label"><strong>URL</strong><br /></label>
+
+									<input type="text"  class="form-control" id="field-9" placeholder="http://www.baidu.com">
+								</div>
+
+							</div>
+						</div>
+
+						<!--<div class="row">-->
+
+                            <!--<div class="panel-body">-->
+
+                                    <!--&lt;!&ndash;<form role="form" id="form1" method="post" class="validate" >&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<label class="control-label"><strong>Name</strong></label>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="name" data-validate="required" data-message-required="project name is required." placeholder="Project Name" />&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<label class="control-label"><strong>URL</strong></label>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="url" data-validate="url" placeholder="http://www.example.com" />&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;<div class="form-group hidden">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<label class="control-label"><strong>command</strong></label>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="command" data-validate="required" placeholder="URL" value="true"/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;&lt;!&ndash;<div class="form-group">&ndash;&gt;&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;<button type="submit" class="btn btn-success">Create</button>&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<div class="modal-footer">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<button type="submit" class="btn btn-success">Create</button>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;<a href="" onclick="return false" class="btn btn-info create-save">Create</a>&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</form>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+						<!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
+
+							<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
+
+								<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+									<!--&lt;!&ndash;&lt;!&ndash;<label for="field-11" class="control-label"><strong>URL</strong><br /></label>&ndash;&gt;&ndash;&gt;-->
+
+							<!--&lt;!&ndash;<label class="control-label">URL Field</label>&ndash;&gt;-->
+
+							<!--&lt;!&ndash;<input type="text" class="form-control" name="url" data-validate="required,url" placeholder="URL" />&ndash;&gt;-->
+
+									<!--&lt;!&ndash;&lt;!&ndash;<input type="text" class="form-control" id="field-11" placeholder="http://www.example.com">&ndash;&gt;&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+						<!--&lt;!&ndash;</div>&ndash;&gt;-->
+						<!--</div>-->
+
+					<!--</div>-->
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
+						<a href="" onclick="return false" class="btn btn-info create-save">Save changes</a>
+					</div>
+			</div>
+		</div>
+
 
 
 	<!-- Imported styles on this page -->
@@ -832,6 +929,8 @@ failed(): 	{{ project.failed }}">
 
     <!-- Imported scripts on  message-->
     <script src="{% static 'assets/js/toastr/toastr.min.js' %}"></script>
+	<script src="{% static 'assets/js/jquery-validate/jquery.validate.min.js' %}"></script>
+
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
 	<script src="{% static 'assets/js/xspider.js' %}"></script>
