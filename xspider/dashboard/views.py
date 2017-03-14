@@ -109,7 +109,25 @@ def create_project(request):
     :param request:
     :return:
     """
-    pass
+    name = request.POST.get("project")
+    command = request.POST.get("command")
+    url = request.POST.get("url")
+
+    if name and command:
+        handler = Handler()
+        if url is not None:
+            url = url.strip()
+            result = handler.create_project(name, url)
+        else:
+            result = handler.create_project(name)
+    else:
+        result = {
+            "status": False,
+            "project": name,
+            "message": "Bad Parameters",
+            "code": 4001,
+        }
+    return result
 
 
 def test(request):

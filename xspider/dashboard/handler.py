@@ -245,7 +245,7 @@ class Command(object):
         :return:
         """
 
-        name = data.get("project")
+        name = data.get("project").strip()
         project = Project.objects(name=name).first()
         if project is None:
             return {
@@ -257,23 +257,23 @@ class Command(object):
         else:
             try:
                 if data.get("group", False):
-                    project.update(group=str(data.get("group")))
+                    project.update(group=str(data.get("group").strip()))
                 if data.get("timeout", False):
-                    project.update(timeout=int(data.get("timeout")))
+                    project.update(timeout=int(data.get("timeout".strip())))
                 if data.get("status", False):
-                    project.update(status=int(data.get("status")))
+                    project.update(status=int(data.get("status".strip())))
                 if data.get("priority", False):
-                    project.update(priority=int(data.get("priority")))
+                    project.update(priority=int(data.get("priority".strip())))
                 if data.get("info", False):
-                    project.update(info=str(data.get("info")))
+                    project.update(info=str(data.get("info".strip())))
                 if data.get("script", False):
-                    project.update(script=str(data.get("script")))
+                    project.update(script=str(data.get("script".strip())))
                 if data.get("interval", False):
-                    project.update(generator_interval=str(int(data.get("interval"))))
+                    project.update(generator_interval=str(int(data.get("interval").strip())))
                 if data.get("ip_limit", False):
-                    project.update(downloader_interval=str(int(data.get("ip_limit"))))
+                    project.update(downloader_interval=str(int(data.get("ip_limit").strip())))
                 if data.get("number", False):
-                    project.update(downloader_dispatch=int(data.get("number")))
+                    project.update(downloader_dispatch=int(data.get("number").strip()))
 
                 project.update(update_datetime=datetime.datetime.now())
 
@@ -336,14 +336,14 @@ class Command(object):
             if not os.path.exists(spider_path):
                 with open(spider_path, 'w') as fp:
                     fp.write(content.encode('utf8'))
-                msg = 'Successfully create a new project %s !' % (_projectname)
-                print msg
+                message = 'Successfully create a new project %s !' % (_projectname)
+                print message
             else:
-                msg = 'Failed to create project %s , Project already exists! ' % (_projectname)
+                message = 'Failed to create project %s , Project already exists! ' % (_projectname)
                 return {
                     "status": False,
-                    "reason": msg,
-                    "msg": msg
+                    "reason": message,
+                    "message": message
                 }
 
             tmpl_path = os.path.join(settings.BASE_DIR, 'libs', 'template', 'models.tmpl')
@@ -360,27 +360,27 @@ class Command(object):
             if not os.path.exists(models_path):
                 with open(models_path, 'w') as fp:
                     fp.write(content.encode('utf8'))
-                msg = 'Successfully create a new project models %s !' % (models_path)
+                message = 'Successfully create a new project models %s !' % (models_path)
                 return {
                     "status": True,
-                    "reason": msg,
-                    "msg": msg
+                    "reason": message,
+                    "message": message
                 }
             else:
-                msg = 'Failed to create project %s , Project already exists! ' % (models_path)
+                message = 'Failed to create project %s , Project already exists! ' % (models_path)
                 return {
                     "status": False,
-                    "reason": msg,
-                    "msg": msg
+                    "reason": message,
+                    "message": message
                 }
 
         except Exception:
             reason = traceback.format_exc()
-            msg = 'Failed to create new project %s !, reason: %s' % (project_name, reason)
+            message = 'Failed to create new project %s !, reason: %s' % (project_name, reason)
             return {
                 "status": False,
                 "reason": reason,
-                "msg": msg
+                "message": message
             }
 
     def load_project(self, project_name):
@@ -396,11 +396,11 @@ class Command(object):
             spider_path = os.path.join(project_path, '%s_spider.py' % (project_name))
             models_path = os.path.join(project_path, '%s_models.py' % (project_name))
             if not os.path.exists(spider_path) or not os.path.exists(models_path):
-                msg = 'Failed to load project %s , Project does not exist! ' % (project_name)
+                message = 'Failed to load project %s , Project does not exist! ' % (project_name)
                 return {
                     "status": False,
-                    "reason": msg,
-                    "msg": msg
+                    "reason": message,
+                    "message": message
                 }
             else:
                 result = self._load_project(project_name, spider_path, models_path)
@@ -408,12 +408,12 @@ class Command(object):
 
         except Exception:
             reason = traceback.format_exc()
-            msg = ('Failed to create new project %s !, Reason: %s' % (project_name, reason))
+            message = ('Failed to create new project %s !, Reason: %s' % (project_name, reason))
 
             return {
                 "status": False,
                 "reason": reason,
-                "msg": msg
+                "message": message
             }
 
     def _load_project(self, project_name, spider_path, models_path):
@@ -442,18 +442,18 @@ class Command(object):
                                   downloader_interval="60",
                                   downloader_dispatch=1)
                 project.save()
-            msg = 'Successfully load project %s !' % (project_name)
+            message = 'Successfully load project %s !' % (project_name)
             return {
                 "status": True,
-                "reason": msg,
-                "msg": msg
+                "reason": message,
+                "message": message
             }
 
         except Exception:
             reason = traceback.format_exc()
-            msg = 'Failed to load project %s !, Reason: %s' % (spider_path, reason)
+            message = 'Failed to load project %s !, Reason: %s' % (spider_path, reason)
             return {
                 "status": False,
-                "reason": msg,
-                "msg": msg
+                "reason": message,
+                "message": message
             }

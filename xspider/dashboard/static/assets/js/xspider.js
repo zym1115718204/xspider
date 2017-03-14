@@ -32,8 +32,8 @@ jQuery(document).ready(function($)
         var number = tds.eq(4).text();
         var ip_limit = tds.eq(5).text();
 
-        console.log(group);
-        console.log(name);
+        // console.log(group);
+        // console.log(name);
 
         $("#field-1").attr("placeholder", group).val('');
         $("#field-2").attr("placeholder", name).val('');
@@ -65,12 +65,10 @@ jQuery(document).ready(function($)
         var number = inputs.eq(3).val();
         var ip_limit = inputs.eq(4).val();
         var status = $("#field-7").attr("value");
-
         var data = {
             command: true,
             project: name
         };
-
         $("#field-7 input").each(function(){
 
             if($(this).prop('checked')){
@@ -84,13 +82,8 @@ jQuery(document).ready(function($)
                 }
             }
             else{
-                //console.log(_status);
             }
           });
-        // console.log($('#field-7 input[value=0]').prop('checked'));
-        // console.log($('#field-7 input[value=1]').prop('checked'));
-        // console.log($('#field-7 input[value=2]').prop('checked'));
-        // console.log($('#field-7 input[value=3]').prop('checked'));
 
         if(group){
             data['group']=group;
@@ -163,7 +156,6 @@ jQuery(document).ready(function($)
         else{
             toastr.warning("No parameters changed.", "Message:", opts);
         }
-
     });
 
     /*
@@ -179,6 +171,73 @@ jQuery(document).ready(function($)
 //					}
 //				});
 			}*/
+
+    // Create Page
+    $('.create-btn').click(function () {
+        // Edit Page Show
+        $("#create-page").modal('show', {backdrop: 'static'});
+    });
+
+    // Create Save
+    $('.create-save').click(function () {
+
+        var inputs = $("#create-page").find("input");
+        var name = inputs.eq(0).val();
+        var url = inputs.eq(1).val();
+
+        var data = {
+            command: true,
+            project: name,
+            url: url
+        };
+        console.log(data);
+
+        // if (/^[a-zA-Z0-9]+$/.test(name)) {
+        //   alert('Good news everyone!');
+        // }
+        // else{
+        //     alert('Bad');
+        // }
+
+        if(/^[a-zA-Z0-9]+$/.test(name)){
+            $.ajax({
+                url: "/dashboard/api/create",
+                method: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function(resp) {
+                    show_loading_bar({
+                        delay: .5,
+                        pct: 100,
+                        finish: function () {
+                            // Redirect after successful login page (when progress bar reaches 100%)
+                            if (resp.status == true) {
+                                toastr.success(resp.message, "Message:", opts);
+                                setTimeout(function(){ window.location.href = '/dashboard/debug/'+name;}, 600);
+                            }
+                            else {
+                                // alert(resp.reason);
+                                toastr.error(resp.message, "Message:", opts);
+                            }
+                        }
+                    });
+                },
+                error: function(resp) {
+                                show_loading_bar({
+                                    delay: .5,
+                                    pct: 100,
+                                    finish: function () {
+                                        toastr.error("Network error.", "Message:", opts);
+                                    }
+                                });
+                            }
+            });
+        }
+        else{
+            toastr.warning("Project name is invalid. Must be [-zA-Z0-9_]+", "Message:", opts);
+        }
+
+    });
 
 });
 
