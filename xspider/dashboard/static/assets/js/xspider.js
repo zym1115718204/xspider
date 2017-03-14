@@ -26,11 +26,14 @@ jQuery(document).ready(function($)
 
         var tds = $(this).closest("tr").find("td");
         var group = tds.eq(0).text();
-        var name = tds.eq(1).text();
+        var name = tds.eq(1).text().trim();
         var status = tds.eq(2).find('span').attr("value");
         var interval = tds.eq(3).text();
         var number = tds.eq(4).text();
         var ip_limit = tds.eq(5).text();
+
+        console.log(group);
+        console.log(name);
 
         $("#field-1").attr("placeholder", group).val('');
         $("#field-2").attr("placeholder", name).val('');
