@@ -77,7 +77,7 @@ jQuery(document).ready(function($)
      // Run Project
     function runProject(data) {
         $.ajax({
-            url: "/dashboard/api/run_generator",
+            url: "/dashboard/api/run",
             method: 'POST',
             dataType: 'json',
             data: data,
