@@ -95,7 +95,7 @@ class Generator(object):
         :param result:
         :return:
         """
-        result = []
+        task = []
         if not isinstance(data, list):
             raise TypeError("Generator Result Must Be List Type.")
 
@@ -104,9 +104,13 @@ class Generator(object):
                 raise TypeError("Generator URL Result Must Be Dict Type.")
 
             _result = self.storage.store_task(url_dict)
-            result.append(_result)
+            task.append(_result)
 
-        return result
+        return {
+            "status": True,
+            "store_task": False,
+            "result":task
+        }
 
     def run_generator(self):
         """
@@ -430,7 +434,7 @@ class Storage(object):
             task_result = {}
             task_result["project"] = str(self.project.id)
             task_result["url"] = self.task.url
-            task_result["update_datetime"] = datetime.datetime.now()
+            task_result["update_datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             task_result["result"] = result
 
             return task_result

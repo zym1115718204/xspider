@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^debug/(?P<name>\w+)/$', views.debug),
     url(r'^time/$', views.test_current_datetime),
     url(r'^api/edit$', views.edit_project),
+    url(r'^api/run$', views.run_project),
     url(r'^api/create$', views.create_project),
 ]

@@ -19,7 +19,7 @@ class Spider(BaseSpider):
         """
         result = []
 
-        start_url = "__START_URL__"
+        start_url = "$START_URL"
         result_url = self.generate(start_url, callback=self.parser_index)
         result.append(result_url)
 

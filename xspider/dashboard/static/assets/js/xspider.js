@@ -5,6 +5,8 @@
 
 jQuery(document).ready(function($)
 {
+    /* Global Settings */
+
     // Progress Bar
     var opts = {
         "closeButton": true,
@@ -21,6 +23,82 @@ jQuery(document).ready(function($)
         "hideMethod": "fadeOut"
     };
 
+    //Edit Project
+    function editProject(data) {
+            $.ajax({
+            url: "/dashboard/api/edit",
+            method: 'POST',
+            dataType: 'json',
+            data: data,
+            success: function(resp) {
+                show_loading_bar({
+                    delay: .5,
+                    pct: 100,
+                    finish: function () {
+                        // Redirect after successful login page (when progress bar reaches 100%)
+                        if (resp.status == true) {
+                            toastr.success(resp.message, "Message:", opts);
+                            setTimeout(function(){ window.location.reload();},600);
+                        }
+                        else {
+                            // alert(resp.reason);
+                            toastr.error(resp.message, "Message:", opts);
+                        }
+                    }
+                });
+            },
+            error: function(resp) {
+                            show_loading_bar({
+                                delay: .5,
+                                pct: 100,
+                                finish: function () {
+                                    toastr.error("Network error.", "Message:", opts);
+                                }
+                            });
+                        }
+        });
+
+    }
+
+    // Create Project
+    function createProject(data) {
+        $.ajax({
+                url: "/dashboard/api/create",
+                method: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function(resp) {
+                    show_loading_bar({
+                        delay: .5,
+                        pct: 100,
+                        finish: function () {
+                            // Redirect after successful login page (when progress bar reaches 100%)
+                            if (resp.status == true) {
+                                toastr.success(resp.message, "Message:", opts);
+                                setTimeout(function(){ window.location.href = '/dashboard/debug/'+name;}, 600);
+                            }
+                            else {
+                                // alert(resp.reason);
+                                toastr.error(resp.message, "Message:", opts);
+                            }
+                        }
+                    });
+                },
+                error: function(resp) {
+                                show_loading_bar({
+                                    delay: .5,
+                                    pct: 100,
+                                    finish: function () {
+                                        toastr.error("Network error.", "Message:", opts);
+                                    }
+                                });
+                            }
+            });
+
+    }
+
+    /* Index page */
+
     // Edit Page
     $('.edit-btn').click(function () {
 
@@ -31,9 +109,6 @@ jQuery(document).ready(function($)
         var interval = tds.eq(3).text();
         var number = tds.eq(4).text();
         var ip_limit = tds.eq(5).text();
-
-        // console.log(group);
-        // console.log(name);
 
         $("#field-1").attr("placeholder", group).val('');
         $("#field-2").attr("placeholder", name).val('');
@@ -89,74 +164,31 @@ jQuery(document).ready(function($)
             data['group']=group;
             flag = true
         }
-        else{
-            //console.log(group);
-        }
+
         if(interval){
             data['interval']=interval;
             flag = true
+        }
 
-        }
-        else{
-            //console.log(interval);
-        }
         if(number){
             data['number']=number;
             flag = true
+        }
 
-        }
-        else{
-            //console.log(number);
-        }
         if(ip_limit){
             data['ip_limit']=ip_limit;
             flag = true
-
-        }
-        else{
-            //console.log(ip_limit);
         }
 
-        console.log(data);
-
+        // Save Edit
         if(flag){
-            $.ajax({
-                url: "/dashboard/api/edit",
-                method: 'POST',
-                dataType: 'json',
-                data: data,
-                success: function(resp) {
-                    show_loading_bar({
-                        delay: .5,
-                        pct: 100,
-                        finish: function () {
-                            // Redirect after successful login page (when progress bar reaches 100%)
-                            if (resp.status == true) {
-                                toastr.success(resp.message, "Message:", opts);
-                                setTimeout(function(){ window.location.reload();},600);
-                            }
-                            else {
-                                // alert(resp.reason);
-                                toastr.error(resp.message, "Message:", opts);
-                            }
-                        }
-                    });
-                },
-                error: function(resp) {
-                                show_loading_bar({
-                                    delay: .5,
-                                    pct: 100,
-                                    finish: function () {
-                                        toastr.error("Network error.", "Message:", opts);
-                                    }
-                                });
-                            }
-            });
+            editProject(data);
         }
         else{
             toastr.warning("No parameters changed.", "Message:", opts);
         }
     });
+
 
     /*
     function showAjaxModal()
@@ -192,51 +224,12 @@ jQuery(document).ready(function($)
         };
         console.log(data);
 
-        // if (/^[a-zA-Z0-9]+$/.test(name)) {
-        //   alert('Good news everyone!');
-        // }
-        // else{
-        //     alert('Bad');
-        // }
-
         if(/^[a-zA-Z]+$/.test(name)){
-            $.ajax({
-                url: "/dashboard/api/create",
-                method: 'POST',
-                dataType: 'json',
-                data: data,
-                success: function(resp) {
-                    show_loading_bar({
-                        delay: .5,
-                        pct: 100,
-                        finish: function () {
-                            // Redirect after successful login page (when progress bar reaches 100%)
-                            if (resp.status == true) {
-                                toastr.success(resp.message, "Message:", opts);
-                                setTimeout(function(){ window.location.href = '/dashboard/debug/'+name;}, 600);
-                            }
-                            else {
-                                // alert(resp.reason);
-                                toastr.error(resp.message, "Message:", opts);
-                            }
-                        }
-                    });
-                },
-                error: function(resp) {
-                                show_loading_bar({
-                                    delay: .5,
-                                    pct: 100,
-                                    finish: function () {
-                                        toastr.error("Network error.", "Message:", opts);
-                                    }
-                                });
-                            }
-            });
+            createProject(data);
         }
         else{
             toastr.warning("Project name is invalid. Must be a-Z", "Message:", opts);
         }
-
     });
 
 });

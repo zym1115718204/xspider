@@ -130,6 +130,36 @@ def create_project(request):
     return result
 
 
+@csrf_exempt
+@render_json
+def run_project(request):
+    """
+    Run Projcet Generator Command API
+    :param request:
+    :return:
+    """
+    name = request.POST.get("project")
+    command = request.POST.get("command")
+    task = request.POST.get("task")
+
+    if name and command and task:
+        handler = Handler()
+        result = handler.run_processor(name, json.loads(task))
+    elif name and command:
+        handler = Handler()
+        result = handler.run_generator(name)
+    else:
+        result = {
+            "status": False,
+            "project": name,
+            "message": "Bad Parameters",
+            "code": 4001,
+        }
+    return result
+
+
+
+
 def test(request):
     """
     Dashboard Index Page

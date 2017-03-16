@@ -90,3 +90,14 @@ Debug No-padding
 .no-padding-textarea {
     padding-left:0px;
 }
+
+/* debug page tasks table*/
+.run-task-table > thead > tr > td,
+.run-task-table> tbody > tr > td,
+.run-task-table> tfood > tr > td,
+.run-task-table> thead > tr > th,
+.run-task-table> tbody > tr > th,
+.run-task-table> tfood > tr > th {
+  padding: 2px 2px;
+  font-size: 14px;
+}

@@ -14,6 +14,7 @@ from django.conf import settings
 from django.utils.encoding import smart_unicode
 
 from collector.models import Project
+from collector.utils import Generator, Processor
 
 
 class InitSpider(object):
@@ -199,6 +200,23 @@ class Handler(object):
         result = self._command.create_project(project, host)
         return result
 
+    def run_generator(self, project):
+        """
+        Run Project Generator Route
+        :param project:
+        :return:
+        """
+        result = self._command.run_generator(project)
+        return result
+
+    def run_processor(self, project, task):
+        """
+        Run Project Processor Route
+        :param project:
+        :return:
+        """
+        result = self._command.run_processor(project, task)
+        return result
 
 class Query(object):
     """
@@ -267,6 +285,7 @@ class Command(object):
                 if data.get("info", False):
                     project.update(info=str(data.get("info".strip())))
                 if data.get("script", False):
+                    print str(data.get("script".strip()))
                     project.update(script=str(data.get("script".strip())))
                 if data.get("interval", False):
                     project.update(generator_interval=str(int(data.get("interval").strip())))
@@ -342,7 +361,6 @@ class Command(object):
                 message = 'Failed to create project %s , Project already exists! ' % (_projectname)
                 return {
                     "status": False,
-                    "reason": message,
                     "message": message
                 }
 
@@ -363,14 +381,12 @@ class Command(object):
                 message = 'Successfully create a new project models %s !' % (models_path)
                 return {
                     "status": True,
-                    "reason": message,
                     "message": message
                 }
             else:
                 message = 'Failed to create project %s , Project already exists! ' % (models_path)
                 return {
                     "status": False,
-                    "reason": message,
                     "message": message
                 }
 
@@ -379,7 +395,6 @@ class Command(object):
             message = 'Failed to create new project %s !, reason: %s' % (project_name, reason)
             return {
                 "status": False,
-                "reason": reason,
                 "message": message
             }
 
@@ -399,7 +414,6 @@ class Command(object):
                 message = 'Failed to load project %s , Project does not exist! ' % (project_name)
                 return {
                     "status": False,
-                    "reason": message,
                     "message": message
                 }
             else:
@@ -445,7 +459,6 @@ class Command(object):
             message = 'Successfully load project %s !' % (project_name)
             return {
                 "status": True,
-                "reason": message,
                 "message": message
             }
 
@@ -454,6 +467,97 @@ class Command(object):
             message = 'Failed to load project %s !, Reason: %s' % (spider_path, reason)
             return {
                 "status": False,
-                "reason": message,
+                "message": message
+            }
+
+    def run_generator(self, project_name):
+        """
+        Create Project
+        :return:
+        """
+        try:
+            project_name = project_name.strip()
+            project = Project.objects(name=project_name).first()
+            if project is None:
+                message = 'Project %s does not exist!' % (project_name)
+                return {
+                    "status": False,
+                    "message": message
+                }
+            if project.status != 2:
+                message = 'Project %s status is not Debug, please set status to DEBUG.' % (project_name)
+                return {
+                    "status": False,
+                    "message": message
+                }
+            else:
+                project_id = str(project.id)
+                generator = Generator(project_id)
+                task = generator.run_generator()
+                print "Task debug:"
+                print task
+
+                # processor = Processor(task=task["result"])
+                # result = processor.run_processor()
+                # print result
+
+                message = 'Successfully run project %s !' % (project_name)
+                return {
+                    "status": True,
+                    "message": message,
+                    "task": task
+                }
+
+        except Exception:
+            reason = traceback.format_exc()
+            message = 'Failed to run project %s !, Reason: %s' % (project_name, reason)
+            return {
+                "status": False,
+                "message": message
+            }
+
+    def run_processor(self, project_name, task):
+        """
+        Create Project
+        :return:
+        """
+        try:
+            project_name = project_name.strip()
+            project = Project.objects(name=project_name).first()
+            if project is None:
+                message = 'Project %s does not exist!' % (project_name)
+                return {
+                    "status": False,
+                    "message": message
+                }
+            if project.status != 2:
+                message = 'Project %s status is not Debug, please set status to DEBUG.' % (project_name)
+                return {
+                    "status": False,
+                    "message": message
+                }
+            else:
+                processor = Processor(task=task)
+                result = processor.run_processor()
+
+                print "Result debug:"
+                print result
+
+                # processor = Processor(task=task["result"])
+                # result = processor.run_processor()
+                # print result
+
+                message = 'Successfully run processor %s !' % (project_name)
+                return {
+                    "status": True,
+                    "message": message,
+                    "task": result
+                }
+
+        except Exception:
+            reason = traceback.format_exc()
+            message = 'Failed to run project %s !, Reason: %s' % (project_name, reason)
+            return {
+                "status": False,
                 "message": message
             }
