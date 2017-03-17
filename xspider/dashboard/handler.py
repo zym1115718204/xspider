@@ -17,43 +17,6 @@ from collector.models import Project
 from collector.utils import Generator, Processor
 
 
-class InitSpider(object):
-    """
-    Load Spider Script to Local File
-    """
-
-    def __init__(self):
-        """
-        LoadSpider Initialization
-        """
-        if not os.path.exists(settings.EXECUTE_PATH):
-            os.mkdir(settings.EXECUTE_PATH)
-
-    def load_spider(self, project):
-        """
-        Load Spider from  Database by project
-        :param project:
-        :return:
-        """
-        try:
-            project_name = project.name
-            spider_script = project.script
-            models_script = project.models
-            _spider_path = os.path.join(settings.EXECUTE_PATH, "%s_spider.py" %(project_name))
-            _models_path = os.path.join(settings.EXECUTE_PATH, "%s_models.py" %(project_name))
-            execute_init = os.path.join(settings.EXECUTE_PATH, "__init__.py")
-
-            with open(execute_init, 'w') as fp:
-                fp.write("")
-            with open(_spider_path, 'w') as fp:
-                fp.write(spider_script.encode('utf8'))
-            with open(_models_path, 'w') as fp:
-                fp.write(models_script.encode('utf8'))
-
-        except Exception:
-            print traceback.format_exc()
-
-
 class Handler(object):
     """
     Xspider Handler Route Module
@@ -218,6 +181,7 @@ class Handler(object):
         result = self._command.run_processor(project, task)
         return result
 
+
 class Query(object):
     """
     Query Handler
@@ -322,11 +286,15 @@ class Command(object):
         Create Project
         :return:
         """
-        project_name = project_name.strip()
+        project_name = project_name.strip().lower()
         result = self.start_project(project_name, host)
         if result["status"] is True:
             result = self.load_project(project_name)
-            return result
+            if result['status'] is True:
+                result = self.init_project(project_name)
+                return result
+            else:
+                return result
         else:
             return result
 
@@ -339,6 +307,7 @@ class Command(object):
         try:
             _projectname = project_name.lower()
             project_path = os.path.join(settings.PROJECTS_PTAH, _projectname)
+
             if not os.path.exists(project_path):
                 os.makedirs(project_path)
 
@@ -354,8 +323,9 @@ class Command(object):
             if not os.path.exists(spider_path):
                 with open(spider_path, 'w') as fp:
                     fp.write(content.encode('utf8'))
+
                 message = 'Successfully create a new project %s !' % (_projectname)
-                print message
+                # print message
             else:
                 message = 'Failed to create project %s , Project already exists! ' % (_projectname)
                 return {
@@ -378,6 +348,7 @@ class Command(object):
                 with open(models_path, 'w') as fp:
                     fp.write(content.encode('utf8'))
                 message = 'Successfully create a new project models %s !' % (models_path)
+
                 return {
                     "status": True,
                     "message": message
@@ -464,6 +435,44 @@ class Command(object):
         except Exception:
             reason = traceback.format_exc()
             message = 'Failed to load project %s !, Reason: %s' % (spider_path, reason)
+            return {
+                "status": False,
+                "message": message
+            }
+
+    def init_project(self, project_name):
+        """
+        Initialization Project to execute path
+        :return:
+        """
+        if not os.path.exists(settings.EXECUTE_PATH):
+            os.mkdir(settings.EXECUTE_PATH)
+        project = Project.objects(name=project_name).first()
+
+        try:
+            project_name = project.name
+            spider_script = project.script
+            models_script = project.models
+            _spider_path = os.path.join(settings.EXECUTE_PATH, "%s_spider.py" %(project_name))
+            _models_path = os.path.join(settings.EXECUTE_PATH, "%s_models.py" %(project_name))
+            execute_init = os.path.join(settings.EXECUTE_PATH, "__init__.py")
+
+            with open(execute_init, 'w') as fp:
+                fp.write("")
+            with open(_spider_path, 'w') as fp:
+                fp.write(spider_script.encode('utf8'))
+            with open(_models_path, 'w') as fp:
+                fp.write(models_script.encode('utf8'))
+
+            message = 'Successfully init project %s !' % (project_name)
+            return {
+                "status": True,
+                "message": message
+            }
+
+        except Exception:
+            reason = traceback.format_exc()
+            message = 'Failed to Init project %s !, Reason: %s' % (project_name, reason)
             return {
                 "status": False,
                 "message": message

@@ -214,7 +214,7 @@ jQuery(document).ready(function($)
     $('.create-save').click(function () {
 
         var inputs = $("#create-page").find("input");
-        var name = inputs.eq(0).val();
+        var name = inputs.eq(0).val().toLowerCase();
         var url = inputs.eq(1).val();
 
         var data = {
