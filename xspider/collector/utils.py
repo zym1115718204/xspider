@@ -457,6 +457,6 @@ class Storage(object):
         :return:
         """
         md5 = hashlib.md5()
-        md5.update(string)
+        md5.update(string.encode('utf8'))
 
         return md5.hexdigest()
