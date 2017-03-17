@@ -31,6 +31,14 @@ jQuery(document).ready(function($)
         styleActiveLine: true
         });
 
+    // var result_editor = CodeMirror.fromTextArea($(".json")[1], { //script_once_code为你的textarea的ID号
+    //     lineNumbers: true,//是否显示行号
+    //     mode: "application/json",　//默认脚本编码
+    //     lineWrapping: true,//是否强制换行
+    //     indentUnit: 2,
+    //     styleActiveLine: true
+    //     });
+
     var python_editor = CodeMirror.fromTextArea($(".python")[0], { //script_once_code为你的textarea的ID号
         lineNumbers: true,//是否显示行号
         mode: "python",　//默认脚本编码
@@ -87,53 +95,61 @@ jQuery(document).ready(function($)
                     pct: 100,
                     finish: function () {
                         // Redirect after successful login page (when progress bar reaches 100%)
-
-                        // console.log(resp.result == undefined);
-                        if (resp.status === true && resp.result == undefined) {
+                        if (resp.status === true) {
                             toastr.success(resp.message, "Message:", opts);
-                            status_editor.setValue(JSON.stringify(resp.task));
-                            var result = resp.task;
+                            var task_result = resp.task;
+                            var tasks = task_result.result;
 
-                            console.log(result);
-                            var rowCount = result.result.length;
-                            console.log(rowCount);
-                            var tbody = $("#url-table");
-                            tbody.html("<tr></tr>");
-                            for (var i = 0; i < rowCount; i++){
-                                var task = result.result[i];
-                                var tr = $("<tr></tr>");
-                                var td = $("<td class=\"col-md-3 no-padding-textarea text-secondary\">" + task.result.callback+
-                                           "</td><td class=\"col-md-8 no-padding-textarea\">" + task.result.url +
-                                           "</td><td class=\"col-md-1 no-padding-textarea\"><button class=\"btn btn-success btn-single btn-xs run-task\" task='"+
-                                           JSON.stringify(task.result)+"'>run</button></td>");
-                                td.appendTo(tr);
-                                tr.appendTo(tbody);
+                            if(task_result.status===false){
+                                status_editor.setValue(JSON.stringify(task_result));
                             }
-                            $(".run-task").on('click',function(){
+                            else if(tasks.project != undefined ){
+                                status_editor.setValue(JSON.stringify(task_result));
+                            }
+                            else {
+                                status_editor.setValue("Debug...");
+                                var rowCount = tasks.length;
 
-                                var name = $("#script").attr("project");
-                                var task = $(this).attr('task');
-                                var data = {
-                                    command: true,
-                                    project: name,
-                                    task:task
-                                };
-                                console.log(task);
-                                console.log(data);
-                                runProject(data);
-                            });
-                            // <tr><td class="col-md-3 no-padding-textarea text-secondary">parser_index</td><td class="col-md-8 no-padding-textarea">http:www.baidu.com</td> <td class="col-md-1 no-padding-textarea"><a class="btn btn-success btn-single btn-xs">run</a></td></tr>
-                            $("#task-table").removeClass("hidden");
+                                console.log(tasks);
+                                var tbody = $("#url-table");
 
-                            //setTimeout(function(){ window.location.href = '/dashboard/debug/'+name;}, 600);
-                        }
-                        else if(resp.status === true){
-
-                            toastr.success(resp.message, "Message:", opts);
-                            status_editor.setValue(JSON.stringify(resp.result));
+                                tbody.html("<tr></tr>");
+                                for (var i = 0; i < rowCount; i++){
+                                    var task = tasks[i];
+                                    var tr = $("<tr></tr>");
+                                    if(task.status === false){
+                                         var td = $("<td class=\"col-md-3 no-padding-textarea text-danger\">" + task.result.callback+
+                                               "</td><td class=\"col-md-8 no-padding-textarea\">" + task.result.url +
+                                               "</td><td class=\"col-md-1 no-padding-textarea\"><button class=\"btn btn-success btn-single btn-xs run-task\" task='"+
+                                               JSON.stringify(task.result)+"'>run</button></td>");
+                                    }
+                                    else{
+                                         var td = $("<td class=\"col-md-3 no-padding-textarea text-secondary\">" + task.result.callback+
+                                               "</td><td class=\"col-md-8 no-padding-textarea text-info task-url\">" + task.result.url +
+                                               "</td><td class=\"col-md-1 no-padding-textarea\"><button class=\"btn btn-success btn-single btn-xs run-task\" task='"+
+                                               JSON.stringify(task.result)+"'>run</button></td>");
+                                    }
+                                    td.appendTo(tr);
+                                    tr.appendTo(tbody);
+                                }
+                                $(".run-task").on('click',function(){
+                                    var name = $("#script").attr("project");
+                                    var task = $(this).attr('task');
+                                    var data = {
+                                        command: true,
+                                        project: name,
+                                        task:task
+                                    };
+                                    runProject(data);
+                                });
+                                 $(".task-url").on('click',function(){
+                                     var task = $(this).parent().find('button').attr('task');
+                                     status_editor.setValue(task);
+                                });
+                                $("#task-table").removeClass("hidden");
+                            }
                         }
                         else {
-                            // alert(resp.reason);
                             toastr.error(resp.message, "Message:", opts);
                         }
                     }

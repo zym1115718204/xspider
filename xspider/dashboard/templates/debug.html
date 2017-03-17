@@ -186,21 +186,24 @@
 
 						<div class="col-md-5 no-padding-textarea">
 
-
-							<div class="panel-heading run-task-table">
-								<strong>Project</strong>
-							</div>
-
 							<div class="col-md-12 no-padding-textarea">
 
-									<form role="form" method="post">
-										<div class="form-group">
-											<textarea id="status" class="json">Project Name: {{ project.name }}
+								<div class="panel-heading run-task-table">
+									<strong>Debug Terminal</strong>
+								</div>
+
+								<div class="no-padding-textarea">
+
+										<form role="form" method="post">
+											<div class="form-group">
+												<textarea id="status" class="json">Project Name: {{ project.name }}
+
+												</textarea>
+											</div>
+										</form>
+								</div>
 
 
-											</textarea>
-										</div>
-									</form>
 							</div>
 
 							<div id="task-table" class="hidden">
@@ -217,14 +220,10 @@
 												<!--<a class="btn btn-success btn-single btn-xs">run</a>-->
 											<!--</td>-->
 										<!--</tr>-->
-									</tbody>
-								</table>
 
-							</div>
-							<div id="result"  class="hidden">
-								<div class="panel-heading">
-									<strong>Reuslt</strong>
-								</div>
+									</tbody>
+
+								</table>
 
 							</div>
 

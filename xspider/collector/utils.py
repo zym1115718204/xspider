@@ -275,65 +275,74 @@ class Storage(object):
         :Porject Debug,  Task Dict
         :Porject    ON,  Store Status Dict
         """
-        _status = self.project.status
-        if _status == 1:
-            
-            # Save Task to Database
-            url = url_dict.get("url")
-            args = url_dict.get("args")
-            callback = url_dict.get("callback")
-            task_id = self.str2md5(url_dict.get("url"))
+        try:
+            _status = self.project.status
+            if _status == 1:
 
-            repeat = None
-            task_object = None
-            exec ("from execute.{0}_models import *".format(self.project.name))
-            exec("repeat = {0}{1}.objects(task_id=task_id).first()".format(str(self.project.name).capitalize(), "Task"))
-            
-            if repeat:
-                return{
-                    "status": True,
-                    "store_task": False,
-                    "repeat": True,
-                }
-            else:
-                exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
-                task_object.project = self.project
-                task_object.args = json.dumps(args)
-                task_object.callback = callback
-                task_object.task_id = task_id
-                task_object.status = 0
-                task_object.url = url
+                # Save Task to Database
+                url = url_dict.get("url")
+                args = url_dict.get("args")
+                callback = url_dict.get("callback")
+                task_id = self.str2md5(url_dict.get("url"))
 
-                task_object.save()
+                repeat = None
+                task_object = None
+                exec ("from execute.{0}_models import *".format(self.project.name))
+                exec("repeat = {0}{1}.objects(task_id=task_id).first()".format(str(self.project.name).capitalize(), "Task"))
+
+                if repeat:
+                    return{
+                        "status": True,
+                        "store_task": False,
+                        "repeat": True,
+                    }
+                else:
+                    exec ("task_object = {0}{1}()".format(str(self.project.name).capitalize(), "Task"))
+                    task_object.project = self.project
+                    task_object.args = json.dumps(args)
+                    task_object.callback = callback
+                    task_object.task_id = task_id
+                    task_object.status = 0
+                    task_object.url = url
+
+                    task_object.save()
+
+                    return {
+                        "status": True,
+                        "store_task": True
+                    }
+
+            elif _status == 2:
+                task_object = {}
+
+                # Create Debug Task Object && Dynamic Import Models
+                url = url_dict.get("url")
+                print url
+                args = url_dict.get("args")
+                callback = url_dict.get("callback")
+                task_id = self.str2md5(url_dict.get("url"))
+
+                task_object["project"] = str(self.project.id)
+                task_object["args"] = json.dumps(args)
+                task_object["callback"] = callback
+                task_object["task_id"] = task_id
+                task_object["status"] = 0
+                task_object["url"] = url
 
                 return {
                     "status": True,
-                    "store_task": True
+                    "store_task": False,
+                    "result": task_object
                 }
+            else:
+                raise TypeError("Project Status Must Be On or Debug.")
 
-        elif _status == 2:
-            task_object = {}
-
-            # Create Debug Task Object && Dynamic Import Models
-            url = url_dict.get("url")
-            args = url_dict.get("args")
-            callback = url_dict.get("callback")
-            task_id = self.str2md5(url_dict.get("url"))
-
-            task_object["project"] = str(self.project.id)
-            task_object["args"] = json.dumps(args)
-            task_object["callback"] = callback
-            task_object["task_id"] = task_id
-            task_object["status"] = 0
-            task_object["url"] = url
-
-            return {
-                "status": True,
+        except UnicodeEncodeError:
+            return{
+                "status": False,
                 "store_task": False,
-                "result": task_object
+                "result": url_dict
             }
-        else:
-            raise TypeError("Project Status Must Be On or Debug.")
 
     def package_task(self, task=None, _id=None):
         """
