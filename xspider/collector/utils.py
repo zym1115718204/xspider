@@ -389,7 +389,7 @@ class Storage(object):
             task.update(
                 status=status,
                 track_log=track_log,
-                update_time=datetime.datetime.now(),
+                update_datetime=datetime.datetime.now(),
                 spend_time=spend_time,
                 retry_times=retry_times,
             )
@@ -398,7 +398,7 @@ class Storage(object):
         elif _status== 2:
             task.status = status,
             task.track_log = track_log,
-            task.update_time = datetime.datetime.now(),
+            task.update_datetime = datetime.datetime.now(),
             task.spend_time = spend_time,
             task.retry_times = retry_times
 

@@ -47,6 +47,42 @@ def index(request):
             project['invalid_rate'] = 0
             project['schedule'] = 0
 
+        if project['total_d'] >= 0 and project['total_d'] != project['new_d']:
+            _task_num = float(project['total_d'] - project['new_d'])
+            project['success_rate_d'] = round(100 * project['success_d'] / _task_num, 2)
+            project['failed_rate_d'] = round(100 * project['failed_d'] / _task_num, 2)
+            project['invalid_rate_d'] = round(100 * project['invalid_d'] / _task_num, 2)
+            project['schedule_d'] = round((_task_num / project['total_d']) * 100, 2)
+        else:
+            project['succ_rate_d'] = 0
+            project['failed_rate_d'] = 0
+            project['invalid_rate_d'] = 0
+            project['schedule_d'] = 0
+
+        if project['total_h'] >= 0 and project['total_h'] != project['new_h']:
+            _task_num = float(project['total_h'] - project['new_h'])
+            project['success_rate_h'] = round(100 * project['success_h'] / _task_num, 2)
+            project['failed_rate_h'] = round(100 * project['failed_h'] / _task_num, 2)
+            project['invalid_rate_h'] = round(100 * project['invalid_h'] / _task_num, 2)
+            project['schedule_h'] = round((_task_num / project['total_h']) * 100, 2)
+        else:
+            project['succ_rate_h'] = 0
+            project['failed_rate_h'] = 0
+            project['invalid_rate_h'] = 0
+            project['schedule_h'] = 0
+
+        if project['total_m'] >= 0 and project['total_m'] != project['new_m']:
+            _task_num = float(project['total_m'] - project['new_m'])
+            project['success_rate_m'] = round(100 * project['success_m'] / _task_num, 2)
+            project['failed_rate_m'] = round(100 * project['failed_m'] / _task_num, 2)
+            project['invalid_rate_m'] = round(100 * project['invalid_m'] / _task_num, 2)
+            project['schedule_m'] = round((_task_num / project['total_m']) * 100, 2)
+        else:
+            project['succ_rate_m'] = 0
+            project['failed_rate_m'] = 0
+            project['invalid_rate_m'] = 0
+            project['schedule_m'] = 0
+
     return render_to_response("index.html", {'projects': projects, 'tasks': None, 'profile': None,})
 
 

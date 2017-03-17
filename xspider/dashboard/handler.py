@@ -38,13 +38,36 @@ class Handler(object):
             name = project.name
             group = project.group
             model = "{0}Task".format(str(name).capitalize())
+            now = datetime.datetime.now()
+            day = now-datetime.timedelta(days=1)
+            hour = now-datetime.timedelta(hours=1)
+            minute = now-datetime.timedelta(minutes=1)
+
             # Notice: Checking
             exec ("from execute.{0}_models import *".format(name))
             exec("total = {0}.objects().count()".format(model))
-            exec("new = {0}.objects(status={0}.STATUS_LIVE).count()".format(model))
+            exec("new = {0}.objects(status={0}.STATUS_LIVE, ).count()".format(model))
             exec("success = {0}.objects(status={0}.STATUS_SUCCESS).count()".format(model))
             exec("failed = {0}.objects(status={0}.STATUS_FAIL).count()".format(model))
             exec("invalid = {0}.objects(status={0}.STATUS_INVALID).count()".format(model))
+
+            exec ("total_d = {0}.objects(add_datetime__gte=day).count()".format(model))
+            exec ("new_d = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=day).count()".format(model))
+            exec ("success_d = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=day).count()".format(model))
+            exec ("failed_d = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=day).count()".format(model))
+            exec ("invalid_d = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=day).count()".format(model))
+
+            exec ("total_h = {0}.objects(add_datetime__gte=hour).count()".format(model))
+            exec ("new_h = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=hour).count()".format(model))
+            exec ("success_h = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=hour).count()".format(model))
+            exec ("failed_h = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=hour).count()".format(model))
+            exec ("invalid_h = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=hour).count()".format(model))
+
+            exec ("total_m = {0}.objects(add_datetime__gte=minute).count()".format(model))
+            exec ("new_m = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=minute).count()".format(model))
+            exec ("success_m = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=minute).count()".format(model))
+            exec ("failed_m = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=minute).count()".format(model))
+            exec ("invalid_m = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=minute).count()".format(model))
 
             iplimit = project.downloader_interval
             priority = project.priority
@@ -70,6 +93,21 @@ class Handler(object):
                 'success': success,
                 'failed': failed,
                 'invalid': invalid,
+                'total_d': total_d,
+                'new_d': new_d,
+                'success_d': success_d,
+                'failed_d': failed_d,
+                'invalid_d': invalid_d,
+                'total_h': total_h,
+                'new_h': new_h,
+                'success_h': success_h,
+                'failed_h': failed_h,
+                'invalid_h': invalid_h,
+                'total_m': total_m,
+                'new_m': new_m,
+                'success_m': success_m,
+                'failed_m': failed_m,
+                'invalid_m': invalid_m,
                 'iplimit': iplimit,
                 'speed': speed,
                 'timeout': timeout,
@@ -106,17 +144,50 @@ class Handler(object):
 
             if r_dict:
                 project_status = json.loads(r_dict[project.name])
-                total = int(project_status.get('total', "N/A"))
-                new = int(project_status.get('new', "N/A"))
-                success = int(project_status.get('success', "N/A"))
-                failed = int(project_status.get('failed', "N/A"))
-                invalid = int(project_status.get('invalid', "N/A"))
+                total = int(project_status.get('total', "0"))
+                new = int(project_status.get('new', "0"))
+                success = int(project_status.get('success', "0"))
+                failed = int(project_status.get('failed', "0"))
+                invalid = int(project_status.get('invalid', "0"))
+
+                total_d = int(project_status.get('total_d', "0"))
+                new_d = int(project_status.get('new_d', "0"))
+                success_d = int(project_status.get('success_d', "0"))
+                failed_d = int(project_status.get('failed_d', "0"))
+                invalid_d = int(project_status.get('invalid_d', "0"))
+
+                total_h = int(project_status.get('total_h', "0"))
+                new_h = int(project_status.get('new_h', "0"))
+                success_h = int(project_status.get('success_h', "0"))
+                failed_h = int(project_status.get('failed_h', "0"))
+                invalid_h = int(project_status.get('invalid_h', "0"))
+
+                total_m = int(project_status.get('total_m', "0"))
+                new_m = int(project_status.get('new_m', "0"))
+                success_m = int(project_status.get('success_m', "0"))
+                failed_m = int(project_status.get('failed_m', "0"))
+                invalid_m = int(project_status.get('invalid_m', "0"))
             else:
                 total = 0
                 new = 0
                 success = 0
                 failed = 0
                 invalid = 0
+                total_d = 0
+                new_d = 0
+                success_d = 0
+                failed_d = 0
+                invalid_d = 0
+                total_h = 0
+                new_h = 0
+                success_h = 0
+                failed_h = 0
+                invalid_h = 0
+                total_m = 0
+                new_m = 0
+                success_m = 0
+                failed_m = 0
+                invalid_m = 0
 
             job_dict = {
                 'id': str(project.id),
@@ -133,6 +204,21 @@ class Handler(object):
                 'success': success,
                 'failed': failed,
                 'invalid': invalid,
+                'total_d': total_d,
+                'new_d': new_d,
+                'success_d': success_d,
+                'failed_d': failed_d,
+                'invalid_d': invalid_d,
+                'total_h': total_h,
+                'new_h': new_h,
+                'success_h': success_h,
+                'failed_h': failed_h,
+                'invalid_h': invalid_h,
+                'total_m': total_m,
+                'new_m': new_m,
+                'success_m': success_m,
+                'failed_m': failed_m,
+                'invalid_m': invalid_m,
                 'speed': int(project.downloader_dispatch),
                 'iplimit': int(project.downloader_interval),
                 'timeout': int(project.timeout),

@@ -55,6 +55,7 @@ class Task(Document):
     status = IntField(default=STATUS_LIVE, choices=STATUS_CHOICES)
     task_id = StringField(max_length=120)
     update_time = DateTimeField(default=datetime.datetime.now)
+    add_datetime = DateTimeField(default=datetime.datetime.now)
     schedule = StringField(max_length=1024)
     url = StringField(max_length=8000)
     args = StringField(max_length=2048, null=True)  # 存储cookie， header等信息
