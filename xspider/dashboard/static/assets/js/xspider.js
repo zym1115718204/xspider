@@ -75,7 +75,7 @@ jQuery(document).ready(function($)
                             // Redirect after successful login page (when progress bar reaches 100%)
                             if (resp.status == true) {
                                 toastr.success(resp.message, "Message:", opts);
-                                setTimeout(function(){ window.location.href = '/dashboard/debug/'+name;}, 600);
+                                setTimeout(function(){ window.location.href = '/dashboard/debug/'+data.project;}, 600);
                             }
                             else {
                                 // alert(resp.reason);
