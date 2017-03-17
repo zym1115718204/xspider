@@ -51,97 +51,97 @@
 </head>
 <body class="page-body">
 
-	<nav class="navbar horizontal-menu navbar-fixed-top navbar-minimal"><!-- set fixed position by adding class "navbar-fixed-top" -->
+	<!--<nav class="navbar horizontal-menu navbar-fixed-top navbar-minimal">&lt;!&ndash; set fixed position by adding class "navbar-fixed-top" &ndash;&gt;-->
 
-		<div class="navbar-inner">
+		<!--<div class="navbar-inner">-->
 
-			<!-- Navbar Brand -->
-			<div class="navbar-brand">
-				<a href="/dashboard" class="logo">
-					<img src="{% static 'assets/images/logo@3x.png' %}" width="80" alt="" class="hidden-xs" />
-					<img src="{% static 'assets/images/logo-white-bg@3x.png' %}" width="80" alt="" class="visible-xs" />
-				</a>
-			</div>
+			<!--&lt;!&ndash; Navbar Brand &ndash;&gt;-->
+			<!--<div class="navbar-brand">-->
+				<!--<a href="/dashboard" class="logo">-->
+					<!--<img src="{% static 'assets/images/logo@3x.png' %}" width="80" alt="" class="hidden-xs" />-->
+					<!--<img src="{% static 'assets/images/logo-white-bg@3x.png' %}" width="80" alt="" class="visible-xs" />-->
+				<!--</a>-->
+			<!--</div>-->
 
-			<!-- Mobile Toggles Links -->
-			<div class="nav navbar-mobile">
+			<!--&lt;!&ndash; Mobile Toggles Links &ndash;&gt;-->
+			<!--<div class="nav navbar-mobile">-->
 
-				<!-- This will toggle the mobile menu and will be visible only on mobile devices -->
-				<div class="mobile-menu-toggle">
-					<!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
-					<a href="#" data-toggle="settings-pane" data-animate="true">
-						<i class="linecons-cog"></i>
-					</a>
+				<!--&lt;!&ndash; This will toggle the mobile menu and will be visible only on mobile devices &ndash;&gt;-->
+				<!--<div class="mobile-menu-toggle">-->
+					<!--&lt;!&ndash; This will open the popup with user profile settings, you can use for any purpose, just be creative &ndash;&gt;-->
+					<!--<a href="#" data-toggle="settings-pane" data-animate="true">-->
+						<!--<i class="linecons-cog"></i>-->
+					<!--</a>-->
 
-					<a href="#" data-toggle="user-info-menu-horizontal">
-						<i class="fa-bell-o"></i>
-						<span class="badge badge-success">7</span>
-					</a>
+					<!--<a href="#" data-toggle="user-info-menu-horizontal">-->
+						<!--<i class="fa-bell-o"></i>-->
+						<!--<span class="badge badge-success">7</span>-->
+					<!--</a>-->
 
-					<!-- data-toggle="mobile-menu-horizontal" will show horizontal menu links only -->
-					<!-- data-toggle="mobile-menu" will show sidebar menu links only -->
-					<!-- data-toggle="mobile-menu-both" will show sidebar and horizontal menu links -->
-					<a href="#" data-toggle="mobile-menu-horizontal">
-						<i class="fa-bars"></i>
-					</a>
-				</div>
+					<!--&lt;!&ndash; data-toggle="mobile-menu-horizontal" will show horizontal menu links only &ndash;&gt;-->
+					<!--&lt;!&ndash; data-toggle="mobile-menu" will show sidebar menu links only &ndash;&gt;-->
+					<!--&lt;!&ndash; data-toggle="mobile-menu-both" will show sidebar and horizontal menu links &ndash;&gt;-->
+					<!--<a href="#" data-toggle="mobile-menu-horizontal">-->
+						<!--<i class="fa-bars"></i>-->
+					<!--</a>-->
+				<!--</div>-->
 
-			</div>
+			<!--</div>-->
 
-			<div class="navbar-mobile-clear"></div>
+			<!--<div class="navbar-mobile-clear"></div>-->
 
 
 
-			<!-- main menu -->
+			<!--&lt;!&ndash; main menu &ndash;&gt;-->
 
-			<ul class="navbar-nav">
-				<li class="opened active">
-					<a href="/dashboard">
-						<i class="linecons-cog"></i>
-						<span class="title">Dashboard</span>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<i class="linecons-desktop"></i>
-						<span class="title">Nodes</span>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<i class="linecons-note"></i>
-						<span class="title">Data</span>
-					</a>
-				</li>
-				<li>
-					<a href="http://127.0.0.1:5555/" target="_blank">
-						<i class="linecons-params"></i>
-						<span class="title">Flower</span>
-					</a>
-				</li>
-				<li>
-					<a href="">
-						<i class="linecons-diamond"></i>
-						<span class="title">Other</span>
-					</a>
-				</li>
-			</ul>
+			<!--<ul class="navbar-nav">-->
+				<!--<li class="opened active">-->
+					<!--<a href="/dashboard">-->
+						<!--<i class="linecons-cog"></i>-->
+						<!--<span class="title">Dashboard</span>-->
+					<!--</a>-->
+				<!--</li>-->
+				<!--<li>-->
+					<!--<a href="#">-->
+						<!--<i class="linecons-desktop"></i>-->
+						<!--<span class="title">Nodes</span>-->
+					<!--</a>-->
+				<!--</li>-->
+				<!--<li>-->
+					<!--<a href="#">-->
+						<!--<i class="linecons-note"></i>-->
+						<!--<span class="title">Data</span>-->
+					<!--</a>-->
+				<!--</li>-->
+				<!--<li>-->
+					<!--<a href="http://127.0.0.1:5555/" target="_blank">-->
+						<!--<i class="linecons-params"></i>-->
+						<!--<span class="title">Flower</span>-->
+					<!--</a>-->
+				<!--</li>-->
+				<!--<li>-->
+					<!--<a href="">-->
+						<!--<i class="linecons-diamond"></i>-->
+						<!--<span class="title">Other</span>-->
+					<!--</a>-->
+				<!--</li>-->
+			<!--</ul>-->
 
-			<!-- notifications and other links -->
+			<!--&lt;!&ndash; notifications and other links &ndash;&gt;-->
 
-		</div>
+		<!--</div>-->
 
-	</nav>
+	<!--</nav>-->
 
 
 	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
 
-		<div class="main-content">
+		<div class="main-content debug-content">
 
 			<div class="row">
 				<!--<div class="col-md-12">-->
 
-				<div class="panel panel-default">
+				<div class="panel panel-debug panel-default ">
 					<div class="panel-heading ">
 						<!--&lt;!&ndash;<h3 class="panel-title"><strong>Debug-{{project.name}}</strong></h3>&ndash;&gt;-->
 
@@ -157,28 +157,8 @@
 
 						<button class="btn btn-success btn-icon btn-icon-standalone btn-icon-standalone-right float-right btn-sm run-script">
 							<i class="fa-link"></i>
-							<span>Start</span>
+							<span>Run</span>
 						</button>
-
-						<!--<button class="btn btn-success btn-icon">-->
-							<!--<i class="fa-check"></i>-->
-							<!--<span>Install Update</span>-->
-						<!--</button>-->
-
-						<!--<button class="btn btn-purple btn-icon">-->
-							<!--<span>Right Icon</span>-->
-							<!--<i class="fa-pencil"></i>-->
-						<!--</button>-->
-
-						<!--<button class="btn btn-red btn-icon btn-icon-standalone">-->
-							<!--<i class="fa-magic"></i>-->
-							<!--<span>Standalone</span>-->
-						<!--</button>-->
-
-						<!--<button class="btn btn-blue btn-icon btn-icon-standalone btn-icon-standalone-right">-->
-							<!--<i class="fa-plane"></i>-->
-							<!--<span>Standalone Right</span>-->
-						<!--</button>-->
 
 					</div>
 
@@ -189,7 +169,8 @@
 							<div class="col-md-12 no-padding-textarea">
 
 								<div class="panel-heading run-task-table">
-									<strong>Debug Terminal</strong>
+                                    <div class="label label-default">Debug Terminal</div>
+                                    <br/>
 								</div>
 
 								<div class="no-padding-textarea">
@@ -208,7 +189,10 @@
 
 							<div id="task-table" class="hidden">
 								<div class="panel-heading">
-									<strong>Tasks</strong>
+
+									<div class="label label-default">New Tasks</div>
+                                    <span id="task-number" class="label label-secondary ">0</span>
+
 								</div>
 
 								<table class="table run-task-table">
