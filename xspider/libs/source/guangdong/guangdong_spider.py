@@ -96,17 +96,49 @@ class Spider(BaseSpider):
         }
         return result
 
-    def parser_item(self, response):
-        """
-        Parser Detail Page to Result
-        :param response:
-        :return: dict
-        """
-        print '--------' * 20
-        print response.content
+    def parse_item(self, response):
+        soup = BeautifulSoup(response.body, 'html.parser')
         result = {
-            "url": response.url,
-            "title": response.doc('title').text(),
-            "body": response.content
+            'url': response.url,
+            'title': response.doc('title').text()
         }
-        return result
+        result['ind_comm_pub_reg_basic'] = self.parser_ind_comm_pub_reg_basic(self, soup)
+        
+        yield result
+
+        # yield {
+        #     'encode': response.xpath('/html/body/div[1]/div[6]/div[5]/div[2]/div[1]/table/tbody/tr[2]/td[1]').extract_first(),
+        #     'name': response.xpath('/html/body/div[1]/div[6]/div[5]/div[2]/div[1]/table/tbody/tr[2]/td[2]').extract_first(),
+        #     'type': response.xpath('/html/body/div[1]/div[6]/div[5]/div[2]/div[1]/table/tbody/tr[3]/td[1]').extract_first(),
+        #     'eare': response.xpath('/html/body/div[1]/div[6]/div[5]/div[2]/div[1]/table/tbody/tr[9]/td').extract_first()
+        # }
+
+    def parser_ind_comm_pub_reg_basic(self, soup):
+        temp_dict = {}
+        div = soup.find('div', attrs={'class': 'infoStyle'})
+        if div:
+            tds = div.find('table').find_all('td')[1:]
+            for td in tds:
+                key, value = td.get_text().strip()[1:].split(u'：', 1)
+                print key.strip(), value.strip()
+                temp_dict[key.strip()] = value.strip()
+
+        else:
+            pass
+        return temp_dict
+
+
+    # def parser_item(self, response):
+    #     """
+    #     Parser Detail Page to Result
+    #     :param response:
+    #     :return: dict
+    #     """
+    #     print '--------' * 20
+    #     print response.content
+    #     result = {
+    #         "url": response.url,
+    #         "title": response.doc('title').text(),
+    #         "body": response.content
+    #     }
+    #     return result
