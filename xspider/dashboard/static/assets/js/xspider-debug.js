@@ -31,19 +31,14 @@ jQuery(document).ready(function($)
         styleActiveLine: true
         });
 
-    // var result_editor = CodeMirror.fromTextArea($(".json")[1], { //script_once_code为你的textarea的ID号
-    //     lineNumbers: true,//是否显示行号
-    //     mode: "application/json",　//默认脚本编码
-    //     lineWrapping: true,//是否强制换行
-    //     indentUnit: 2,
-    //     styleActiveLine: true
-    //     });
-
     var python_editor = CodeMirror.fromTextArea($(".python")[0], { //script_once_code为你的textarea的ID号
         lineNumbers: true,//是否显示行号
         mode: "python",　//默认脚本编码
         lineWrapping: true //是否强制换行
         });
+
+
+    /* debug page */
 
     //Edit Project
     function editProject(data) {
@@ -107,13 +102,14 @@ jQuery(document).ready(function($)
                                 status_editor.setValue(JSON.stringify(task_result));
                             }
                             else {
-                                status_editor.setValue("Debug...");
-                                var rowCount = tasks.length;
+                                status_editor.setValue("Debug...                                                                                ");
 
-                                console.log(tasks);
+                                var rowCount = tasks.length;
                                 var tbody = $("#url-table");
+                                var task_number = $("#task-number");
 
                                 tbody.html("<tr></tr>");
+                                task_number.html(rowCount);
                                 for (var i = 0; i < rowCount; i++){
                                     var task = tasks[i];
                                     var tr = $("<tr></tr>");
@@ -126,7 +122,7 @@ jQuery(document).ready(function($)
                                     else{
                                          var td = $("<td class=\"col-md-3 no-padding-textarea text-secondary\">" + task.result.callback+
                                                "</td><td class=\"col-md-8 no-padding-textarea text-info task-url\">" + task.result.url +
-                                               "</td><td class=\"col-md-1 no-padding-textarea\"><button class=\"btn btn-success btn-single btn-xs run-task\" task='"+
+                                               "</td><td class=\"col-md-1 no-padding-textarea \"><button class=\"btn btn-success btn-single btn-xs run-task\" task='"+
                                                JSON.stringify(task.result)+"'>run</button></td>");
                                     }
                                     td.appendTo(tr);
@@ -145,6 +141,7 @@ jQuery(document).ready(function($)
                                  $(".task-url").on('click',function(){
                                      var task = $(this).parent().find('button').attr('task');
                                      status_editor.setValue(task);
+                                     $(this).removeClass("text-info");
                                 });
                                 $("#task-table").removeClass("hidden");
                             }
@@ -167,22 +164,6 @@ jQuery(document).ready(function($)
             });
 
     }
-
-    /*
-    function showAjaxModal()
-			{
-				jQuery('#modal-7').modal('show', {backdrop: 'static'});
-
-//				jQuery.ajax({
-//					url: "data/ajax-content.txt",
-//					success: function(response)
-//					{
-//						jQuery('#modal-7 .modal-body').html(response);
-//					}
-//				});
-			}*/
-
-    /* debug page */
 
     //Save Scripts
     $(".save-script").click(function () {

@@ -49,7 +49,8 @@ class Spider(BaseSpider):
         urls = []
         for each in response.doc('a[href^="http"]').items():
             _url = self.generate(each.attr.href, callback=self.parser_detail)
-            urls.append(_url)
+            if _url not in urls:
+                urls.append(_url)
 
         result = {
             "urls": urls

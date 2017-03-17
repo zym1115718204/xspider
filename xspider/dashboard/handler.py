@@ -285,7 +285,6 @@ class Command(object):
                 if data.get("info", False):
                     project.update(info=str(data.get("info".strip())))
                 if data.get("script", False):
-                    print str(data.get("script".strip()))
                     project.update(script=str(data.get("script".strip())))
                 if data.get("interval", False):
                     project.update(generator_interval=str(int(data.get("interval").strip())))
@@ -494,8 +493,6 @@ class Command(object):
                 project_id = str(project.id)
                 generator = Generator(project_id)
                 task = generator.run_generator()
-                print "Task debug:"
-                print task
 
                 # processor = Processor(task=task["result"])
                 # result = processor.run_processor()
@@ -539,9 +536,6 @@ class Command(object):
             else:
                 processor = Processor(task=task)
                 result = processor.run_processor()
-
-                print "Result debug:"
-                print result
 
                 # processor = Processor(task=task["result"])
                 # result = processor.run_processor()
