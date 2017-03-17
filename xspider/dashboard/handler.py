@@ -249,7 +249,7 @@ class Command(object):
                 if data.get("info", False):
                     project.update(info=str(data.get("info".strip())))
                 if data.get("script", False):
-                    project.update(script=str(data.get("script".strip())))
+                    project.update(script=str(data.get("script".strip()).encode('utf8')))
                 if data.get("interval", False):
                     project.update(generator_interval=str(int(data.get("interval").strip())))
                 if data.get("ip_limit", False):
@@ -264,6 +264,7 @@ class Command(object):
                     "status": False,
                     "project": name,
                     "message": "Bad Parameters",
+                    "reason": traceback.format_exc(),
                     "code": 4003,
                 }
             except Exception:
