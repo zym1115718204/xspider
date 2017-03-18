@@ -199,63 +199,67 @@
 									<td>{{ project.speed }} </td>
 									<td>{{ project.iplimit }}</td>
 
-									<td class="middle-align progress-align" title="total(): 	{{ project.total }}
-new(): 		{{ project.new }}
-success(): 	{{ project.success }}
-invalid(): 	{{ project.invalid }}
-failed(): 	{{ project.failed }}">
+									<td class="middle-align progress-align" title="1 minute:
+total(): 	{{ project.total_m }}
+new(): 		{{ project.new_m }}
+success({{ project.success_rate_m }}%): 	{{ project.success_m }}
+invalid({{ project.invalid_rate_m }}%): 	{{ project.invalid_m }}
+failed({{ project.failed_rate_m }}%): 	{{ project.failed_m }}">
 										<div class="progress" >
-											<div class="progress-text">5mins : {{ project.total }}</div>
-											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
+											<div class="progress-text">1min : {{ project.total_m }}</div>
+											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate_m }}%">
 											</div>
-											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
+											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate_m }}%">
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
 											</div>
-											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
+											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate_m }}%">
 											</div>
 										</div>
 
 									</td>
-									<td class="middle-align" title="total(): 	{{ project.total }}
-new(): 		{{ project.new }}
-success(): 	{{ project.success }}
-invalid(): 	{{ project.invalid }}
-failed(): 	{{ project.failed }}">
+									<td class="middle-align" title="1 hour:
+total(): 	{{ project.total_h }}
+new(): 		{{ project.new_h }}
+success({{ project.success_rate_h }}%): 	{{ project.success_h }}
+invalid({{ project.invalid_rate_h }}%): 	{{ project.invalid_h }}
+failed({{ project.failed_rate_h }}%): 	{{ project.failed_h }}">
 										<div class="progress" >
-											<div class="progress-text">1hour : {{ project.total }}</div>
-											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
+											<div class="progress-text">1hour : {{ project.total_h }}</div>
+											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate_h }}%">
 											</div>
-											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
+											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate_h }}%">
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
 											</div>
-											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
+											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate_h }}%">
 											</div>
 										</div>
 									</td>
-									<td class="middle-align" title="total(): 	{{ project.total }}
-new(): 		{{ project.new }}
-success(): 	{{ project.success }}
-invalid(): 	{{ project.invalid }}
-failed(): 	{{ project.failed }}">
+									<td class="middle-align" title="1 day:
+total(): 	{{ project.total_d }}
+new(): 		{{ project.new_d }}
+success({{ project.success_rate_d }}%): 	{{ project.success_d }}
+invalid({{ project.invalid_rate_d }}%): 	{{ project.invalid_d }}
+failed({{ project.failed_rate_d }}%): 	{{ project.failed_d }}">
 										<div class="progress" >
-											<div class="progress-text">1day : {{ project.total }}</div>
-											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
+											<div class="progress-text">1day : {{ project.total_d }}</div>
+											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate_d }}%">
 											</div>
-											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate }}%">
+											<div class="progress-bar progress-bar-success" style="width: {{ project.success_rate_d }}%">
 											</div>
 											<div class="progress-bar progress-bar-warning" style="width: 0.0%">
 											</div>
-											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate }}%">
+											<div class="progress-bar progress-bar-danger" style="width: {{ project.failed_rate_d }}%">
 											</div>
 										</div>
 									</td>
-									<td class="middle-align" title="total(): 	{{ project.total }}
+									<td class="middle-align" title="all:
+total(): 	{{ project.total }}
 new(): 		{{ project.new }}
-success(): 	{{ project.success }}
-invalid(): 	{{ project.invalid }}
-failed(): 	{{ project.failed }}">
+success({{ project.success_rate }}%): 	{{ project.success }}
+invalid({{ project.invalid_rate }}%): 	{{ project.invalid }}
+failed({{ project.failed_rate }}%): 	{{ project.failed }}">
 										<div class="progress" >
 											<div class="progress-text">Total : {{ project.total }}</div>
 											<div class="progress-bar progress-bar-info" style="width: {{ project.invalid_rate }}%">
