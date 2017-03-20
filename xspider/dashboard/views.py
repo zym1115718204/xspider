@@ -139,6 +139,38 @@ def debug(request, name):
 
 @csrf_exempt
 @render_json
+def data(request):
+    """
+    Debug Command API
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request)
+
+    return render_to_response("data.html", {"projects": projects})
+
+
+@csrf_exempt
+@render_json
+def result(request, name):
+    """
+    Debug Command API
+    :param request:
+    :return:
+    """
+    if name is not None:
+
+        handler = Handler()
+        projects = handler.query_projects_status_by_redis(request, name=name)
+
+        return render_to_response("result.html", {"project": projects[0]})
+    else:
+        pass # 404
+
+
+@csrf_exempt
+@render_json
 def create_project(request):
     """
     Create Project Command API
@@ -194,6 +226,36 @@ def run_project(request):
     return result
 
 
+@csrf_exempt
+@render_json
+def result_project(request):
+    """
+    Query Projcet Result Command API
+    :param request:
+    :return:
+    """
+    name = request.GET.get("project")
+    page = int(request.GET.get("page", '1'))
+    rows = int(request.GET.get("rows", '10'))
+
+    if name and page > 0 and rows > 0:
+        handler = Handler()
+        _result = handler.query_result_by_name(name, page, rows)
+        result = {
+            "status": True,
+            "project": name,
+            "result": _result,
+            "message":"Query Reuslt Succeed!",
+            "code": 2001,
+        }
+    else:
+        result = {
+            "status": False,
+            "project": name,
+            "message": "Bad Parameters",
+            "code": 4001,
+        }
+    return result
 
 
 def test(request):

@@ -4,9 +4,11 @@
 # Project: Web Handler
 
 import os
+import time
 import json
 import redis
 import string
+import codecs
 import datetime
 import traceback
 
@@ -138,7 +140,8 @@ class Handler(object):
         r = redis.Redis.from_url(settings.ANALYSIS_REDIS)
         _projects = self._query.query_projects_by_name(name)
         projects = []
-        for project in _projects:
+
+        for i, project in enumerate(_projects):
             REDIS_TABLE = "{0}_status".format(project.name)
             r_dict = r.hgetall(REDIS_TABLE)
 
@@ -190,6 +193,7 @@ class Handler(object):
                 invalid_m = 0
 
             job_dict = {
+                'index': i,
                 'id': str(project.id),
                 'name': project.name,
                 'group': project.group,
@@ -229,6 +233,15 @@ class Handler(object):
             projects.append(job_dict)
 
         return projects
+
+    def query_result_by_name(self, name, page, rows):
+        """
+        Query result by project name
+        :param name:
+        :return:
+        """
+        result = self._query.dump_as_json_by_name(name, page, rows)
+        return result
 
     def edit_project_settings(self, data):
         """
@@ -294,6 +307,52 @@ class Query(object):
             projects = Project.objects(name=name)
 
         return projects
+
+    @staticmethod
+    def query_result_by_name(name, page, rows):
+        """
+        Query result by project name
+        :return:
+        """
+        data = []
+        total = 0
+        result = []
+        start = time.time()
+        exec("from execute.{0}_models import {1}Result".format(name, name.capitalize()))
+        exec("total = {0}Result.objects().count()".format(name.capitalize()))
+        exec("data = {0}Result.objects()[((page * rows - 1) // rows) * rows:page * rows]".format(name.capitalize()))
+
+        for _data in data:
+            print "###",
+            print _data["task"]
+            print _data["id"]
+            print _data["result"]
+            _result = json.loads(_data["result"])
+            _result["update_datetime"] = _data["update_datetime"].strftime("%Y-%m-%d %H:%M:%S"),
+            result.append(_result)
+
+        return {
+            "project": name,
+            "data": result,
+            "total": total,
+            "total_page": (total + rows - 1) // rows,
+            "page": page,
+            "status": True,
+            "spend_time": time.time()-start
+        }
+
+    def dump_as_json_by_name(self, name, page, rows):
+        """
+        Dump as Json
+        :return:
+        """
+        name = smart_unicode(name)
+        project = Project.objects(name=name).first()
+        if project:
+            result = self.query_result_by_name(name, page, rows)
+        else:
+            result = None
+        return result
 
 
 class Command(object):

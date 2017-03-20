@@ -244,7 +244,7 @@ class Processor(object):
         :return:
         """
         result = self.process_task()
-        if result["status"] and result["result"].get("urls", False):
+        if result["status"] and result["result"].get("urls", False) is not False:
             _task = []
             for url_dict in result["result"]["urls"]:
                 _result = self.storage.store_task(url_dict)
