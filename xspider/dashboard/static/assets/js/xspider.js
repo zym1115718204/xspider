@@ -217,6 +217,9 @@ jQuery(document).ready(function($)
         var name = inputs.eq(0).val().toLowerCase();
         var url = inputs.eq(1).val();
 
+        if(url == ""){
+            url = "__START_URL__"
+        }
         var data = {
             command: true,
             project: name,

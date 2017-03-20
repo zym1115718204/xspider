@@ -141,46 +141,76 @@
 
 
 
-			<!--&lt;!&ndash; Tables and Panels &ndash;&gt;-->
-			<!--<div class="row">-->
-				<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
+			<div class="row">
+				<!--<div class="col-md-12">-->
 
-					<!--<div class="panel panel-default">-->
+					<div class="panel panel-default">
+
+						<h3 class="text-gray">
+							Project List <br />
+							<small class="text-muted">From-to based counters who start counting once they appear on screen and they are all available in 15 color variants.</small>
+						</h3>
 						<!--<div class="panel-heading">-->
-							<!--<h3 class="panel-title"><strong>Projects Status</strong></h3>-->
+							<!--<h3 class="panel-title"><strong>Projects Data</strong></h3>-->
 
 							<!--<div class="panel-options">-->
 
-                                <!--<button class="btn btn-purple btn-icon btn-sm float-right create-btn">-->
-									<!--<span>Create</span>-->
+                                <!--<button class="btn btn-purple btn-icon btn-sm float-right ">-->
+									<!--<span>Refresh</span>-->
 									<!--<i class="fa-pencil"></i>-->
 								<!--</button>-->
 							<!--</div>-->
 						<!--</div>-->
 
-						<!--<table class="table table-striped">-->
-							<!--<thead>-->
-								<!--<tr>-->
-									<!--<th class="col-md-1">Group</th>-->
-									<!--<th class="col-md-1">Project</th>-->
-									<!--<th class="col-md-1">Status</th>-->
-									<!--<th class="col-md-1">Generate Interval</th>-->
-									<!--<th class="col-md-1">Dispatch Number</th>-->
-									<!--<th class="col-md-1">IP Limit</th>-->
-									<!--<th class="col-md-1">Progress</th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-2">Actions</th>-->
-								<!--</tr>-->
-							<!--</thead>-->
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th class="col-md-1">Group</th>
+									<th class="col-md-1">Project</th>
+									<th class="col-md-1">Status</th>
+									<th class="col-md-1">Result</th>
+									<th class="col-md-1">Success</th>
+									<th class="col-md-1">Start Time</th>
+									<th class="col-md-2">Download</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for project in projects %}
+								<tr>
+									<td>{{ project.group }}</td>
+									<td>
+										<a href="/dashboard/data/{{project.name}}" >
+											<strong class="text-secondary">{{ project.name }}</strong>
+										</a>
+									</td>
+									<td>
+										{% if project.status == 0 %}
+										<span class="label label-danger" value="0">Closed</span>
+										{% elif project.status == 1 %}
+										<span class="label label-success" value="1">Running</span>
+										{% elif project.status == 2 %}
+										<span class="label label-info" value="2">Debug</span>
+										{% elif project.status == 3 %}
+										<span class="label label-warning" value="3">Delay</span>
+										{% endif %}
+									</td>
+									<td>{{ project.total }}</td>
+									<td>{{ project.success }}</td>
+									<td>{{ project.add_datetime }}</td>
+									<td>
+									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-secondary btn-sm btn-icon icon-left json-btn">JSON</a>
+									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-info btn-sm btn-icon icon-left json-btn">CSV</a>
+									</td>
 
+								</tr>
+							{% endfor %}
+							</tbody>
 
-						<!--</table>-->
-					<!--</div>-->
+						</table>
+					</div>
 
-				<!--&lt;!&ndash;</div>&ndash;&gt;-->
-            <!--</div>-->
+				<!--</div>-->
+            </div>
 
             <div class="row">
 
@@ -244,261 +274,196 @@
 
 					<!--</div>-->
 				<!--</div>-->
+				<div class="panel panel-default">
+					<h3 class="text-gray">
+						Project Data <br />
+						<small class="text-muted">From-to based counters who start counting once they appear on screen and they are all available in 15 color variants.</small>
+					</h3>
 
-				<h3 class="text-gray">
-					Project Data <br />
-					<small class="text-muted">From-to based counters who start counting once they appear on screen and they are all available in 15 color variants.</small>
-				</h3>
 
-				<!-- Xenon Block Counter Widget -->
-				<div class="row">
+					<!-- Xenon Block Counter Widget -->
+					<div class="row">
 
-					{% for project in projects %}
-					<a href="/dashboard/data/{{project.name}}">
+						{% for project in projects %}
+						<a href="/dashboard/data/{{project.name}}">
 
-						<div class="col-sm-3">
-						<div class="xe-widget
-						{% if project.index == 0 %}
-						xe-counter-block
-						{% elif project.index == 1 %}
-						xe-counter-block xe-counter-block-purple
-						{% elif project.index == 2 %}
-						xe-counter-block xe-counter-block-blue
-						{% elif project.index == 3 %}
-						xe-counter-block xe-counter-block-orange
-						{% elif project.index == 4 %}
-						xe-counter-block xe-counter-block-pink
-						{% elif project.index == 5 %}
-						xe-counter-block xe-counter-block-turquoise
-						{% elif project.index == 6 %}
-						xe-counter-block xe-counter-block-info
-						{% elif project.index == 7 %}
-						xe-counter-block xe-counter-block-red
-						{% endif %}
-						" data-count=".num" data-from="0" data-to="{{ project.total }}" data-suffix="" data-duration="2">
-							<div class="xe-upper">
+							<div class="col-sm-3">
+							<div class="xe-widget
+							{% if project.index == 0 %}
+							xe-counter-block
+							{% elif project.index == 1 %}
+							xe-counter-block xe-counter-block-purple
+							{% elif project.index == 2 %}
+							xe-counter-block xe-counter-block-blue
+							{% elif project.index == 3 %}
+							xe-counter-block xe-counter-block-orange
+							{% elif project.index == 4 %}
+							xe-counter-block xe-counter-block-pink
+							{% elif project.index == 5 %}
+							xe-counter-block xe-counter-block-turquoise
+							{% elif project.index == 6 %}
+							xe-counter-block xe-counter-block-info
+							{% elif project.index == 7 %}
+							xe-counter-block xe-counter-block-red
+							{% endif %}
+							" data-count=".num" data-from="0" data-to="{{ project.total }}" data-suffix="" data-duration="2">
+								<div class="xe-upper">
 
-								<div class="xe-icon">
-									<i class="linecons-cloud"></i>
+									<div class="xe-icon">
+										<i class="linecons-cloud"></i>
+									</div>
+									<div class="xe-label">
+										<strong class="num"></strong>
+										<span><strong>{{ project.name }}</strong></span>
+									</div>
+
 								</div>
-								<div class="xe-label">
-									<strong class="num"></strong>
-									<span><strong>{{ project.name }}</strong></span>
+								<div class="xe-lower">
+									<div class="border"></div>
+
+									<span>Start Time</span>
+									<strong>{{ project.add_datetime}}</strong>
 								</div>
-
 							</div>
-							<div class="xe-lower">
-								<div class="border"></div>
 
-								<span>Start Time</span>
-								<strong>{{ project.add_datetime}}</strong>
-							</div>
 						</div>
+
+						</a>
+
+						{% endfor %}
 
 					</div>
 
-					</a>
-
-					{% endfor %}
-					<!--<div class="col-sm-3">-->
-
-						<!--<div class="xe-widget xe-counter-block xe-counter-block-purple" data-count=".num" data-from="0" data-to="512" data-duration="3">-->
-							<!--<div class="xe-upper">-->
-
-								<!--<div class="xe-icon">-->
-									<!--<i class="linecons-camera"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<strong class="num">0</strong>-->
-									<!--<span>Photos Taken</span>-->
-								<!--</div>-->
-
-							<!--</div>-->
-							<!--<div class="xe-lower">-->
-								<!--<div class="border"></div>-->
-
-								<!--<span>Increase</span>-->
-								<!--<strong>512 more photos</strong>-->
-							<!--</div>-->
-						<!--</div>-->
-
-					<!--</div>-->
-					<!--<div class="col-sm-3">-->
-
-						<!--<div class="xe-widget xe-counter-block xe-counter-block-blue" data-suffix="k" data-count=".num" data-from="0" data-to="310" data-duration="4" data-easing="false">-->
-							<!--<div class="xe-upper">-->
-
-								<!--<div class="xe-icon">-->
-									<!--<i class="linecons-user"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<strong class="num">0k</strong>-->
-									<!--<span>Daily Visits</span>-->
-								<!--</div>-->
-
-							<!--</div>-->
-							<!--<div class="xe-lower">-->
-								<!--<div class="border"></div>-->
-
-								<!--<span>Bounce Rate</span>-->
-								<!--<strong>51.55%</strong>-->
-							<!--</div>-->
-						<!--</div>-->
-
-					<!--</div>-->
-					<!--<div class="col-sm-3">-->
-
-						<!--<div class="xe-widget xe-counter-block xe-counter-block-orange">-->
-							<!--<div class="xe-upper">-->
-
-								<!--<div class="xe-icon">-->
-									<!--<i class="fa-life-ring"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<strong class="num">24/7</strong>-->
-									<!--<span>Live Support</span>-->
-								<!--</div>-->
-
-							<!--</div>-->
-							<!--<div class="xe-lower">-->
-								<!--<div class="border"></div>-->
-
-								<!--<span>Tickets Opened</span>-->
-								<!--<strong data-count="this" data-from="0" data-to="14215" data-duration="2">0</strong>-->
-							<!--</div>-->
-						<!--</div>-->
-
-					<!--</div>-->
 				</div>
 
-				<div class="row">
-
-
-				<!-- Xenon Progress Counter Widget -->
 				<!--<div class="row">-->
-					<!--<div class="col-sm-3">-->
 
-						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-pink" data-count=".num" data-from="0" data-to="12425" data-duration="2">-->
 
-							<!--<div class="xe-background">-->
-								<!--<i class="linecons-heart"></i>-->
-							<!--</div>-->
+				<!--&lt;!&ndash; Xenon Progress Counter Widget &ndash;&gt;-->
+				<!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
+					<!--&lt;!&ndash;<div class="col-sm-3">&ndash;&gt;-->
 
-							<!--<div class="xe-upper">-->
-								<!--<div class="xe-icon">-->
-									<!--<i class="linecons-heart"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<span>likes</span>-->
-									<!--<strong class="num">0</strong>-->
-								<!--</div>-->
-							<!--</div>-->
+						<!--&lt;!&ndash;<div class="xe-widget xe-progress-counter xe-progress-counter-pink" data-count=".num" data-from="0" data-to="12425" data-duration="2">&ndash;&gt;-->
 
-							<!--<div class="xe-progress">-->
-								<!--<span class="xe-progress-fill" data-fill-from="0" data-fill-to="56" data-fill-unit="%" data-fill-property="width" data-fill-duration="2" data-fill-easing="true"></span>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-background">&ndash;&gt;-->
+								<!--&lt;!&ndash;<i class="linecons-heart"></i>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-lower">-->
-								<!--<span>Likes p/ Month</span>-->
-								<!--<strong>41% more likes</strong>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-upper">&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-icon">&ndash;&gt;-->
+									<!--&lt;!&ndash;<i class="linecons-heart"></i>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-label">&ndash;&gt;-->
+									<!--&lt;!&ndash;<span>likes</span>&ndash;&gt;-->
+									<!--&lt;!&ndash;<strong class="num">0</strong>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-progress">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span class="xe-progress-fill" data-fill-from="0" data-fill-to="56" data-fill-unit="%" data-fill-property="width" data-fill-duration="2" data-fill-easing="true"></span>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-					<!--</div>-->
-					<!--<div class="col-sm-3">-->
+							<!--&lt;!&ndash;<div class="xe-lower">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span>Likes p/ Month</span>&ndash;&gt;-->
+								<!--&lt;!&ndash;<strong>41% more likes</strong>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-turquoise" data-count=".num" data-from="0" data-to="520" data-suffix="k" data-duration="3">-->
+						<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-background">-->
-								<!--<i class="linecons-paper-plane"></i>-->
-							<!--</div>-->
+					<!--&lt;!&ndash;</div>&ndash;&gt;-->
+					<!--&lt;!&ndash;<div class="col-sm-3">&ndash;&gt;-->
 
-							<!--<div class="xe-upper">-->
-								<!--<div class="xe-icon">-->
-									<!--<i class="linecons-paper-plane"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<span>chat lines</span>-->
-									<!--<strong class="num">0</strong>-->
-								<!--</div>-->
-							<!--</div>-->
+						<!--&lt;!&ndash;<div class="xe-widget xe-progress-counter xe-progress-counter-turquoise" data-count=".num" data-from="0" data-to="520" data-suffix="k" data-duration="3">&ndash;&gt;-->
 
-							<!--<div class="xe-progress">-->
-								<!--<span class="xe-progress-fill" data-fill-from="0" data-fill-to="82" data-fill-unit="%" data-fill-property="width" data-fill-duration="3" data-fill-easing="true"></span>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-background">&ndash;&gt;-->
+								<!--&lt;!&ndash;<i class="linecons-paper-plane"></i>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-lower">-->
-								<!--<span>Chat lines p/ Month</span>-->
-								<!--<strong>82% more communication</strong>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-upper">&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-icon">&ndash;&gt;-->
+									<!--&lt;!&ndash;<i class="linecons-paper-plane"></i>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-label">&ndash;&gt;-->
+									<!--&lt;!&ndash;<span>chat lines</span>&ndash;&gt;-->
+									<!--&lt;!&ndash;<strong class="num">0</strong>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-progress">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span class="xe-progress-fill" data-fill-from="0" data-fill-to="82" data-fill-unit="%" data-fill-property="width" data-fill-duration="3" data-fill-easing="true"></span>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-					<!--</div>-->
-					<!--<div class="col-sm-3">-->
+							<!--&lt;!&ndash;<div class="xe-lower">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span>Chat lines p/ Month</span>&ndash;&gt;-->
+								<!--&lt;!&ndash;<strong>82% more communication</strong>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-info" data-count=".num" data-from="0" data-to="289" data-suffix="k" data-duration="4">-->
+						<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-background">-->
-								<!--<i class="linecons-music"></i>-->
-							<!--</div>-->
+					<!--&lt;!&ndash;</div>&ndash;&gt;-->
+					<!--&lt;!&ndash;<div class="col-sm-3">&ndash;&gt;-->
 
-							<!--<div class="xe-upper">-->
-								<!--<div class="xe-icon">-->
-									<!--<i class="linecons-music"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<span>audio views</span>-->
-									<!--<strong class="num">0</strong>-->
-								<!--</div>-->
-							<!--</div>-->
+						<!--&lt;!&ndash;<div class="xe-widget xe-progress-counter xe-progress-counter-info" data-count=".num" data-from="0" data-to="289" data-suffix="k" data-duration="4">&ndash;&gt;-->
 
-							<!--<div class="xe-progress">-->
-								<!--<span class="xe-progress-fill" data-fill-from="0" data-fill-to="40" data-fill-unit="%" data-fill-property="width" data-fill-duration="4" data-fill-easing="true"></span>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-background">&ndash;&gt;-->
+								<!--&lt;!&ndash;<i class="linecons-music"></i>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-lower">-->
-								<!--<span>Audio views p/ Month</span>-->
-								<!--<strong>40% more coverage</strong>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-upper">&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-icon">&ndash;&gt;-->
+									<!--&lt;!&ndash;<i class="linecons-music"></i>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-label">&ndash;&gt;-->
+									<!--&lt;!&ndash;<span>audio views</span>&ndash;&gt;-->
+									<!--&lt;!&ndash;<strong class="num">0</strong>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-progress">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span class="xe-progress-fill" data-fill-from="0" data-fill-to="40" data-fill-unit="%" data-fill-property="width" data-fill-duration="4" data-fill-easing="true"></span>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-					<!--</div>-->
-					<!--<div class="col-sm-3">-->
+							<!--&lt;!&ndash;<div class="xe-lower">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span>Audio views p/ Month</span>&ndash;&gt;-->
+								<!--&lt;!&ndash;<strong>40% more coverage</strong>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-red" data-count=".num" data-from="46" data-to="27" data-duration="3">-->
+						<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-background">-->
-								<!--<i class="linecons-calendar"></i>-->
-							<!--</div>-->
+					<!--&lt;!&ndash;</div>&ndash;&gt;-->
+					<!--&lt;!&ndash;<div class="col-sm-3">&ndash;&gt;-->
 
-							<!--<div class="xe-upper">-->
-								<!--<div class="xe-icon">-->
-									<!--<i class="linecons-calendar"></i>-->
-								<!--</div>-->
-								<!--<div class="xe-label">-->
-									<!--<span>appointments</span>-->
-									<!--<strong class="num">0</strong>-->
-								<!--</div>-->
-							<!--</div>-->
+						<!--&lt;!&ndash;<div class="xe-widget xe-progress-counter xe-progress-counter-red" data-count=".num" data-from="46" data-to="27" data-duration="3">&ndash;&gt;-->
 
-							<!--<div class="xe-progress">-->
-								<!--<span class="xe-progress-fill" data-fill-from="89" data-fill-to="40" data-fill-unit="%" data-fill-property="width" data-fill-duration="3" data-fill-easing="true"></span>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-background">&ndash;&gt;-->
+								<!--&lt;!&ndash;<i class="linecons-calendar"></i>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-							<!--<div class="xe-lower">-->
-								<!--<span>Appointments p/ Month</span>-->
-								<!--<strong>-32% less this week</strong>-->
-							<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-upper">&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-icon">&ndash;&gt;-->
+									<!--&lt;!&ndash;<i class="linecons-calendar"></i>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+								<!--&lt;!&ndash;<div class="xe-label">&ndash;&gt;-->
+									<!--&lt;!&ndash;<span>appointments</span>&ndash;&gt;-->
+									<!--&lt;!&ndash;<strong class="num">0</strong>&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-						<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-progress">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span class="xe-progress-fill" data-fill-from="89" data-fill-to="40" data-fill-unit="%" data-fill-property="width" data-fill-duration="3" data-fill-easing="true"></span>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-					<!--</div>-->
+							<!--&lt;!&ndash;<div class="xe-lower">&ndash;&gt;-->
+								<!--&lt;!&ndash;<span>Appointments p/ Month</span>&ndash;&gt;-->
+								<!--&lt;!&ndash;<strong>-32% less this week</strong>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+						<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+					<!--&lt;!&ndash;</div>&ndash;&gt;-->
+				<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
 				<!--</div>-->
-
-				</div>
 
 
 			</div>
@@ -530,247 +495,6 @@
 
 	</div>
 
-	<!-- Modal 6 (Long Modal)-->
-		<div class="modal fade" id="edit-page">
-
-
-			<div class="modal-dialog">
-				<div class="modal-content">
-
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title"><strong>Project Settings</strong><br /></h4>
-					</div>
-
-					<div class="modal-body">
-
-						<div class="row">
-							<div class="col-md-6">
-
-								<div class="form-group">
-									<label for="field-1" class="control-label"><strong>Group</strong><br /></label>
-									<input type="text" class="form-control" id="field-1" placeholder="">
-								</div>
-
-							</div>
-
-							<div class="col-md-6">
-
-								<div class="form-group">
-									<label for="field-2" class="control-label"><strong>Name</strong><br /></label>
-
-									<input type="text"   class="form-control" id="field-2" placeholder="" disabled>
-								</div>
-
-							</div>
-						</div>
-
-						<!--<div class="row">-->
-							<!--<div class="col-md-12">-->
-
-								<!--<div class="form-group">-->
-									<!--<label for="field-3" class="control-label"><strong>Information</strong><br /></label>-->
-
-									<!--<input type="text" class="form-control" id="field-3" placeholder="">-->
-								<!--</div>-->
-
-							<!--</div>-->
-						<!--</div>-->
-
-						<div class="row">
-							<div class="col-md-4">
-
-								<div class="form-group">
-									<label for="field-4" class="control-label"><strong>Generate Interval</strong><br /></label>
-
-									<input type="text" class="form-control" id="field-4" placeholder="">
-								</div>
-
-							</div>
-
-							<div class="col-md-4">
-
-								<div class="form-group">
-									<label for="field-5" class="control-label"><strong>Dispatch Number</strong><br /></label>
-
-									<input type="text" class="form-control" id="field-5" placeholder="">
-								</div>
-
-							</div>
-
-							<div class="col-md-4">
-
-								<div class="form-group">
-									<label for="field-6" class="control-label"><strong>IP Limit Interval</strong><br /></label>
-
-									<input type="text" class="form-control" id="field-6" placeholder="">
-								</div>
-
-							</div>
-						</div>
-
-						<div class="row" id="field-7" value="">
-							<div class="col-md-12">
-								<strong>Status</strong>
-								<br />
-								<br />
-							</div>
-
-							<div class="col-sm-6" >
-
-								<ul class="icheck-list" >
-									<li>
-
-
-
-											<input class="icheck-11" type="radio" name="minimal-radio-1" value="0">
-
-										<label>Closed</label>
-									</li>
-									<li>
-
-
-
-											<input class="icheck-11" type="radio" name="minimal-radio-1" value="1" >
-
-										<label>Running</label>
-									</li>
-								</ul>
-
-							</div>
-
-							<div class="col-sm-6">
-
-								<ul class="icheck-list">
-									<li>
-
-
-											<input class="icheck-11" type="radio" name="minimal-radio-1" value="2" >
-
-										<label>Debug</label>
-									</li>
-									<li>
-
-											<input class="icheck-11" type="radio" name="minimal-radio-1" value="3">
-
-
-										<label>Delay</label>
-									</li>
-								</ul>
-
-							</div>
-						</div>
-
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
-						<a href="" onclick="return false" class="btn btn-info edit-save">Save changes</a>
-					</div>
-				</div>
-			</div>
-		</div>
-
-    <!-- Modal 6 (Long Modal)-->
-		<div class="modal fade" id="create-page">
-
-
-			<div class="modal-dialog">
-				<div class="modal-content">
-
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title"><strong>New Project</strong><br /></h4>
-					</div>
-
-					<div class="modal-body">
-
-						<div class="row">
-							<div class="col-md-8">
-
-								<div class="form-group">
-									<label for="field-8" class="control-label"><strong>Name</strong><br /></label>
-									<input type="text" class="form-control" id="field-8" placeholder="Project Name">
-								</div>
-
-							</div>
-							<div class="col-md-12">
-
-								<div class="form-group">
-									<label for="field-9" class="control-label"><strong>URL</strong><br /></label>
-
-									<input type="text"  class="form-control" id="field-9" placeholder="http://www.baidu.com">
-								</div>
-
-							</div>
-						</div>
-
-						<!--<div class="row">-->
-
-                            <!--<div class="panel-body">-->
-
-                                    <!--&lt;!&ndash;<form role="form" id="form1" method="post" class="validate" >&ndash;&gt;-->
-
-                                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<label class="control-label"><strong>Name</strong></label>&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="name" data-validate="required" data-message-required="project name is required." placeholder="Project Name" />&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-                                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<label class="control-label"><strong>URL</strong></label>&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="url" data-validate="url" placeholder="http://www.example.com" />&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-                                        <!--&lt;!&ndash;<div class="form-group hidden">&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<label class="control-label"><strong>command</strong></label>&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="command" data-validate="required" placeholder="URL" value="true"/>&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-                                        <!--&lt;!&ndash;&lt;!&ndash;<div class="form-group">&ndash;&gt;&ndash;&gt;-->
-                                            <!--&lt;!&ndash;&lt;!&ndash;<button type="submit" class="btn btn-success">Create</button>&ndash;&gt;&ndash;&gt;-->
-                                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<div class="modal-footer">&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<button type="submit" class="btn btn-success">Create</button>&ndash;&gt;-->
-                                            <!--&lt;!&ndash;&lt;!&ndash;<a href="" onclick="return false" class="btn btn-info create-save">Create</a>&ndash;&gt;&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</form>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-						<!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
-
-							<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
-
-								<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-									<!--&lt;!&ndash;&lt;!&ndash;<label for="field-11" class="control-label"><strong>URL</strong><br /></label>&ndash;&gt;&ndash;&gt;-->
-
-							<!--&lt;!&ndash;<label class="control-label">URL Field</label>&ndash;&gt;-->
-
-							<!--&lt;!&ndash;<input type="text" class="form-control" name="url" data-validate="required,url" placeholder="URL" />&ndash;&gt;-->
-
-									<!--&lt;!&ndash;&lt;!&ndash;<input type="text" class="form-control" id="field-11" placeholder="http://www.example.com">&ndash;&gt;&ndash;&gt;-->
-								<!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-							<!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-						<!--&lt;!&ndash;</div>&ndash;&gt;-->
-						<!--</div>-->
-
-					<!--</div>-->
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
-						<a href="" onclick="return false" class="btn btn-info create-save">Save changes</a>
-					</div>
-			</div>
-		</div>
-
-
-
 	<!-- Imported styles on this page -->
 	<link rel="stylesheet" href="{% static 'assets/js/icheck/skins/all.css' %}">
 	<link rel="stylesheet" href="{% static 'assets//css/fonts/meteocons/css/meteocons.css' %}">
@@ -798,7 +522,7 @@
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
-	<!--<script src="{% static 'assets/js/xspider.js' %}"></script>-->
+	<script src="{% static 'assets/js/xspider-data.js' %}"></script>
 
 </body>
 </html>

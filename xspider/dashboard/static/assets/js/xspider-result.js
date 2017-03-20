@@ -103,7 +103,7 @@ jQuery(document).ready(function($)
     };
 
     $(".json-btn").click(function () {
-        var project = $("#project-title").attr('name');
+        var project = $(this).attr('name');
         window.location.href = "/dashboard/api/result?project="+project+"&page=1&rows=10";
     })
 
