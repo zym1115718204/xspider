@@ -1,0 +1,796 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Xenon Boostrap Admin Panel" />
+	<meta name="author" content="" />
+
+	<title>XSpider</title>
+
+	<!--<link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">-->
+	<link rel="stylesheet" href="{% static 'assets/css/fonts/linecons/css/linecons.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/fonts/fontawesome/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/xenon-core.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/xenon-forms.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/xenon-components.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/xenon-skins.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+
+	<script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js' %}"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js' %}"></script>
+	<![endif]-->
+
+
+</head>
+<body class="page-body">
+
+	<nav class="navbar horizontal-menu navbar-fixed-top navbar-minimal"><!-- set fixed position by adding class "navbar-fixed-top" -->
+
+		<div class="navbar-inner">
+
+			<!-- Navbar Brand -->
+			<div class="navbar-brand">
+				<a href="/dashboard" class="logo">
+					<img src="{% static 'assets/images/logo@3x.png' %}" width="80" alt="" class="hidden-xs" />
+					<img src="{% static 'assets/images/logo-white-bg@3x.png' %}" width="80" alt="" class="visible-xs" />
+				</a>
+			</div>
+
+			<!-- Mobile Toggles Links -->
+			<div class="nav navbar-mobile">
+
+				<!-- This will toggle the mobile menu and will be visible only on mobile devices -->
+				<div class="mobile-menu-toggle">
+					<!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
+					<a href="#" data-toggle="settings-pane" data-animate="true">
+						<i class="linecons-cog"></i>
+					</a>
+
+					<a href="#" data-toggle="user-info-menu-horizontal">
+						<i class="fa-bell-o"></i>
+						<span class="badge badge-success">7</span>
+					</a>
+
+					<!-- data-toggle="mobile-menu-horizontal" will show horizontal menu links only -->
+					<!-- data-toggle="mobile-menu" will show sidebar menu links only -->
+					<!-- data-toggle="mobile-menu-both" will show sidebar and horizontal menu links -->
+					<a href="#" data-toggle="mobile-menu-horizontal">
+						<i class="fa-bars"></i>
+					</a>
+				</div>
+
+			</div>
+
+			<div class="navbar-mobile-clear"></div>
+
+
+
+			<!-- main menu -->
+
+			<ul class="navbar-nav">
+				<li>
+					<a href="/dashboard">
+						<i class="linecons-cog"></i>
+						<span class="title">Dashboard</span>
+					</a>
+				</li>
+				<li>
+					<a href="/dashboard/nodes">
+						<i class="linecons-desktop"></i>
+						<span class="title">Nodes</span>
+					</a>
+				</li>
+				<li  class="opened active">
+					<a href="/dashboard/data">
+						<i class="linecons-note"></i>
+						<span class="title">Data</span>
+					</a>
+				</li>
+				<li>
+					<a href="http://127.0.0.1:5555/" target="_blank">
+						<i class="linecons-params"></i>
+						<span class="title">Flower</span>
+					</a>
+				</li>
+				<li>
+					<a href="">
+						<i class="linecons-diamond"></i>
+						<span class="title">Other</span>
+					</a>
+				</li>
+			</ul>
+
+
+			<!-- notifications and other links -->
+
+		</div>
+
+	</nav>
+
+	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+
+		<div class="main-content">
+
+			<script>
+			jQuery(document).ready(function($)
+			{
+				$('a[href="#layout-variants"]').on('click', function(ev)
+				{
+					ev.preventDefault();
+
+					var win = {top: $(window).scrollTop(), toTop: $("#layout-variants").offset().top - 15};
+
+					TweenLite.to(win, .3, {top: win.toTop, roundProps: ["top"], ease: Sine.easeInOut, onUpdate: function()
+						{
+							$(window).scrollTop(win.top);
+						}
+					});
+				});
+			});
+			</script>
+
+
+
+			<!--&lt;!&ndash; Tables and Panels &ndash;&gt;-->
+			<!--<div class="row">-->
+				<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
+
+					<!--<div class="panel panel-default">-->
+						<!--<div class="panel-heading">-->
+							<!--<h3 class="panel-title"><strong>Projects Status</strong></h3>-->
+
+							<!--<div class="panel-options">-->
+
+                                <!--<button class="btn btn-purple btn-icon btn-sm float-right create-btn">-->
+									<!--<span>Create</span>-->
+									<!--<i class="fa-pencil"></i>-->
+								<!--</button>-->
+							<!--</div>-->
+						<!--</div>-->
+
+						<!--<table class="table table-striped">-->
+							<!--<thead>-->
+								<!--<tr>-->
+									<!--<th class="col-md-1">Group</th>-->
+									<!--<th class="col-md-1">Project</th>-->
+									<!--<th class="col-md-1">Status</th>-->
+									<!--<th class="col-md-1">Generate Interval</th>-->
+									<!--<th class="col-md-1">Dispatch Number</th>-->
+									<!--<th class="col-md-1">IP Limit</th>-->
+									<!--<th class="col-md-1">Progress</th>-->
+									<!--<th class="col-md-1"></th>-->
+									<!--<th class="col-md-1"></th>-->
+									<!--<th class="col-md-1"></th>-->
+									<!--<th class="col-md-2">Actions</th>-->
+								<!--</tr>-->
+							<!--</thead>-->
+
+
+						<!--</table>-->
+					<!--</div>-->
+
+				<!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--</div>-->
+
+            <div class="row">
+
+				<!--<h3 class="text-gray">-->
+					<!--All Counters <br />-->
+					<!--<small class="text-muted">From-to based counters who start counting once they appear on screen and they are all available in 15 color variants.</small>-->
+				<!--</h3>-->
+
+				<!--&lt;!&ndash; Xenon Counter Widget &ndash;&gt;-->
+				<!--<div class="row">-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter" data-count=".num" data-from="0" data-to="99.9" data-suffix="%" data-duration="2">-->
+							<!--<div class="xe-icon">-->
+								<!--<i class="linecons-cloud"></i>-->
+							<!--</div>-->
+							<!--<div class="xe-label">-->
+								<!--<strong class="num">0.0%</strong>-->
+								<!--<span>Server uptime</span>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter xe-counter-blue" data-count=".num" data-from="1" data-to="117" data-suffix="k" data-duration="3" data-easing="false">-->
+							<!--<div class="xe-icon">-->
+								<!--<i class="linecons-user"></i>-->
+							<!--</div>-->
+							<!--<div class="xe-label">-->
+								<!--<strong class="num">1k</strong>-->
+								<!--<span>Users Total</span>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter xe-counter-info" data-count=".num" data-from="1000" data-to="2470" data-duration="4" data-easing="true">-->
+							<!--<div class="xe-icon">-->
+								<!--<i class="linecons-camera"></i>-->
+							<!--</div>-->
+							<!--<div class="xe-label">-->
+								<!--<strong class="num">1000</strong>-->
+								<!--<span>New Daily Photos</span>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter xe-counter-red" data-count=".num" data-from="0" data-to="57" data-prefix="-," data-suffix="%" data-duration="5" data-easing="true" data-delay="1">-->
+							<!--<div class="xe-icon">-->
+								<!--<i class="linecons-lightbulb"></i>-->
+							<!--</div>-->
+							<!--<div class="xe-label">-->
+								<!--<strong class="num">-,0%</strong>-->
+								<!--<span>Exchange Commission</span>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+				<!--</div>-->
+
+				<h3 class="text-gray">
+					Project Data <br />
+					<small class="text-muted">From-to based counters who start counting once they appear on screen and they are all available in 15 color variants.</small>
+				</h3>
+
+				<!-- Xenon Block Counter Widget -->
+				<div class="row">
+
+					{% for project in projects %}
+					<a href="/dashboard/data/{{project.name}}">
+
+						<div class="col-sm-3">
+						<div class="xe-widget
+						{% if project.index == 0 %}
+						xe-counter-block
+						{% elif project.index == 1 %}
+						xe-counter-block xe-counter-block-purple
+						{% elif project.index == 2 %}
+						xe-counter-block xe-counter-block-blue
+						{% elif project.index == 4 %}
+						xe-counter-block xe-counter-block-orange
+						{% endif %}
+						" data-count=".num" data-from="0" data-to="{{ project.total }}" data-suffix="" data-duration="2">
+							<div class="xe-upper">
+
+								<div class="xe-icon">
+									<i class="linecons-cloud"></i>
+								</div>
+								<div class="xe-label">
+									<strong class="num"></strong>
+									<span><strong>{{ project.name }}</strong></span>
+								</div>
+
+							</div>
+							<div class="xe-lower">
+								<div class="border"></div>
+
+								<span>Start Time</span>
+								<strong>{{ project.add_datetime}}</strong>
+							</div>
+						</div>
+
+					</div>
+
+					</a>
+
+					{% endfor %}
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter-block xe-counter-block-purple" data-count=".num" data-from="0" data-to="512" data-duration="3">-->
+							<!--<div class="xe-upper">-->
+
+								<!--<div class="xe-icon">-->
+									<!--<i class="linecons-camera"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<strong class="num">0</strong>-->
+									<!--<span>Photos Taken</span>-->
+								<!--</div>-->
+
+							<!--</div>-->
+							<!--<div class="xe-lower">-->
+								<!--<div class="border"></div>-->
+
+								<!--<span>Increase</span>-->
+								<!--<strong>512 more photos</strong>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter-block xe-counter-block-blue" data-suffix="k" data-count=".num" data-from="0" data-to="310" data-duration="4" data-easing="false">-->
+							<!--<div class="xe-upper">-->
+
+								<!--<div class="xe-icon">-->
+									<!--<i class="linecons-user"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<strong class="num">0k</strong>-->
+									<!--<span>Daily Visits</span>-->
+								<!--</div>-->
+
+							<!--</div>-->
+							<!--<div class="xe-lower">-->
+								<!--<div class="border"></div>-->
+
+								<!--<span>Bounce Rate</span>-->
+								<!--<strong>51.55%</strong>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-counter-block xe-counter-block-orange">-->
+							<!--<div class="xe-upper">-->
+
+								<!--<div class="xe-icon">-->
+									<!--<i class="fa-life-ring"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<strong class="num">24/7</strong>-->
+									<!--<span>Live Support</span>-->
+								<!--</div>-->
+
+							<!--</div>-->
+							<!--<div class="xe-lower">-->
+								<!--<div class="border"></div>-->
+
+								<!--<span>Tickets Opened</span>-->
+								<!--<strong data-count="this" data-from="0" data-to="14215" data-duration="2">0</strong>-->
+							<!--</div>-->
+						<!--</div>-->
+
+					<!--</div>-->
+				</div>
+
+				<div class="row">
+
+
+				<!-- Xenon Progress Counter Widget -->
+				<!--<div class="row">-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-pink" data-count=".num" data-from="0" data-to="12425" data-duration="2">-->
+
+							<!--<div class="xe-background">-->
+								<!--<i class="linecons-heart"></i>-->
+							<!--</div>-->
+
+							<!--<div class="xe-upper">-->
+								<!--<div class="xe-icon">-->
+									<!--<i class="linecons-heart"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<span>likes</span>-->
+									<!--<strong class="num">0</strong>-->
+								<!--</div>-->
+							<!--</div>-->
+
+							<!--<div class="xe-progress">-->
+								<!--<span class="xe-progress-fill" data-fill-from="0" data-fill-to="56" data-fill-unit="%" data-fill-property="width" data-fill-duration="2" data-fill-easing="true"></span>-->
+							<!--</div>-->
+
+							<!--<div class="xe-lower">-->
+								<!--<span>Likes p/ Month</span>-->
+								<!--<strong>41% more likes</strong>-->
+							<!--</div>-->
+
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-turquoise" data-count=".num" data-from="0" data-to="520" data-suffix="k" data-duration="3">-->
+
+							<!--<div class="xe-background">-->
+								<!--<i class="linecons-paper-plane"></i>-->
+							<!--</div>-->
+
+							<!--<div class="xe-upper">-->
+								<!--<div class="xe-icon">-->
+									<!--<i class="linecons-paper-plane"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<span>chat lines</span>-->
+									<!--<strong class="num">0</strong>-->
+								<!--</div>-->
+							<!--</div>-->
+
+							<!--<div class="xe-progress">-->
+								<!--<span class="xe-progress-fill" data-fill-from="0" data-fill-to="82" data-fill-unit="%" data-fill-property="width" data-fill-duration="3" data-fill-easing="true"></span>-->
+							<!--</div>-->
+
+							<!--<div class="xe-lower">-->
+								<!--<span>Chat lines p/ Month</span>-->
+								<!--<strong>82% more communication</strong>-->
+							<!--</div>-->
+
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-info" data-count=".num" data-from="0" data-to="289" data-suffix="k" data-duration="4">-->
+
+							<!--<div class="xe-background">-->
+								<!--<i class="linecons-music"></i>-->
+							<!--</div>-->
+
+							<!--<div class="xe-upper">-->
+								<!--<div class="xe-icon">-->
+									<!--<i class="linecons-music"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<span>audio views</span>-->
+									<!--<strong class="num">0</strong>-->
+								<!--</div>-->
+							<!--</div>-->
+
+							<!--<div class="xe-progress">-->
+								<!--<span class="xe-progress-fill" data-fill-from="0" data-fill-to="40" data-fill-unit="%" data-fill-property="width" data-fill-duration="4" data-fill-easing="true"></span>-->
+							<!--</div>-->
+
+							<!--<div class="xe-lower">-->
+								<!--<span>Audio views p/ Month</span>-->
+								<!--<strong>40% more coverage</strong>-->
+							<!--</div>-->
+
+						<!--</div>-->
+
+					<!--</div>-->
+					<!--<div class="col-sm-3">-->
+
+						<!--<div class="xe-widget xe-progress-counter xe-progress-counter-red" data-count=".num" data-from="46" data-to="27" data-duration="3">-->
+
+							<!--<div class="xe-background">-->
+								<!--<i class="linecons-calendar"></i>-->
+							<!--</div>-->
+
+							<!--<div class="xe-upper">-->
+								<!--<div class="xe-icon">-->
+									<!--<i class="linecons-calendar"></i>-->
+								<!--</div>-->
+								<!--<div class="xe-label">-->
+									<!--<span>appointments</span>-->
+									<!--<strong class="num">0</strong>-->
+								<!--</div>-->
+							<!--</div>-->
+
+							<!--<div class="xe-progress">-->
+								<!--<span class="xe-progress-fill" data-fill-from="89" data-fill-to="40" data-fill-unit="%" data-fill-property="width" data-fill-duration="3" data-fill-easing="true"></span>-->
+							<!--</div>-->
+
+							<!--<div class="xe-lower">-->
+								<!--<span>Appointments p/ Month</span>-->
+								<!--<strong>-32% less this week</strong>-->
+							<!--</div>-->
+
+						<!--</div>-->
+
+					<!--</div>-->
+				<!--</div>-->
+
+				</div>
+
+
+			</div>
+
+
+			<!-- Main Footer -->
+			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+			<!-- Or class "fixed" to  always fix the footer to the end of page -->
+			<footer class="main-footer sticky footer-type-1">
+
+				<div class="footer-inner">
+
+					<!-- Add your copyright text here -->
+
+					<!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
+					<div class="go-up">
+
+						<a href="#" rel="go-top">
+							<i class="fa-angle-up"></i>
+						</a>
+
+					</div>
+
+				</div>
+
+			</footer>
+		</div>
+
+	</div>
+
+	<!-- Modal 6 (Long Modal)-->
+		<div class="modal fade" id="edit-page">
+
+
+			<div class="modal-dialog">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title"><strong>Project Settings</strong><br /></h4>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-md-6">
+
+								<div class="form-group">
+									<label for="field-1" class="control-label"><strong>Group</strong><br /></label>
+									<input type="text" class="form-control" id="field-1" placeholder="">
+								</div>
+
+							</div>
+
+							<div class="col-md-6">
+
+								<div class="form-group">
+									<label for="field-2" class="control-label"><strong>Name</strong><br /></label>
+
+									<input type="text"   class="form-control" id="field-2" placeholder="" disabled>
+								</div>
+
+							</div>
+						</div>
+
+						<!--<div class="row">-->
+							<!--<div class="col-md-12">-->
+
+								<!--<div class="form-group">-->
+									<!--<label for="field-3" class="control-label"><strong>Information</strong><br /></label>-->
+
+									<!--<input type="text" class="form-control" id="field-3" placeholder="">-->
+								<!--</div>-->
+
+							<!--</div>-->
+						<!--</div>-->
+
+						<div class="row">
+							<div class="col-md-4">
+
+								<div class="form-group">
+									<label for="field-4" class="control-label"><strong>Generate Interval</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-4" placeholder="">
+								</div>
+
+							</div>
+
+							<div class="col-md-4">
+
+								<div class="form-group">
+									<label for="field-5" class="control-label"><strong>Dispatch Number</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-5" placeholder="">
+								</div>
+
+							</div>
+
+							<div class="col-md-4">
+
+								<div class="form-group">
+									<label for="field-6" class="control-label"><strong>IP Limit Interval</strong><br /></label>
+
+									<input type="text" class="form-control" id="field-6" placeholder="">
+								</div>
+
+							</div>
+						</div>
+
+						<div class="row" id="field-7" value="">
+							<div class="col-md-12">
+								<strong>Status</strong>
+								<br />
+								<br />
+							</div>
+
+							<div class="col-sm-6" >
+
+								<ul class="icheck-list" >
+									<li>
+
+
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="0">
+
+										<label>Closed</label>
+									</li>
+									<li>
+
+
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="1" >
+
+										<label>Running</label>
+									</li>
+								</ul>
+
+							</div>
+
+							<div class="col-sm-6">
+
+								<ul class="icheck-list">
+									<li>
+
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="2" >
+
+										<label>Debug</label>
+									</li>
+									<li>
+
+											<input class="icheck-11" type="radio" name="minimal-radio-1" value="3">
+
+
+										<label>Delay</label>
+									</li>
+								</ul>
+
+							</div>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
+						<a href="" onclick="return false" class="btn btn-info edit-save">Save changes</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+    <!-- Modal 6 (Long Modal)-->
+		<div class="modal fade" id="create-page">
+
+
+			<div class="modal-dialog">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title"><strong>New Project</strong><br /></h4>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-md-8">
+
+								<div class="form-group">
+									<label for="field-8" class="control-label"><strong>Name</strong><br /></label>
+									<input type="text" class="form-control" id="field-8" placeholder="Project Name">
+								</div>
+
+							</div>
+							<div class="col-md-12">
+
+								<div class="form-group">
+									<label for="field-9" class="control-label"><strong>URL</strong><br /></label>
+
+									<input type="text"  class="form-control" id="field-9" placeholder="http://www.baidu.com">
+								</div>
+
+							</div>
+						</div>
+
+						<!--<div class="row">-->
+
+                            <!--<div class="panel-body">-->
+
+                                    <!--&lt;!&ndash;<form role="form" id="form1" method="post" class="validate" >&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<label class="control-label"><strong>Name</strong></label>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="name" data-validate="required" data-message-required="project name is required." placeholder="Project Name" />&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<label class="control-label"><strong>URL</strong></label>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="url" data-validate="url" placeholder="http://www.example.com" />&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;<div class="form-group hidden">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<label class="control-label"><strong>command</strong></label>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control" name="command" data-validate="required" placeholder="URL" value="true"/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                                        <!--&lt;!&ndash;&lt;!&ndash;<div class="form-group">&ndash;&gt;&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;<button type="submit" class="btn btn-success">Create</button>&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<div class="modal-footer">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<button type="submit" class="btn btn-success">Create</button>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;<a href="" onclick="return false" class="btn btn-info create-save">Create</a>&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</form>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+						<!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
+
+							<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
+
+								<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+									<!--&lt;!&ndash;&lt;!&ndash;<label for="field-11" class="control-label"><strong>URL</strong><br /></label>&ndash;&gt;&ndash;&gt;-->
+
+							<!--&lt;!&ndash;<label class="control-label">URL Field</label>&ndash;&gt;-->
+
+							<!--&lt;!&ndash;<input type="text" class="form-control" name="url" data-validate="required,url" placeholder="URL" />&ndash;&gt;-->
+
+									<!--&lt;!&ndash;&lt;!&ndash;<input type="text" class="form-control" id="field-11" placeholder="http://www.example.com">&ndash;&gt;&ndash;&gt;-->
+								<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+						<!--&lt;!&ndash;</div>&ndash;&gt;-->
+						<!--</div>-->
+
+					<!--</div>-->
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+						<!--<button type="button" class="btn btn-info"><>Save changes</button>-->
+						<a href="" onclick="return false" class="btn btn-info create-save">Save changes</a>
+					</div>
+			</div>
+		</div>
+
+
+
+	<!-- Imported styles on this page -->
+	<link rel="stylesheet" href="{% static 'assets/js/icheck/skins/all.css' %}">
+	<link rel="stylesheet" href="{% static 'assets//css/fonts/meteocons/css/meteocons.css' %}">
+
+
+	<!-- Imported scripts on this page -->
+	<script src="{% static 'assets/js/icheck/icheck.min.js' %}"></script>
+
+	<!-- Bottom Scripts -->
+	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'assets/js/TweenMax.min.js' %}"></script>
+	<script src="{% static 'assets/js/resizeable.js' %}"></script>
+	<script src="{% static 'assets/js/joinable.js' %}"></script>
+	<script src="{% static 'assets/js/xenon-api.js' %}"></script>
+	<script src="{% static 'assets/js/xenon-toggles.js' %}"></script>
+
+    <!-- Imported scripts on  message-->
+    <script src="{% static 'assets/js/toastr/toastr.min.js' %}"></script>
+	<script src="{% static 'assets/js/jquery-validate/jquery.validate.min.js' %}"></script>
+
+	<script src="{% static 'assets/js/xenon-widgets.js' %}"></script>
+	<script src="{% static 'assets/js/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+	<script src="{% static 'assets/js/jvectormap/regions/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+
+	<!-- JavaScripts initializations and stuff -->
+	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
+	<!--<script src="{% static 'assets/js/xspider.js' %}"></script>-->
+
+</body>
+</html>
