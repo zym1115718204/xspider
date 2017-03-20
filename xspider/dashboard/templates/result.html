@@ -187,18 +187,21 @@
 					<!--</div>-->
 				<!--</div>-->
 				<div class="panel-heading">
-							<h3 class="panel-title"><strong>{{ project.name }} Result</strong></h3>
+							<h3 class="panel-title" id="project-title" name="{{ project.name }}"><strong>{{ project.name }} Result</strong></h3>
 
 							<div class="panel-options">
 
-                                <button class="btn btn-purple btn-icon btn-sm float-right create-btn">
-									<span>Json</span>
-									<i class="fa-file-code-o"></i>
-								</button>
-								<button class="btn btn-blue btn-icon btn-sm float-right create-btn">
+                                <button class="btn btn-purple btn-icon btn-sm float-right csv-btn">
 									<span>CSV</span>
 									<i class="fa-download"></i>
 								</button>
+
+
+								<button class="btn btn-blue btn-icon btn-sm float-right json-btn">
+									<span>Json</span>
+									<i class="fa-file-code-o"></i>
+								</button>
+
 							</div>
 						</div>
 				<div class="panel-body">

@@ -193,7 +193,7 @@ class Handler(object):
                 invalid_m = 0
 
             job_dict = {
-                'index': i,
+                'index': i%8,
                 'id': str(project.id),
                 'name': project.name,
                 'group': project.group,
@@ -323,10 +323,6 @@ class Query(object):
         exec("data = {0}Result.objects()[((page * rows - 1) // rows) * rows:page * rows]".format(name.capitalize()))
 
         for _data in data:
-            print "###",
-            print _data["task"]
-            print _data["id"]
-            print _data["result"]
             _result = json.loads(_data["result"])
             _result["update_datetime"] = _data["update_datetime"].strftime("%Y-%m-%d %H:%M:%S"),
             result.append(_result)

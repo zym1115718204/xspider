@@ -6,3 +6,5 @@ mongoengine
 flower
 pyquery
 beautifulsoup4
+selenium
+pillow
