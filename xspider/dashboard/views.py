@@ -88,6 +88,92 @@ def index(request):
 
 @csrf_exempt
 @render_json
+def debug(request, name):
+    """
+    Debug index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request, name=name)
+    project = projects[0]
+
+    return render_to_response("debug.html", {'project': project})
+
+
+@csrf_exempt
+@render_json
+def data(request):
+    """
+    Data index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request)
+
+    return render_to_response("data.html", {"projects": projects})
+
+
+@csrf_exempt
+@render_json
+def result(request, name):
+    """
+    Result detail index page
+    :param request:
+    :return:
+    """
+    if name is not None:
+        handler = Handler()
+        projects = handler.query_projects_status_by_redis(request, name=name)
+
+        return render_to_response("result.html", {"project": projects[0]})
+    else:
+        return
+        # todo
+
+
+@csrf_exempt
+@render_json
+def task(request):
+    """
+    Task index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request)
+
+    return render_to_response("task.html", {"projects": projects})
+
+
+@csrf_exempt
+@render_json
+def log(request, task_id):
+    """
+    Task index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request)
+
+    return render_to_response("log.html", {"projects": projects})
+
+
+@csrf_exempt
+@render_json
+def api(request):
+    """
+    API index page
+    :param request:
+    :return:
+    """
+    return render_to_response("api.html")
+
+
+@csrf_exempt
+@render_json
 def edit_project(request):
     """
     Edit Project Command API
@@ -120,53 +206,6 @@ def edit_project(request):
         }
 
     return result
-
-
-@csrf_exempt
-@render_json
-def debug(request, name):
-    """
-    Debug Command API
-    :param request:
-    :return:
-    """
-    handler = Handler()
-    projects = handler.query_projects_status_by_redis(request, name=name)
-    project = projects[0]
-
-    return render_to_response("debug.html", {'project': project})
-
-
-@csrf_exempt
-@render_json
-def data(request):
-    """
-    Debug Command API
-    :param request:
-    :return:
-    """
-    handler = Handler()
-    projects = handler.query_projects_status_by_redis(request)
-
-    return render_to_response("data.html", {"projects": projects})
-
-
-@csrf_exempt
-@render_json
-def result(request, name):
-    """
-    Debug Command API
-    :param request:
-    :return:
-    """
-    if name is not None:
-
-        handler = Handler()
-        projects = handler.query_projects_status_by_redis(request, name=name)
-
-        return render_to_response("result.html", {"project": projects[0]})
-    else:
-        pass # 404
 
 
 @csrf_exempt

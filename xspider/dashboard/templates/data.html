@@ -103,9 +103,9 @@
 					</a>
 				</li>
 				<li>
-					<a href="">
-						<i class="linecons-diamond"></i>
-						<span class="title">Other</span>
+					<a href="/dashboard/api">
+						<i class="linecons-cloud"></i>
+						<span class="title">API</span>
 					</a>
 				</li>
 			</ul>
@@ -168,9 +168,10 @@
 									<th class="col-md-1">Group</th>
 									<th class="col-md-1">Project</th>
 									<th class="col-md-1">Status</th>
-									<th class="col-md-1">Result</th>
+									<th class="col-md-1">Task</th>
 									<th class="col-md-1">Success</th>
-									<th class="col-md-1">Start Time</th>
+									<th class="col-md-1">Result</th>
+									<th class="col-md-2">Start Time</th>
 									<th class="col-md-2">Download</th>
 								</tr>
 							</thead>
@@ -196,6 +197,7 @@
 									</td>
 									<td>{{ project.total }}</td>
 									<td>{{ project.success }}</td>
+									<td>{{ project.result_total }}</td>
 									<td>{{ project.add_datetime }}</td>
 									<td>
 									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-secondary btn-sm btn-icon icon-left json-btn">JSON</a>
@@ -306,7 +308,7 @@
 							{% elif project.index == 7 %}
 							xe-counter-block xe-counter-block-red
 							{% endif %}
-							" data-count=".num" data-from="0" data-to="{{ project.total }}" data-suffix="" data-duration="2">
+							" data-count=".num" data-from="0" data-to="{{ project.result_total }}" data-suffix="" data-duration="2">
 								<div class="xe-upper">
 
 									<div class="xe-icon">

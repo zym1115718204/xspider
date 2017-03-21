@@ -39,7 +39,8 @@ class Handler(object):
         for project in _projects:
             name = project.name
             group = project.group
-            model = "{0}Task".format(str(name).capitalize())
+            task = "{0}Task".format(str(name).capitalize())
+            result = "{0}Result".format(str(name).capitalize())
             now = datetime.datetime.now()
             day = now-datetime.timedelta(days=1)
             hour = now-datetime.timedelta(hours=1)
@@ -47,29 +48,31 @@ class Handler(object):
 
             # Notice: Checking
             exec ("from execute.{0}_models import *".format(name))
-            exec("total = {0}.objects().count()".format(model))
-            exec("new = {0}.objects(status={0}.STATUS_LIVE, ).count()".format(model))
-            exec("success = {0}.objects(status={0}.STATUS_SUCCESS).count()".format(model))
-            exec("failed = {0}.objects(status={0}.STATUS_FAIL).count()".format(model))
-            exec("invalid = {0}.objects(status={0}.STATUS_INVALID).count()".format(model))
+            exec("total = {0}.objects().count()".format(task))
+            exec("new = {0}.objects(status={0}.STATUS_LIVE, ).count()".format(task))
+            exec("success = {0}.objects(status={0}.STATUS_SUCCESS).count()".format(task))
+            exec("failed = {0}.objects(status={0}.STATUS_FAIL).count()".format(task))
+            exec("invalid = {0}.objects(status={0}.STATUS_INVALID).count()".format(task))
 
-            exec ("total_d = {0}.objects(add_datetime__gte=day).count()".format(model))
-            exec ("new_d = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=day).count()".format(model))
-            exec ("success_d = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=day).count()".format(model))
-            exec ("failed_d = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=day).count()".format(model))
-            exec ("invalid_d = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=day).count()".format(model))
+            exec ("total_d = {0}.objects(add_datetime__gte=day).count()".format(task))
+            exec ("new_d = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=day).count()".format(task))
+            exec ("success_d = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=day).count()".format(task))
+            exec ("failed_d = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=day).count()".format(task))
+            exec ("invalid_d = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=day).count()".format(task))
 
-            exec ("total_h = {0}.objects(add_datetime__gte=hour).count()".format(model))
-            exec ("new_h = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=hour).count()".format(model))
-            exec ("success_h = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=hour).count()".format(model))
-            exec ("failed_h = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=hour).count()".format(model))
-            exec ("invalid_h = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=hour).count()".format(model))
+            exec ("total_h = {0}.objects(add_datetime__gte=hour).count()".format(task))
+            exec ("new_h = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=hour).count()".format(task))
+            exec ("success_h = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=hour).count()".format(task))
+            exec ("failed_h = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=hour).count()".format(task))
+            exec ("invalid_h = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=hour).count()".format(task))
 
-            exec ("total_m = {0}.objects(add_datetime__gte=minute).count()".format(model))
-            exec ("new_m = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=minute).count()".format(model))
-            exec ("success_m = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=minute).count()".format(model))
-            exec ("failed_m = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=minute).count()".format(model))
-            exec ("invalid_m = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=minute).count()".format(model))
+            exec ("total_m = {0}.objects(add_datetime__gte=minute).count()".format(task))
+            exec ("new_m = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=minute).count()".format(task))
+            exec ("success_m = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=minute).count()".format(task))
+            exec ("failed_m = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=minute).count()".format(task))
+            exec ("invalid_m = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=minute).count()".format(task))
+
+            exec ("result_total = {0}.objects().count()".format(result))
 
             iplimit = project.downloader_interval
             priority = project.priority
@@ -110,6 +113,7 @@ class Handler(object):
                 'success_m': success_m,
                 'failed_m': failed_m,
                 'invalid_m': invalid_m,
+                'result_total': result_total,
                 'iplimit': iplimit,
                 'speed': speed,
                 'timeout': timeout,
@@ -170,6 +174,8 @@ class Handler(object):
                 success_m = int(project_status.get('success_m', "0"))
                 failed_m = int(project_status.get('failed_m', "0"))
                 invalid_m = int(project_status.get('invalid_m', "0"))
+
+                result_total = int(project_status.get('result_total', "0"))
             else:
                 total = 0
                 new = 0
@@ -191,6 +197,7 @@ class Handler(object):
                 success_m = 0
                 failed_m = 0
                 invalid_m = 0
+                result_total = 0
 
             job_dict = {
                 'index': i%8,
@@ -223,6 +230,7 @@ class Handler(object):
                 'success_m': success_m,
                 'failed_m': failed_m,
                 'invalid_m': invalid_m,
+                'result_total': result_total,
                 'speed': int(project.downloader_dispatch),
                 'iplimit': int(project.downloader_interval),
                 'timeout': int(project.timeout),
