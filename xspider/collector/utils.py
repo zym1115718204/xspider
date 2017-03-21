@@ -165,7 +165,7 @@ class Processor(object):
             ip_tactics = manager.get_ip()
 
             print ip_tactics
-            ip_tactics_dict = json.loads(ip_tactics)
+            ip_tactics_dict = ip_tactics
             if ip_tactics_dict.get('is_granted', False) is False:
                 raise IPLimitError("IP Access is Limited, Please Wait for Access Permission.")
             else:
