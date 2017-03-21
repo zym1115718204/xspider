@@ -235,6 +235,9 @@ jQuery(document).ready(function($)
         }
     });
 
+    //Auto-Refresh Interval
+    setInterval(function(){ window.location.reload();},60000);
+
 });
 
 

@@ -27,13 +27,14 @@ jQuery(document).ready(function($)
         lineNumbers: true,//是否显示行号
         mode: "application/json",　//默认脚本编码
         lineWrapping: true,//是否强制换行
-        indentUnit: 2,
+        indentUnit: 4,
         styleActiveLine: true
         });
 
     var python_editor = CodeMirror.fromTextArea($(".python")[0], { //script_once_code为你的textarea的ID号
         lineNumbers: true,//是否显示行号
         mode: "python",　//默认脚本编码
+        indentUnit: 4,
         lineWrapping: true //是否强制换行
         });
 

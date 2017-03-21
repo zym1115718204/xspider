@@ -45,7 +45,7 @@ jQuery(document).ready(function($)
                         finish: function () {
                             // Redirect after successful login page (when progress bar reaches 100%)
                             if (resp.status == true) {
-                                toastr.success(resp.message, "操作提示:", opts);
+                                toastr.success(resp.message, "Message:", opts);
                                 var result = resp.result;
                                 var data = result.data;
                                 console.log(result);
@@ -77,12 +77,12 @@ jQuery(document).ready(function($)
                             }
 
                             laypage({
-                                  cont: $("#example-5"), //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-                                  pages: result.total_page, //通过后台拿到的总页数
-                                  skip: true, //跳转页
-                                  curr: result.page || 1, //当前页
-                                  jump: function(obj, first){ //触发分页后的回调
-                                    if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+                                  cont: $("#example-5"),
+                                  pages: result.total_page,
+                                  skip: true,
+                                  curr: result.page || 1,
+                                  jump: function(obj, first){
+                                    if(!first){
                                       query_tasks(obj.curr);
                                     }
                                   }
