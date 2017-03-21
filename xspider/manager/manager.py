@@ -203,7 +203,7 @@ class SmartProxyPool(object):
     def update_redis_proxies_ip_pool(self):
         proxies_ip_list = self.get_proxies_ip_list()
         for key in self.r.hgetall(self.ip_rule_key).keys():
-            if ':' in key:
+            if ':' in key or key=='None':
                 self.r.hdel(self.ip_rule_key, key)
                 self.r.save()
 
