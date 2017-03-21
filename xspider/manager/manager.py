@@ -20,46 +20,46 @@ class Manager (object):
         """
         self.ip = ip
         self.project_name = project_name
+        self.ip_rule_key = settings.IP_RULE_KEY
         self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=10)
 
-    def _add_local_ip_record(self, reference_dict=None):
-        if not reference_dict is None:
-            reference_dict.update({self.ip: {
+    def _add_ip_record(self, reference_dict=None, key=None, project_name=None, is_local=False):
+        if reference_dict is not None:
+            reference_dict.update({project_name: {
                 "add_time": self._get_now_timestamp(),
                 "last_used_time": self._get_now_timestamp(),
                 "used_num": 1,
+                "is_online": True
                 }
             })
-        if self.r.get(self.project_name):
-            self.r.delete(self.project_name)
-            self.r.set(self.project_name, json.dumps(reference_dict))
-            self.r.save()
-        else:
-            self.r.set(self.project_name, json.dumps(reference_dict))
-            self.r.save()
+            if not reference_dict.has_key('status'):
+                reference_dict.update({'status': True})
+            if not reference_dict.has_key('is_local'):
+                reference_dict.update({'is_local': is_local})
 
-    def _update_proxies_ip_record(self, reference_dict=None):
-        if not reference_dict is None:
-            self.r.delete(self.project_name)
-            self.r.set(self.project_name, json.dumps(reference_dict))
-            self.r.save()
+        self.r.hset(self.ip_rule_key, key, json.dumps(reference_dict))
+        self.r.save()
 
     def _get_now_timestamp(self):
         return time.time()
 
     def _is_the_first_local_ip_can_use(self, target_dict=None, reference_dict=None):
         downloader_interval = float(target_dict.get('downloader_interval', 1000.0))
-        local_ip_dict = reference_dict.get(self.ip)
-        last_used_time = float(local_ip_dict.get('last_used_time'))
-        used_num = int(local_ip_dict.get('used_num', 0))
+        project_in_ip = reference_dict.get(self.project_name)
+        status = reference_dict.get('status')
+        is_online = project_in_ip.get('is_online')
+        last_used_time = float(project_in_ip.get('last_used_time'))
+        used_num = int(project_in_ip.get('used_num', 0))
         now_time = float(self._get_now_timestamp())
-        if last_used_time + downloader_interval <= now_time:
-            local_ip_dict.update({
+        if status and is_online and last_used_time + downloader_interval <= now_time:
+            project_in_ip.update({
                 'last_used_time': now_time,
                 'used_num': used_num + 1
             })
             used_num = used_num + 1
-            self._update_proxies_ip_record(reference_dict=reference_dict)
+            # self._update_ip_record(reference_dict=reference_dict, is_local=True)
+            self.r.hset(self.ip_rule_key, self.ip, json.dumps(reference_dict))
+            self.r.save()
             return True, self.ip, used_num
         else:
             return False, '0.0.0.0', used_num
@@ -68,56 +68,70 @@ class Manager (object):
         downloader_interval = float(target_dict.get('downloader_interval', 1000.0))
         now_time = float(self._get_now_timestamp())
         used_num = 0
-        for key, value in reference_dict.items():
-            if len(key.split(':')) <= 1:
+        for key in self.r.hgetall(self.ip_rule_key).keys():
+            if ':' in key:
+                _str = self.r.hget(self.ip_rule_key, key)
+                _dict = json.loads(_str) or {}
+                if not _dict.get(self.project_name) and _dict.get('status'):
+                    self._add_ip_record(reference_dict=_dict, project_name=self.project_name, key=key, is_local=False)
+                    return True, key, 1
+                else:
+                    last_used_time = float(_dict.get(self.project_name).get('last_used_time'))
+                    status = _dict.get('status')
+                    used_num = int(_dict.get(self.project_name).get('used_num'))
+                    is_online = _dict.get(self.project_name).get('is_online')
+                    if used_num == 0 or (status and is_online and (last_used_time + downloader_interval <= now_time)):
+                        is_granted, ip_port = True, key
+                        _dict.get(self.project_name).update({
+                            'last_used_time': now_time,
+                            'used_num': used_num + 1
+                        })
+                        used_num = used_num + 1
+                        self.r.hset(self.ip_rule_key, key, json.dumps(_dict))
+                        self.r.save()
+                        break
+            else:
                 continue
-            last_used_time = float(value.get('last_used_time'))
-            used_num = int(value.get('used_num'))
-            if used_num == 0 or last_used_time + downloader_interval <= now_time:
-                is_granted, ip_port = True, key
-                value.update({
-                    'last_used_time': now_time,
-                    'used_num': used_num + 1
-                    })
-                used_num = used_num + 1
-                break
         else:
             is_granted, ip_port, used_num = False, None, used_num
-        if is_granted:
-            self._update_proxies_ip_record(reference_dict=reference_dict)
+        
         return is_granted, ip_port, used_num
 
-    def _do_alanysis_with_redis(self, target_dict=None, reference_dict=None):
+    def _do_alanysis_with_redis(self, reference_dict=None, target_dict=None):
         """
         :param target_dict:
         :param reference_dict:
         :return: a_json_str
         """
 
-        first_local_ip = reference_dict.get(self.ip)
-        if first_local_ip:
-            is_granted, ip_port, used_num = self._is_the_first_local_ip_can_use(target_dict, reference_dict)
-            print '-----' * 10, is_granted
-            if not is_granted:
-                is_granted, ip_port, used_num = self._is_the_proxies_ip_can_use(target_dict, reference_dict)
+        _dict = reference_dict.get(str(self.project_name), {})
+        if _dict:
+            project_in_ip = reference_dict.get(self.project_name)
+            if project_in_ip:
+                is_granted, ip_port, used_num = self._is_the_first_local_ip_can_use(target_dict, reference_dict)
+                print '-----' * 10, is_granted
+                if not is_granted:
+                    is_granted, ip_port, used_num = self._is_the_proxies_ip_can_use(target_dict, reference_dict)
+
         else:
-            self._add_local_ip_record(reference_dict=reference_dict)
+            self._add_ip_record(reference_dict=reference_dict, project_name=self.project_name, is_local=True)
             is_granted = True
             ip_port = self.ip
             used_num = 1
 
-        return json.dumps({
+        return {
             'is_granted': is_granted,
             'local_ip': self.ip,
             'proxies_ip': ip_port if len(str(ip_port).split(':')) >= 2 else None,
             'count': used_num
-        })
+        }
+        
+        
 
     def _get_target_dict(self):
         """
         :return: a_dict
         """
-
         try:
             one_project = Project.objects.filter(name=self.project_name).first()
             print 'one_project.name: ', one_project.name
@@ -129,7 +143,7 @@ class Manager (object):
             raise ValueError
 
         target_dict = {
-            'name': one_project.name,
+            'name': self.project_name,
             'ip': self.ip,
             'generator_interval': one_project.generator_interval,
             'downloader_interval': one_project.downloader_interval,
@@ -141,30 +155,25 @@ class Manager (object):
         """
         :return: a_dict
         """
-        reference_str = self.r.get(str(self.project_name))
+        reference_str = self.r.hget(str(self.ip_rule_key), str(self.ip))
         print 'reference_str:', reference_str
         if reference_str is None:
             return {}
-        reference_dict = json.loads(reference_str)
-        return reference_dict
+        return json.loads(reference_str) or {}
+        
 
     def get_ip(self):
-        """
-        :return: str that json.dump
-        """
-        # TODO:
-            # 与 redis里的ip使用情况作对比
-
         target_dict = self._get_target_dict()
         reference_dict = self._get_reference_dict()
-        result = self._do_alanysis_with_redis(reference_dict=reference_dict,
-                                             target_dict=target_dict)
+        result = self._do_alanysis_with_redis(target_dict=target_dict, reference_dict=reference_dict)
+        print result
         return result
 
 
 class SmartProxyPool(object):
 
     def __init__(self):
+        self.ip_rule_key = settings.IP_RULE_KEY
         self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=10)
 
     def get_proxies_ip_list(self):
@@ -191,32 +200,22 @@ class SmartProxyPool(object):
     def _get_now_timestamp(self):
         return time.time()
 
-    def update_redis_proxies_ip_one_project(self, key=None, rule_str=None, proxies_ip_list=None):
-        rule_dict = json.loads(rule_str)
-        new_rule_dict = {}
-        init_rule = {
-            "add_time": self._get_now_timestamp(),
-            "last_used_time": self._get_now_timestamp(),
-            "used_num": 0,
-        }
-        for k, v in rule_dict.items():
-            if len(k.split(':')) >= 2:
-                continue
-            new_rule_dict[k] = v
-        for item in proxies_ip_list:
-            if len(item.split(':')) < 2:
-                continue
-            new_rule_dict[item] = copy.deepcopy(init_rule)
-        self.r.delete(key)
-        self.r.set(key, json.dumps(new_rule_dict))
-        self.r.save()
-
     def update_redis_proxies_ip_pool(self):
         proxies_ip_list = self.get_proxies_ip_list()
-        for key in self.r.keys():
-            rule_str = self.r.get(key)
-            self.update_redis_proxies_ip_one_project(key=key,
-                                                     rule_str=rule_str,
-                                                     proxies_ip_list=proxies_ip_list)
+        for key in self.r.hgetall(self.ip_rule_key).keys():
+            if ':' in key:
+                self.r.hdel(self.ip_rule_key, key)
+                self.r.save()
+
+        for item in proxies_ip_list:
+            temp_dict = {}
+            temp_dict['status'] = True
+            temp_dict['is_local'] = False
+            self.r.hset(self.ip_rule_key, item, json.dumps(temp_dict))
+            self.r.save()
 
 
+
+
+if __name__ == '__main__':
+    pass
