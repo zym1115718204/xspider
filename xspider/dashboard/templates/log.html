@@ -122,159 +122,96 @@
 		<div class="main-content">
 
 			<script>
-//			jQuery(document).ready(function($)
-//			{
-//				$('a[href="#layout-variants"]').on('click', function(ev)
-//				{
-//					ev.preventDefault();
-//
-//					var win = {top: $(window).scrollTop(), toTop: $("#layout-variants").offset().top - 15};
-//
-//					TweenLite.to(win, .3, {top: win.toTop, roundProps: ["top"], ease: Sine.easeInOut, onUpdate: function()
-//						{
-//							$(window).scrollTop(win.top);
-//						}
-//					});
-//				});
-//			});
+
 			</script>
 
-
-
-			<!--&lt;!&ndash; Tables and Panels &ndash;&gt;-->
-			<!--<div class="row">-->
-				<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
-
-					<!--<div class="panel panel-default">-->
-						<!--<div class="panel-heading">-->
-							<!--<h3 class="panel-title"><strong>Projects Status</strong></h3>-->
-
-							<!--<div class="panel-options">-->
-
-                                <!--<button class="btn btn-purple btn-icon btn-sm float-right create-btn">-->
-									<!--<span>Create</span>-->
-									<!--<i class="fa-pencil"></i>-->
-								<!--</button>-->
-							<!--</div>-->
-						<!--</div>-->
-
-						<!--<table class="table table-striped">-->
-							<!--<thead>-->
-								<!--<tr>-->
-									<!--<th class="col-md-1">Group</th>-->
-									<!--<th class="col-md-1">Project</th>-->
-									<!--<th class="col-md-1">Status</th>-->
-									<!--<th class="col-md-1">Generate Interval</th>-->
-									<!--<th class="col-md-1">Dispatch Number</th>-->
-									<!--<th class="col-md-1">IP Limit</th>-->
-									<!--<th class="col-md-1">Progress</th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-2">Actions</th>-->
-								<!--</tr>-->
-							<!--</thead>-->
-
-
-						<!--</table>-->
-					<!--</div>-->
-
-				<!--&lt;!&ndash;</div>&ndash;&gt;-->
-            <!--</div>-->
 
             <div class="row">
 				<div class="panel panel-default">
 					<!--<div class="jumbotron">-->
-					<h1>Xspider API</h1>
-
+					<!--<h2>Project task information</h2>-->
+					<h1>
+						{% if task.status == 4 %}
+						<p class="text-secondary"><strong>Success</strong></p>
+						{% elif task.status == 3 %}
+						<p class="text-danger"><strong>Failed</strong></p>
+						{% elif task.status == 1 %}
+						Pending
+						{% elif task.status == 0 %}
+						New
+						{% endif %}
+					</h1>
 					<p>
-						Xspider data API reference documents.
+						Get project result data from data api reference.
 					</p>
-
-					<br />
 					<!--<a class="btn btn-primary btn-lg" href="#layout-variants" role="button">See Layout Variants</a>-->
 					<!--</div>-->
 
-					<h3 id="layout-toggles">
-						Data API
-						<br />
-						<small>Get project result data from data api reference.</small>
-					</h3>
-					<br />
+					<!--<h3 id="layout-toggles">-->
+						<!--<small>Get project result data from data api reference.</small>-->
+					<!--</h3>-->
+					<!--<br />-->
 
 
 					<div class="row">
 
-						<div class="col-xs-3 text-muted">API</div>
-						<div class="col-xs-9 text-muted">URL</div>
+						<div class="clearfix"></div>
+						<div class="vspacer v4"></div>
 
-						<div class="vspacer v3"></div>
+						<div class="col-sm-2">
+							<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane">
+								<i class="linecons-user"></i>
+								<span>Project</span>
+							</a>
+						</div>
+						<div class="col-sm-4">
+							<pre>{{  log.project }}</pre>
+						</div>
 
-						<div class="col-sm-3">
-						<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="sidebar">
-							<i class="fa-bars"></i>
-							<span>result</span>
-						</a>
+						<div class="clearfix"></div>
+						<div class="vspacer v4"></div>
+
+						<div class="col-sm-2">
+							<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane" data-animate="true">
+								<i class="linecons-cog"></i>
+								<span>Query Time</span>
+							</a>
+						</div>
+						<div class="col-sm-4">
+							<pre>{{ log.spend_time }}</pre>
+						</div>
+
 					</div>
-					<div class="col-sm-9">
-						<pre>/dashboard/api/result?project=<code>project</code>&page=1&rows=10</pre>
+
+
+					<h1><strong>Information</strong></h1>
+					<p>Get project result data from data api reference.</p>
+
+					<div class="row">
+
+						<div class="col-xs-2 text-muted">item</div>
+						<div class="col-xs-10 text-muted">content</div>
+
+						{% for key,value in task.items %}
+
+						<div class="clearfix"></div>
+						<div class="vspacer v4"></div>
+
+						<div class="col-sm-2">
+							<a href="#" class="btn btn-orange btn-block btn-icon btn-icon-standalone text-left" data-toggle="chat">
+								<i class="fa-comment-o"></i>
+								<span> <strong>{{ key }}</strong></span>
+							</a>
+						</div>
+						<div class="col-sm-10">
+							<pre> {{ value }}</pre>
+						</div>
+
+						{% endfor %}
+
 					</div>
 
-					<!--<div class="clearfix"></div>-->
-					<!--<div class="vspacer v4"></div>-->
 
-					<!--<div class="col-sm-3">-->
-						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="chat">-->
-							<!--<i class="fa-comment-o"></i>-->
-							<!--<span>Toggle Chat</span>-->
-						<!--</a>-->
-					<!--</div>-->
-					<!--<div class="col-sm-9">-->
-						<!--<pre>&lt;a href=&quot;#&quot; data-toggle=&quot;chat&quot;&gt;Toggle Chat&lt;/a&gt;</pre>-->
-					<!--</div>-->
-
-					<!--<div class="clearfix"></div>-->
-					<!--<div class="vspacer v4"></div>-->
-
-					<!--<div class="col-sm-3">-->
-						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane">-->
-							<!--<i class="linecons-user"></i>-->
-							<!--<span>Toggle Settings Pane</span>-->
-						<!--</a>-->
-					<!--</div>-->
-					<!--<div class="col-sm-9">-->
-						<!--<pre>&lt;a href=&quot;#&quot; data-toggle=&quot;chat&quot;&gt;Toggle Settings Pane&lt;/a&gt;</pre>-->
-					<!--</div>-->
-
-
-					<!--<div class="clearfix"></div>-->
-					<!--<div class="vspacer v4"></div>-->
-
-					<!--<div class="col-sm-3">-->
-						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane" data-animate="true">-->
-							<!--<i class="linecons-cog"></i>-->
-							<!--<span>Settings Pane /w Animation</span>-->
-						<!--</a>-->
-					<!--</div>-->
-					<!--<div class="col-sm-9">-->
-						<!--<pre>&lt;a href=&quot;#&quot; data-toggle=&quot;chat&quot; data-animate=&quot;true&quot;&gt;Toggle Settings Pane&lt;/a&gt;</pre>-->
-					<!--</div>-->
-
-
-					<!--<div class="clearfix"></div>-->
-					<!--<div class="vspacer v4"></div>-->
-
-					<!--<div class="col-sm-3">-->
-						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" rel="go-top">-->
-							<!--<i class="fa-arrow-up"></i>-->
-							<!--<span>Go to Top</span>-->
-						<!--</a>-->
-					<!--</div>-->
-					<!--<div class="col-sm-9">-->
-						<!--<pre>&lt;a href=&quot;#&quot; rel=&quot;go-top&quot;&gt;Go to Top&lt;/a&gt;</pre>-->
-					<!--</div>-->
-
-				</div>
 			</div>
 
 			<!---->
@@ -324,7 +261,7 @@
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
-	<script src="{% static 'assets/js/xspider.js' %}"></script>
+	<!--<script src="{% static 'assets/js/xspider.js' %}"></script>-->
 
 </body>
 </html>

@@ -248,7 +248,25 @@ class Handler(object):
         :param name:
         :return:
         """
-        result = self._query.dump_as_json_by_name(name, page, rows)
+        result = self._query.dump_result_as_json_by_name(name, page, rows)
+        return result
+
+    def query_task_by_name(self, name, page, rows):
+        """
+        Query result by project name
+        :param name:
+        :return:
+        """
+        result = self._query.dump_task_as_json_by_name(name, page, rows)
+        return result
+
+    def query_task_by_task_id(self, name, task_id):
+        """
+        Query result by project name
+        :param name:
+        :return:
+        """
+        result = self._query.dump_task_as_json_by_task_id(name, task_id)
         return result
 
     def edit_project_settings(self, data):
@@ -330,10 +348,11 @@ class Query(object):
         exec("total = {0}Result.objects().count()".format(name.capitalize()))
         exec("data = {0}Result.objects()[((page * rows - 1) // rows) * rows:page * rows]".format(name.capitalize()))
 
+        result_append = result.append
         for _data in data:
             _result = json.loads(_data["result"])
             _result["update_datetime"] = _data["update_datetime"].strftime("%Y-%m-%d %H:%M:%S"),
-            result.append(_result)
+            result_append(_result)
 
         return {
             "project": name,
@@ -345,7 +364,83 @@ class Query(object):
             "spend_time": time.time()-start
         }
 
-    def dump_as_json_by_name(self, name, page, rows):
+    @staticmethod
+    def query_task_by_name(name, page, rows):
+        """
+        Query result by project name
+        :return:
+        """
+        data = []
+        total = 0
+        result = []
+        start = time.time()
+        exec ("from execute.{0}_models import {1}Task".format(name, name.capitalize()))
+        exec ("total = {0}Task.objects().count()".format(name.capitalize()))
+        exec ("data = {0}Task.objects()[((page * rows - 1) // rows) * rows:page * rows]".format(name.capitalize()))
+
+        result_append = result.append
+        for _data in data:
+            result_append({
+                "project": str(_data.project.id),
+                "status": _data.status,
+                "task_id": _data.task_id,
+                "update_datetime": _data.update_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+                "add_datetime": _data.add_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+                "schedule": _data.schedule,
+                "url": _data.url,
+                "args": _data.args,
+                "info": _data.info,
+                "retry_times": _data.retry_times,
+                "callback": _data.callback,
+                "track_log": _data.track_log,
+                "spend_time": _data.spend_time,
+            })
+
+        return {
+            "project": name,
+            "task": result,
+            "total": total,
+            "total_page": (total + rows - 1) // rows,
+            "page": page,
+            "status": True,
+            "spend_time": time.time() - start
+        }
+
+    @staticmethod
+    def query_task_by_id(name, task_id):
+        """
+        Query result by project name
+        :return:
+        """
+        start = time.time()
+        exec ("from execute.{0}_models import {1}Task".format(name, name.capitalize()))
+        exec ("total = {0}Task.objects().count()".format(name.capitalize()))
+        exec ('data = {0}Task.objects(task_id="{1}").first()'.format(name.capitalize(), task_id))
+
+        task = {
+            "project": str(data.project.id),
+            "status": data.status,
+            "task_id": data.task_id,
+            "update_datetime": data.update_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+            "add_datetime": data.add_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+            "schedule": data.schedule,
+            "url": data.url,
+            "args": data.args,
+            "info": data.info,
+            "retry_times": data.retry_times,
+            "callback": data.callback,
+            "track_log": data.track_log,
+            "spend_time": data.spend_time,
+        }
+
+        return {
+            "project": name,
+            "task": task,
+            "status": True,
+            "spend_time": time.time() - start
+        }
+
+    def dump_result_as_json_by_name(self, name, page, rows):
         """
         Dump as Json
         :return:
@@ -354,6 +449,32 @@ class Query(object):
         project = Project.objects(name=name).first()
         if project:
             result = self.query_result_by_name(name, page, rows)
+        else:
+            result = None
+        return result
+
+    def dump_task_as_json_by_name(self, name, page, rows):
+        """
+        Dump as Json
+        :return:
+        """
+        name = smart_unicode(name)
+        project = Project.objects(name=name).first()
+        if project:
+            result = self.query_task_by_name(name, page, rows)
+        else:
+            result = None
+        return result
+
+    def dump_task_as_json_by_task_id(self, name, task_id):
+        """
+        Dump as Json
+        :return:
+        """
+        name = smart_unicode(name)
+        project = Project.objects(name=name).first()
+        if project:
+            result = self.query_task_by_id(name,task_id)
         else:
             result = None
         return result

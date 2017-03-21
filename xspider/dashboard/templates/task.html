@@ -125,51 +125,6 @@
 				var project= "{{ project.name }}";
 			</script>
 
-
-			<!-- Tables and Panels -->
-			<!--<div class="row">-->
-				<!--&lt;!&ndash;<div class="col-md-12">&ndash;&gt;-->
-
-					<!--<div class="panel panel-default">-->
-						<!--<div class="panel-heading">-->
-							<!--<h3 class="panel-title"><strong>Projects Status</strong></h3>-->
-
-							<!--<div class="panel-options">-->
-
-                                <!--<button class="btn btn-purple btn-icon btn-sm float-right create-btn">-->
-									<!--<span>Create</span>-->
-									<!--<i class="fa-pencil"></i>-->
-								<!--</button>-->
-							<!--</div>-->
-						<!--</div>-->
-
-						<!--<table class="table table-striped">-->
-							<!--<thead>-->
-								<!--<tr>-->
-									<!--<th class="col-md-1">Group</th>-->
-									<!--<th class="col-md-1">Project</th>-->
-									<!--<th class="col-md-1">Status</th>-->
-									<!--<th class="col-md-1">Generate Interval</th>-->
-									<!--<th class="col-md-1">Dispatch Number</th>-->
-									<!--<th class="col-md-1">IP Limit</th>-->
-									<!--<th class="col-md-1">Progress</th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-1"></th>-->
-									<!--<th class="col-md-2">Actions</th>-->
-								<!--</tr>-->
-							<!--</thead>-->
-
-							<!--<tbody>-->
-
-
-							<!--</tbody>-->
-						<!--</table>-->
-					<!--</div>-->
-
-				<!--&lt;!&ndash;</div>&ndash;&gt;-->
-            <!--</div>-->
-
 			<div class="row">
 
 				<div class="panel panel-default" id="tasks-table">
@@ -191,14 +146,14 @@
 
 							<div class="panel-options">
 
-                                <button class="btn btn-purple btn-icon btn-sm float-right csv-btn">
-									<span>CSV</span>
-									<i class="fa-download"></i>
-								</button>
+                                <!--<button class="btn btn-purple btn-icon btn-sm float-right csv-btn">-->
+									<!--<span>CSV</span>-->
+									<!--<i class="fa-download"></i>-->
+								<!--</button>-->
 
 
 								<button class="btn btn-blue btn-icon btn-sm float-right json-btn" name="{{ project.name }}">
-									<span>Json</span>
+									<span>Json API</span>
 									<i class="fa-file-code-o"></i>
 								</button>
 
@@ -208,9 +163,13 @@
 					<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="example-4">
 						<thead id="result-thead">
 							<tr>
-								<th>url</th>
-								<th>title</th>
-								<th>time</th>
+								<th class="col-md-2">Task_id</th>
+								<th class="col-md-3">URL</th>
+								<th class="col-md-1">Status</th>
+								<th class="col-md-1">Callback</th>
+								<th class="col-md-1">Retry</th>
+								<th class="col-md-2">Spend Time</th>
+								<th class="col-md-2">UpdateTime</th>
 							</tr>
 						</thead>
 
@@ -291,7 +250,7 @@
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
-	<script src="{% static 'assets/js/xspider-result.js' %}"></script>
+	<script src="{% static 'assets/js/xspider-task.js' %}"></script>
 
 </body>
 </html>
