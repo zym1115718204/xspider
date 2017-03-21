@@ -96,7 +96,7 @@ class Spider(BaseSpider):
         }
         return result
 
-    def parse_item(self, response):
+    def parser_item(self, response):
         soup = BeautifulSoup(response.body, 'html.parser')
         result = {
             'url': response.url,
