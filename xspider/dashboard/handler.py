@@ -39,7 +39,8 @@ class Handler(object):
         for project in _projects:
             name = project.name
             group = project.group
-            model = "{0}Task".format(str(name).capitalize())
+            task = "{0}Task".format(str(name).capitalize())
+            result = "{0}Result".format(str(name).capitalize())
             now = datetime.datetime.now()
             day = now-datetime.timedelta(days=1)
             hour = now-datetime.timedelta(hours=1)
@@ -47,29 +48,31 @@ class Handler(object):
 
             # Notice: Checking
             exec ("from execute.{0}_models import *".format(name))
-            exec("total = {0}.objects().count()".format(model))
-            exec("new = {0}.objects(status={0}.STATUS_LIVE, ).count()".format(model))
-            exec("success = {0}.objects(status={0}.STATUS_SUCCESS).count()".format(model))
-            exec("failed = {0}.objects(status={0}.STATUS_FAIL).count()".format(model))
-            exec("invalid = {0}.objects(status={0}.STATUS_INVALID).count()".format(model))
+            exec("total = {0}.objects().count()".format(task))
+            exec("new = {0}.objects(status={0}.STATUS_LIVE, ).count()".format(task))
+            exec("success = {0}.objects(status={0}.STATUS_SUCCESS).count()".format(task))
+            exec("failed = {0}.objects(status={0}.STATUS_FAIL).count()".format(task))
+            exec("invalid = {0}.objects(status={0}.STATUS_INVALID).count()".format(task))
 
-            exec ("total_d = {0}.objects(add_datetime__gte=day).count()".format(model))
-            exec ("new_d = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=day).count()".format(model))
-            exec ("success_d = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=day).count()".format(model))
-            exec ("failed_d = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=day).count()".format(model))
-            exec ("invalid_d = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=day).count()".format(model))
+            exec ("total_d = {0}.objects(add_datetime__gte=day).count()".format(task))
+            exec ("new_d = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=day).count()".format(task))
+            exec ("success_d = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=day).count()".format(task))
+            exec ("failed_d = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=day).count()".format(task))
+            exec ("invalid_d = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=day).count()".format(task))
 
-            exec ("total_h = {0}.objects(add_datetime__gte=hour).count()".format(model))
-            exec ("new_h = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=hour).count()".format(model))
-            exec ("success_h = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=hour).count()".format(model))
-            exec ("failed_h = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=hour).count()".format(model))
-            exec ("invalid_h = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=hour).count()".format(model))
+            exec ("total_h = {0}.objects(add_datetime__gte=hour).count()".format(task))
+            exec ("new_h = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=hour).count()".format(task))
+            exec ("success_h = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=hour).count()".format(task))
+            exec ("failed_h = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=hour).count()".format(task))
+            exec ("invalid_h = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=hour).count()".format(task))
 
-            exec ("total_m = {0}.objects(add_datetime__gte=minute).count()".format(model))
-            exec ("new_m = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=minute).count()".format(model))
-            exec ("success_m = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=minute).count()".format(model))
-            exec ("failed_m = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=minute).count()".format(model))
-            exec ("invalid_m = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=minute).count()".format(model))
+            exec ("total_m = {0}.objects(add_datetime__gte=minute).count()".format(task))
+            exec ("new_m = {0}.objects(status={0}.STATUS_LIVE, add_datetime__gte=minute).count()".format(task))
+            exec ("success_m = {0}.objects(status={0}.STATUS_SUCCESS, add_datetime__gte=minute).count()".format(task))
+            exec ("failed_m = {0}.objects(status={0}.STATUS_FAIL, add_datetime__gte=minute).count()".format(task))
+            exec ("invalid_m = {0}.objects(status={0}.STATUS_INVALID, add_datetime__gte=minute).count()".format(task))
+
+            exec ("result_total = {0}.objects().count()".format(result))
 
             iplimit = project.downloader_interval
             priority = project.priority
@@ -110,6 +113,7 @@ class Handler(object):
                 'success_m': success_m,
                 'failed_m': failed_m,
                 'invalid_m': invalid_m,
+                'result_total': result_total,
                 'iplimit': iplimit,
                 'speed': speed,
                 'timeout': timeout,
@@ -170,6 +174,8 @@ class Handler(object):
                 success_m = int(project_status.get('success_m', "0"))
                 failed_m = int(project_status.get('failed_m', "0"))
                 invalid_m = int(project_status.get('invalid_m', "0"))
+
+                result_total = int(project_status.get('result_total', "0"))
             else:
                 total = 0
                 new = 0
@@ -191,6 +197,7 @@ class Handler(object):
                 success_m = 0
                 failed_m = 0
                 invalid_m = 0
+                result_total = 0
 
             job_dict = {
                 'index': i%8,
@@ -223,6 +230,7 @@ class Handler(object):
                 'success_m': success_m,
                 'failed_m': failed_m,
                 'invalid_m': invalid_m,
+                'result_total': result_total,
                 'speed': int(project.downloader_dispatch),
                 'iplimit': int(project.downloader_interval),
                 'timeout': int(project.timeout),
@@ -240,7 +248,25 @@ class Handler(object):
         :param name:
         :return:
         """
-        result = self._query.dump_as_json_by_name(name, page, rows)
+        result = self._query.dump_result_as_json_by_name(name, page, rows)
+        return result
+
+    def query_task_by_name(self, name, page, rows):
+        """
+        Query result by project name
+        :param name:
+        :return:
+        """
+        result = self._query.dump_task_as_json_by_name(name, page, rows)
+        return result
+
+    def query_task_by_task_id(self, name, task_id):
+        """
+        Query result by project name
+        :param name:
+        :return:
+        """
+        result = self._query.dump_task_as_json_by_task_id(name, task_id)
         return result
 
     def edit_project_settings(self, data):
@@ -322,10 +348,11 @@ class Query(object):
         exec("total = {0}Result.objects().count()".format(name.capitalize()))
         exec("data = {0}Result.objects()[((page * rows - 1) // rows) * rows:page * rows]".format(name.capitalize()))
 
+        result_append = result.append
         for _data in data:
             _result = json.loads(_data["result"])
             _result["update_datetime"] = _data["update_datetime"].strftime("%Y-%m-%d %H:%M:%S"),
-            result.append(_result)
+            result_append(_result)
 
         return {
             "project": name,
@@ -337,7 +364,83 @@ class Query(object):
             "spend_time": time.time()-start
         }
 
-    def dump_as_json_by_name(self, name, page, rows):
+    @staticmethod
+    def query_task_by_name(name, page, rows):
+        """
+        Query result by project name
+        :return:
+        """
+        data = []
+        total = 0
+        result = []
+        start = time.time()
+        exec ("from execute.{0}_models import {1}Task".format(name, name.capitalize()))
+        exec ("total = {0}Task.objects().count()".format(name.capitalize()))
+        exec ("data = {0}Task.objects()[((page * rows - 1) // rows) * rows:page * rows]".format(name.capitalize()))
+
+        result_append = result.append
+        for _data in data:
+            result_append({
+                "project": str(_data.project.id),
+                "status": _data.status,
+                "task_id": _data.task_id,
+                "update_datetime": _data.update_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+                "add_datetime": _data.add_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+                "schedule": _data.schedule,
+                "url": _data.url,
+                "args": _data.args,
+                "info": _data.info,
+                "retry_times": _data.retry_times,
+                "callback": _data.callback,
+                "track_log": _data.track_log,
+                "spend_time": _data.spend_time,
+            })
+
+        return {
+            "project": name,
+            "task": result,
+            "total": total,
+            "total_page": (total + rows - 1) // rows,
+            "page": page,
+            "status": True,
+            "spend_time": time.time() - start
+        }
+
+    @staticmethod
+    def query_task_by_id(name, task_id):
+        """
+        Query result by project name
+        :return:
+        """
+        start = time.time()
+        exec ("from execute.{0}_models import {1}Task".format(name, name.capitalize()))
+        exec ("total = {0}Task.objects().count()".format(name.capitalize()))
+        exec ('data = {0}Task.objects(task_id="{1}").first()'.format(name.capitalize(), task_id))
+
+        task = {
+            "project": str(data.project.id),
+            "status": data.status,
+            "task_id": data.task_id,
+            "update_datetime": data.update_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+            "add_datetime": data.add_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+            "schedule": data.schedule,
+            "url": data.url,
+            "args": data.args,
+            "info": data.info,
+            "retry_times": data.retry_times,
+            "callback": data.callback,
+            "track_log": data.track_log,
+            "spend_time": data.spend_time,
+        }
+
+        return {
+            "project": name,
+            "task": task,
+            "status": True,
+            "spend_time": time.time() - start
+        }
+
+    def dump_result_as_json_by_name(self, name, page, rows):
         """
         Dump as Json
         :return:
@@ -346,6 +449,32 @@ class Query(object):
         project = Project.objects(name=name).first()
         if project:
             result = self.query_result_by_name(name, page, rows)
+        else:
+            result = None
+        return result
+
+    def dump_task_as_json_by_name(self, name, page, rows):
+        """
+        Dump as Json
+        :return:
+        """
+        name = smart_unicode(name)
+        project = Project.objects(name=name).first()
+        if project:
+            result = self.query_task_by_name(name, page, rows)
+        else:
+            result = None
+        return result
+
+    def dump_task_as_json_by_task_id(self, name, task_id):
+        """
+        Dump as Json
+        :return:
+        """
+        name = smart_unicode(name)
+        project = Project.objects(name=name).first()
+        if project:
+            result = self.query_task_by_id(name,task_id)
         else:
             result = None
         return result

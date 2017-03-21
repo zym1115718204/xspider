@@ -88,6 +88,105 @@ def index(request):
 
 @csrf_exempt
 @render_json
+def debug(request, name):
+    """
+    Debug index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request, name=name)
+    project = projects[0]
+
+    return render_to_response("debug.html", {'project': project})
+
+
+@csrf_exempt
+@render_json
+def data(request):
+    """
+    Data index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    projects = handler.query_projects_status_by_redis(request)
+
+    return render_to_response("data.html", {"projects": projects})
+
+
+@csrf_exempt
+@render_json
+def result(request, name):
+    """
+    Result detail index page
+    :param request:
+    :return:
+    """
+    if name is not None:
+        handler = Handler()
+        projects = handler.query_projects_status_by_redis(request, name=name)
+
+        return render_to_response("result.html", {"project": projects[0]})
+    else:
+        return
+        # todo
+
+
+@csrf_exempt
+@render_json
+def task(request, name):
+    """
+    Task index page
+    :param request:
+    :return:
+    """
+    if name is not None:
+        handler = Handler()
+        projects = handler.query_projects_status_by_redis(request, name=name)
+
+        return render_to_response("task.html", {"project": projects[0]})
+    else:
+        return
+
+        #Todo
+
+
+@csrf_exempt
+@render_json
+def log(request, name, task_id):
+    """
+    Task index page
+    :param request:
+    :return:
+    """
+    if name is not None:
+        handler = Handler()
+        task = handler.query_task_by_task_id(name=name, task_id=task_id)
+
+        print task
+
+        return render_to_response("log.html", {"task": task["task"], 'log': task})
+    else:
+        return
+
+        #Todo
+
+
+
+@csrf_exempt
+@render_json
+def api(request):
+    """
+    API index page
+    :param request:
+    :return:
+    """
+    return render_to_response("api.html")
+
+
+@csrf_exempt
+@render_json
 def edit_project(request):
     """
     Edit Project Command API
@@ -120,53 +219,6 @@ def edit_project(request):
         }
 
     return result
-
-
-@csrf_exempt
-@render_json
-def debug(request, name):
-    """
-    Debug Command API
-    :param request:
-    :return:
-    """
-    handler = Handler()
-    projects = handler.query_projects_status_by_redis(request, name=name)
-    project = projects[0]
-
-    return render_to_response("debug.html", {'project': project})
-
-
-@csrf_exempt
-@render_json
-def data(request):
-    """
-    Debug Command API
-    :param request:
-    :return:
-    """
-    handler = Handler()
-    projects = handler.query_projects_status_by_redis(request)
-
-    return render_to_response("data.html", {"projects": projects})
-
-
-@csrf_exempt
-@render_json
-def result(request, name):
-    """
-    Debug Command API
-    :param request:
-    :return:
-    """
-    if name is not None:
-
-        handler = Handler()
-        projects = handler.query_projects_status_by_redis(request, name=name)
-
-        return render_to_response("result.html", {"project": projects[0]})
-    else:
-        pass # 404
 
 
 @csrf_exempt
@@ -245,7 +297,38 @@ def result_project(request):
             "status": True,
             "project": name,
             "result": _result,
-            "message":"Query Reuslt Succeed!",
+            "message":"Query Result Succeed!",
+            "code": 2001,
+        }
+    else:
+        result = {
+            "status": False,
+            "project": name,
+            "message": "Bad Parameters",
+            "code": 4001,
+        }
+    return result
+
+@csrf_exempt
+@render_json
+def task_project(request):
+    """
+    Query Projcet Result Command API
+    :param request:
+    :return:
+    """
+    name = request.GET.get("project")
+    page = int(request.GET.get("page", '1'))
+    rows = int(request.GET.get("rows", '10'))
+
+    if name and page > 0 and rows > 0:
+        handler = Handler()
+        _result = handler.query_task_by_name(name, page, rows)
+        result = {
+            "status": True,
+            "project": name,
+            "result": _result,
+            "message":"Query Result Succeed!",
             "code": 2001,
         }
     else:

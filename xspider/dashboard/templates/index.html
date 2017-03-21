@@ -103,9 +103,9 @@
 					</a>
 				</li>
 				<li>
-					<a href="">
-						<i class="linecons-diamond"></i>
-						<span class="title">Other</span>
+					<a href="/dashboard/api">
+						<i class="linecons-cloud"></i>
+						<span class="title">API</span>
 					</a>
 				</li>
 			</ul>
@@ -276,7 +276,7 @@ failed({{ project.failed_rate }}%): 	{{ project.failed }}">
 										<!--<a href="javascript:;" onclick="jQuery('#edit-page').modal('show', {backdrop: 'static'});" class="btn btn-white  btn-sm btn-icon icon-left edit-btn">Edit</a>-->
 										<a href="#" onclick="return false" class="btn btn-white  btn-sm btn-icon icon-left edit-btn">Edit</a>
 
-										<a href="#" class=" btn btn-white  btn-sm btn-icon icon-left">
+										<a href="/dashboard/task/{{ project.name }}" class=" btn btn-white  btn-sm btn-icon icon-left">
 											Task
 										</a>
 										<a href="/dashboard/data/{{ project.name }}" class=" btn btn-white  btn-sm btn-icon icon-left">

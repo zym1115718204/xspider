@@ -78,7 +78,7 @@
 			<!-- main menu -->
 
 			<ul class="navbar-nav">
-				<li>
+				<li class="opened active">
 					<a href="/dashboard">
 						<i class="linecons-cog"></i>
 						<span class="title">Dashboard</span>
@@ -122,66 +122,99 @@
 		<div class="main-content">
 
 			<script>
-				var project= "{{ project.name }}";
+
 			</script>
 
-			<div class="row">
 
-				<div class="panel panel-default" id="tasks-table">
+            <div class="row">
+				<div class="panel panel-default">
+					<!--<div class="jumbotron">-->
+					<!--<h2>Project task information</h2>-->
+					<h1>
+						{% if task.status == 4 %}
+						<p class="text-secondary"><strong>Success</strong></p>
+						{% elif task.status == 3 %}
+						<p class="text-danger"><strong>Failed</strong></p>
+						{% elif task.status == 1 %}
+						Pending
+						{% elif task.status == 0 %}
+						New
+						{% endif %}
+					</h1>
+					<p>
+						Get project result data from data api reference.
+					</p>
+					<!--<a class="btn btn-primary btn-lg" href="#layout-variants" role="button">See Layout Variants</a>-->
+					<!--</div>-->
 
-					<div class="panel-heading">
-						<h3 class="panel-title"><strong>{{ project.name }} Result</strong></h3>
-
-						<div class="panel-options">
-
-							<button class="btn btn-purple btn-icon btn-sm float-right csv-btn">
-								<span>CSV</span>
-								<i class="fa-download"></i>
-							</button>
+					<!--<h3 id="layout-toggles">-->
+						<!--<small>Get project result data from data api reference.</small>-->
+					<!--</h3>-->
+					<!--<br />-->
 
 
-							<button class="btn btn-blue btn-icon btn-sm float-right json-btn" name="{{ project.name }}">
-								<span>Json</span>
-								<i class="fa-file-code-o"></i>
-							</button>
+					<div class="row">
 
+						<div class="clearfix"></div>
+						<div class="vspacer v4"></div>
+
+						<div class="col-sm-2">
+							<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane">
+								<i class="linecons-user"></i>
+								<span>Project</span>
+							</a>
 						</div>
+						<div class="col-sm-4">
+							<pre>{{  log.project }}</pre>
+						</div>
+
+						<div class="clearfix"></div>
+						<div class="vspacer v4"></div>
+
+						<div class="col-sm-2">
+							<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane" data-animate="true">
+								<i class="linecons-cog"></i>
+								<span>Query Time</span>
+							</a>
+						</div>
+						<div class="col-sm-4">
+							<pre>{{ log.spend_time }}</pre>
+						</div>
+
 					</div>
 
-				<div class="panel-body">
 
-					<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="example-4">
-						<thead id="result-thead">
-							<tr>
-								<th>url</th>
-								<th>title</th>
-								<th>time</th>
-							</tr>
-						</thead>
+					<h1><strong>Information</strong></h1>
+					<p>Get project result data from data api reference.</p>
 
-						<tbody id="result-tbody">
+					<div class="row">
 
-						</tbody>
-					</table>
+						<div class="col-xs-2 text-muted">item</div>
+						<div class="col-xs-10 text-muted">content</div>
 
+						{% for key,value in task.items %}
 
-                    <div class="row">
+						<div class="clearfix"></div>
+						<div class="vspacer v4"></div>
 
-                        <div class="col-xs-5">
-                            <div class="dataTables_info" id="example-4_info" role="status" aria-live="polite">
-                                No available values.
-                            </div>
-                        </div>
+						<div class="col-sm-2">
+							<a href="#" class="btn btn-orange btn-block btn-icon btn-icon-standalone text-left" data-toggle="chat">
+								<i class="fa-comment-o"></i>
+								<span> <strong>{{ key }}</strong></span>
+							</a>
+						</div>
+						<div class="col-sm-10">
+							<pre> {{ value }}</pre>
+						</div>
 
-                        <div class="col-xs-7 ">
-                            <div class="dataTables_paginate paging_simple_numbers" id="example-5">
-                            </div>
-                        </div>
-                    </div>
-				</div>
-			</div>
+						{% endfor %}
+
+					</div>
+
 
 			</div>
+
+			<!---->
 			<!-- Main Footer -->
 			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
 			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
@@ -208,11 +241,8 @@
 
 	</div>
 
-
 	<!-- Imported styles on this page -->
 	<link rel="stylesheet" href="{% static 'assets/js/icheck/skins/all.css' %}">
-	<link rel="stylesheet" href="{% static 'assets//css/fonts/meteocons/css/meteocons.css' %}">
-
 
 	<!-- Imported scripts on this page -->
 	<script src="{% static 'assets/js/icheck/icheck.min.js' %}"></script>
@@ -228,15 +258,10 @@
     <!-- Imported scripts on  message-->
     <script src="{% static 'assets/js/toastr/toastr.min.js' %}"></script>
 	<script src="{% static 'assets/js/jquery-validate/jquery.validate.min.js' %}"></script>
-	<script src="{% static 'laypage/js/laypage.js' %}"></script>
-	<script src="{% static 'assets/js/xenon-widgets.js' %}"></script>
-	<script src="{% static 'assets/js/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
-	<script src="{% static 'assets/js/jvectormap/regions/jquery-jvectormap-world-mill-en.js' %}"></script>
-
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
-	<script src="{% static 'assets/js/xspider-result.js' %}"></script>
+	<!--<script src="{% static 'assets/js/xspider.js' %}"></script>-->
 
 </body>
 </html>

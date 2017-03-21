@@ -128,34 +128,48 @@
 			<div class="row">
 
 				<div class="panel panel-default" id="tasks-table">
+				<!--<div class="panel-heading">-->
+					<!--<h3 class="panel-title">{{ project.name  }} Result</h3>-->
 
-					<div class="panel-heading">
-						<h3 class="panel-title"><strong>{{ project.name }} Result</strong></h3>
+					<!--<div class="panel-options">-->
+						<!--<a href="#" data-toggle="panel">-->
+							<!--<span class="collapse-icon">&ndash;</span>-->
+							<!--<span class="expand-icon">+</span>-->
+						<!--</a>-->
+						<!--<a href="#" data-toggle="remove">-->
+							<!--&times;-->
+						<!--</a>-->
+					<!--</div>-->
+				<!--</div>-->
+				<div class="panel-heading">
+							<h3 class="panel-title"><strong>{{ project.name }} Result</strong></h3>
 
-						<div class="panel-options">
+							<div class="panel-options">
 
-							<button class="btn btn-purple btn-icon btn-sm float-right csv-btn">
-								<span>CSV</span>
-								<i class="fa-download"></i>
-							</button>
+                                <!--<button class="btn btn-purple btn-icon btn-sm float-right csv-btn">-->
+									<!--<span>CSV</span>-->
+									<!--<i class="fa-download"></i>-->
+								<!--</button>-->
 
 
-							<button class="btn btn-blue btn-icon btn-sm float-right json-btn" name="{{ project.name }}">
-								<span>Json</span>
-								<i class="fa-file-code-o"></i>
-							</button>
+								<button class="btn btn-blue btn-icon btn-sm float-right json-btn" name="{{ project.name }}">
+									<span>Json API</span>
+									<i class="fa-file-code-o"></i>
+								</button>
 
+							</div>
 						</div>
-					</div>
-
 				<div class="panel-body">
-
 					<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="example-4">
 						<thead id="result-thead">
 							<tr>
-								<th>url</th>
-								<th>title</th>
-								<th>time</th>
+								<th class="col-md-2">Task_id</th>
+								<th class="col-md-3">URL</th>
+								<th class="col-md-1">Status</th>
+								<th class="col-md-1">Callback</th>
+								<th class="col-md-1">Retry</th>
+								<th class="col-md-2">Spend Time</th>
+								<th class="col-md-2">UpdateTime</th>
 							</tr>
 						</thead>
 
@@ -236,7 +250,7 @@
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
-	<script src="{% static 'assets/js/xspider-result.js' %}"></script>
+	<script src="{% static 'assets/js/xspider-task.js' %}"></script>
 
 </body>
 </html>

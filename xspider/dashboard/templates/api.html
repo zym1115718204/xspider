@@ -78,7 +78,7 @@
 			<!-- main menu -->
 
 			<ul class="navbar-nav">
-				<li>
+				<li class="opened active">
 					<a href="/dashboard">
 						<i class="linecons-cog"></i>
 						<span class="title">Dashboard</span>
@@ -122,66 +122,105 @@
 		<div class="main-content">
 
 			<script>
-				var project= "{{ project.name }}";
+
 			</script>
 
-			<div class="row">
+            <div class="row">
+				<div class="panel panel-default">
+					<!--<div class="jumbotron">-->
+					<h1>Xspider API</h1>
 
-				<div class="panel panel-default" id="tasks-table">
+					<p>
+						Xspider data API reference documents.
+					</p>
 
-					<div class="panel-heading">
-						<h3 class="panel-title"><strong>{{ project.name }} Result</strong></h3>
+					<br />
+					<!--<a class="btn btn-primary btn-lg" href="#layout-variants" role="button">See Layout Variants</a>-->
+					<!--</div>-->
 
-						<div class="panel-options">
+					<h3 id="layout-toggles">
+						Data API
+						<br />
+						<small>Get project result data from data api reference.</small>
+					</h3>
+					<br />
 
-							<button class="btn btn-purple btn-icon btn-sm float-right csv-btn">
-								<span>CSV</span>
-								<i class="fa-download"></i>
-							</button>
 
+					<div class="row">
 
-							<button class="btn btn-blue btn-icon btn-sm float-right json-btn" name="{{ project.name }}">
-								<span>Json</span>
-								<i class="fa-file-code-o"></i>
-							</button>
+						<div class="col-xs-3 text-muted">API</div>
+						<div class="col-xs-9 text-muted">URL</div>
 
-						</div>
+						<div class="vspacer v3"></div>
+
+						<div class="col-sm-3">
+						<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="sidebar">
+							<i class="fa-bars"></i>
+							<span>Project Result</span>
+						</a>
+					</div>
+					<div class="col-sm-9">
+						<pre>/dashboard/api/result?project=<code>project</code>&page=1&rows=10</pre>
 					</div>
 
-				<div class="panel-body">
+					<div class="clearfix"></div>
+					<div class="vspacer v4"></div>
 
-					<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="example-4">
-						<thead id="result-thead">
-							<tr>
-								<th>url</th>
-								<th>title</th>
-								<th>time</th>
-							</tr>
-						</thead>
+					<div class="col-sm-3">
+						<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="chat">
+							<i class="fa-comment-o"></i>
+							<span>Project Task</span>
+						</a>
+					</div>
+					<div class="col-sm-9">
+						<pre>/dashboard/api/task?project=<code>project</code>&page=1&rows=10</pre>
+					</div>
 
-						<tbody id="result-tbody">
+					<!--<div class="clearfix"></div>-->
+					<!--<div class="vspacer v4"></div>-->
 
-						</tbody>
-					</table>
+					<!--<div class="col-sm-3">-->
+						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane">-->
+							<!--<i class="linecons-user"></i>-->
+							<!--<span>Toggle Settings Pane</span>-->
+						<!--</a>-->
+					<!--</div>-->
+					<!--<div class="col-sm-9">-->
+						<!--<pre>&lt;a href=&quot;#&quot; data-toggle=&quot;chat&quot;&gt;Toggle Settings Pane&lt;/a&gt;</pre>-->
+					<!--</div>-->
 
 
-                    <div class="row">
+					<!--<div class="clearfix"></div>-->
+					<!--<div class="vspacer v4"></div>-->
 
-                        <div class="col-xs-5">
-                            <div class="dataTables_info" id="example-4_info" role="status" aria-live="polite">
-                                No available values.
-                            </div>
-                        </div>
+					<!--<div class="col-sm-3">-->
+						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" data-toggle="settings-pane" data-animate="true">-->
+							<!--<i class="linecons-cog"></i>-->
+							<!--<span>Settings Pane /w Animation</span>-->
+						<!--</a>-->
+					<!--</div>-->
+					<!--<div class="col-sm-9">-->
+						<!--<pre>&lt;a href=&quot;#&quot; data-toggle=&quot;chat&quot; data-animate=&quot;true&quot;&gt;Toggle Settings Pane&lt;/a&gt;</pre>-->
+					<!--</div>-->
 
-                        <div class="col-xs-7 ">
-                            <div class="dataTables_paginate paging_simple_numbers" id="example-5">
-                            </div>
-                        </div>
-                    </div>
+
+					<!--<div class="clearfix"></div>-->
+					<!--<div class="vspacer v4"></div>-->
+
+					<!--<div class="col-sm-3">-->
+						<!--<a href="#" class="btn btn-secondary btn-block btn-icon btn-icon-standalone text-left" rel="go-top">-->
+							<!--<i class="fa-arrow-up"></i>-->
+							<!--<span>Go to Top</span>-->
+						<!--</a>-->
+					<!--</div>-->
+					<!--<div class="col-sm-9">-->
+						<!--<pre>&lt;a href=&quot;#&quot; rel=&quot;go-top&quot;&gt;Go to Top&lt;/a&gt;</pre>-->
+					<!--</div>-->
+
 				</div>
 			</div>
 
-			</div>
+			<!---->
 			<!-- Main Footer -->
 			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
 			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
@@ -208,11 +247,8 @@
 
 	</div>
 
-
 	<!-- Imported styles on this page -->
 	<link rel="stylesheet" href="{% static 'assets/js/icheck/skins/all.css' %}">
-	<link rel="stylesheet" href="{% static 'assets//css/fonts/meteocons/css/meteocons.css' %}">
-
 
 	<!-- Imported scripts on this page -->
 	<script src="{% static 'assets/js/icheck/icheck.min.js' %}"></script>
@@ -228,15 +264,10 @@
     <!-- Imported scripts on  message-->
     <script src="{% static 'assets/js/toastr/toastr.min.js' %}"></script>
 	<script src="{% static 'assets/js/jquery-validate/jquery.validate.min.js' %}"></script>
-	<script src="{% static 'laypage/js/laypage.js' %}"></script>
-	<script src="{% static 'assets/js/xenon-widgets.js' %}"></script>
-	<script src="{% static 'assets/js/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
-	<script src="{% static 'assets/js/jvectormap/regions/jquery-jvectormap-world-mill-en.js' %}"></script>
-
 
 	<!-- JavaScripts initializations and stuff -->
 	<script src="{% static 'assets/js/xenon-custom.js' %}"></script>
-	<script src="{% static 'assets/js/xspider-result.js' %}"></script>
+	<script src="{% static 'assets/js/xspider.js' %}"></script>
 
 </body>
 </html>
