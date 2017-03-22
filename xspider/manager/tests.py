@@ -12,10 +12,10 @@ class ManagerTestCase(TestCase):
 		self.ip_rule_key = settings.IP_RULE_KEY
 		self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=10)
 
-	def test_redis_hash(self):
-		self.r.hset(self.ip_rule_key, '127.0.0.1', '{}')
-		self.assertEqual(self.r.hget(self.ip_rule_key, '127.0.0.1'), '{}')
-		self.r.hdel(self.ip_rule_key, '127.0.0.1')
+	# def test_redis_hash(self):
+	# 	self.r.hset(self.ip_rule_key, '127.0.0.1', '{}')
+	# 	self.assertEqual(self.r.hget(self.ip_rule_key, '127.0.0.1'), '{}')
+	# 	self.r.hdel(self.ip_rule_key, '127.0.0.1')
 
 	def test_get_ip(self):
 		c = Manager(ip='123.0.0.1', project_name='guangdong')

@@ -269,6 +269,10 @@ class Handler(object):
         result = self._query.dump_task_as_json_by_task_id(name, task_id)
         return result
 
+    def query_nodes_in_redis(self):
+        result = self._query.query_nodes_in_redis()
+        return result
+
     def edit_project_settings(self, data):
         """
         Edit Project Settings Route
@@ -439,6 +443,39 @@ class Query(object):
             "status": True,
             "spend_time": time.time() - start
         }
+
+    @staticmethod
+    def query_nodes_in_redis():
+        """
+        Query nodes in redis
+        :return:
+        """
+        local_ip_list = []
+        proxies_ip_list = []
+
+        r = redis.Redis(settings.REDIS_IP, settings.REDIS_PORT, settings.REDIS_NUMBER)
+        all_keys = r.hgetall(settings.IP_RULE_KEY).keys()
+        for key in all_keys:
+            if key == 'None':
+                continue
+            else:
+                _value = r.hget(settings.IP_RULE_KEY, key)
+                _value_dict = json.loads(_value)
+                temp_dict = {}
+                temp_dict['ip'] = key.strip()
+                temp_dict['status'] = _value_dict.get('status', 'unknown')
+                temp_dict['add_time'] = _value_dict.get('add_time', 0)
+                is_local = _value_dict.get('is_local', False)
+                if is_local is True:
+                    local_ip_list.append(temp_dict)
+                else:
+                    proxies_ip_list.append(temp_dict)
+        return {
+            'local': local_ip_list,
+            'proxies':  proxies_ip_list,
+            'status': True
+        }
+
 
     def dump_result_as_json_by_name(self, name, page, rows):
         """

@@ -24,6 +24,7 @@ EXECUTE_PATH = os.path.join(BASE_DIR, "execute")
 # Redis Settings
 REDIS_IP = '127.0.0.1'
 REDIS_PORT = '6379'
+REDIS_NUMBER = 10
 IP_RULE_KEY = 'ip_rule_key'
 # REDIS_POOL = redis.ConnectionPool(host=REDIS_IP, port=REDIS_PORT)
 

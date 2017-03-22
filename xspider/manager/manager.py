@@ -21,21 +21,23 @@ class Manager (object):
         self.ip = ip
         self.project_name = project_name
         self.ip_rule_key = settings.IP_RULE_KEY
-        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=10)
+        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=settings.REDIS_NUMBER)
 
     def _add_ip_record(self, reference_dict=None, key=None, project_name=None, is_local=False):
-        if reference_dict is not None:
-            reference_dict.update({project_name: {
-                "add_time": self._get_now_timestamp(),
-                "last_used_time": self._get_now_timestamp(),
-                "used_num": 1,
-                "is_online": True
-                }
-            })
-            if not reference_dict.has_key('status'):
-                reference_dict.update({'status': True})
-            if not reference_dict.has_key('is_local'):
-                reference_dict.update({'is_local': is_local})
+        # if reference_dict is not None:
+        reference_dict.update({project_name: {
+            "add_time": self._get_now_timestamp(),
+            "last_used_time": self._get_now_timestamp(),
+            "used_num": 1,
+            "is_online": True
+            }
+        })
+        if not reference_dict.has_key('status'):
+            reference_dict.update({'status': True})
+        if not reference_dict.has_key('is_local'):
+            reference_dict.update({'is_local': is_local})
+        if not reference_dict.has_key('add_time'):
+            reference_dict.update({'add_time': self._get_now_timestamp()})
 
         self.r.hset(self.ip_rule_key, key, json.dumps(reference_dict))
         self.r.save()
@@ -46,7 +48,7 @@ class Manager (object):
     def _is_the_first_local_ip_can_use(self, target_dict=None, reference_dict=None):
         downloader_interval = float(target_dict.get('downloader_interval', 1000.0))
         project_in_ip = reference_dict.get(self.project_name)
-        status = reference_dict.get('status')
+        status = reference_dict.get('status', True)
         is_online = project_in_ip.get('is_online')
         last_used_time = float(project_in_ip.get('last_used_time'))
         used_num = int(project_in_ip.get('used_num', 0))
@@ -72,15 +74,15 @@ class Manager (object):
             if ':' in key:
                 _str = self.r.hget(self.ip_rule_key, key)
                 _dict = json.loads(_str) or {}
-                if not _dict.get(self.project_name) and _dict.get('status'):
+                if (not _dict.get(self.project_name)) and _dict.get('status'):
                     self._add_ip_record(reference_dict=_dict, project_name=self.project_name, key=key, is_local=False)
                     return True, key, 1
                 else:
                     last_used_time = float(_dict.get(self.project_name).get('last_used_time'))
-                    status = _dict.get('status')
+                    status = _dict.get('status', True)
                     used_num = int(_dict.get(self.project_name).get('used_num'))
                     is_online = _dict.get(self.project_name).get('is_online')
-                    if used_num == 0 or (status and is_online and (last_used_time + downloader_interval <= now_time)):
+                    if (used_num == 0) or (status and is_online and (last_used_time + downloader_interval <= now_time)):
                         is_granted, ip_port = True, key
                         _dict.get(self.project_name).update({
                             'last_used_time': now_time,
@@ -157,7 +159,7 @@ class Manager (object):
         """
         reference_str = self.r.hget(str(self.ip_rule_key), str(self.ip))
         print 'reference_str:', reference_str
-        if reference_str is None:
+        if reference_str is None or reference_str == 'None':
             return {}
         return json.loads(reference_str) or {}
         
@@ -174,7 +176,7 @@ class SmartProxyPool(object):
 
     def __init__(self):
         self.ip_rule_key = settings.IP_RULE_KEY
-        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=10)
+        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=settings.REDIS_NUMBER)
 
     def get_proxies_ip_list(self):
         import requests
@@ -211,6 +213,7 @@ class SmartProxyPool(object):
             temp_dict = {}
             temp_dict['status'] = True
             temp_dict['is_local'] = False
+            temp_dict['add_time'] = self._get_now_timestamp()
             self.r.hset(self.ip_rule_key, item, json.dumps(temp_dict))
             self.r.save()
 
