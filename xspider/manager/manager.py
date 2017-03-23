@@ -246,10 +246,11 @@ class Manager (object):
             }
         else:
             iplimit = projects[0].get("iplimit", 60)
+            limit = projects[0].get("limit", 60)
             return {
                 "status": True,
                 "iplimit":iplimit,
-                "downloader_limit": 60
+                "downloader_limit": limit
             }
 
     def _get_node(self):

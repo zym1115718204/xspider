@@ -32,7 +32,7 @@ def index(request):
     :return:
     """
     handler = Handler()
-    projects = handler.query_projects_status_by_redis(request)
+    projects = handler.query_projects_status_by_redis()
 
     for project in projects:
         if project['total'] >= 0 and project['total'] != project['new']:
@@ -95,7 +95,7 @@ def debug(request, name):
     :return:
     """
     handler = Handler()
-    projects = handler.query_projects_status_by_redis(request, name=name)
+    projects = handler.query_projects_status_by_redis(name=name)
     project = projects[0]
 
     return render_to_response("debug.html", {'project': project})
@@ -110,7 +110,7 @@ def data(request):
     :return:
     """
     handler = Handler()
-    projects = handler.query_projects_status_by_redis(request)
+    projects = handler.query_projects_status_by_redis()
 
     return render_to_response("data.html", {"projects": projects})
 
@@ -125,7 +125,7 @@ def result(request, name):
     """
     if name is not None:
         handler = Handler()
-        projects = handler.query_projects_status_by_redis(request, name=name)
+        projects = handler.query_projects_status_by_redis(name=name)
 
         return render_to_response("result.html", {"project": projects[0]})
     else:
@@ -143,7 +143,7 @@ def task(request, name):
     """
     if name is not None:
         handler = Handler()
-        projects = handler.query_projects_status_by_redis(request, name=name)
+        projects = handler.query_projects_status_by_redis(name=name)
 
         return render_to_response("task.html", {"project": projects[0]})
     else:
@@ -183,8 +183,8 @@ def nodes(request):
     """
     handler = Handler()
     nodes = handler.query_nodes_in_redis(node='--all')
-    return nodes
-    # return render_to_response("nodes.html", {'nodes': nodes})
+    # return nodes
+    return render_to_response("nodes.html", {'nodes': nodes})
 
 
 @csrf_exempt

@@ -80,6 +80,7 @@ class Handler(object):
             models = project.models
             interval = project.generator_interval
             speed = project.downloader_dispatch
+            limit = project.downloader_limit
             status = project.status
             timeout = project.timeout
 
@@ -116,6 +117,7 @@ class Handler(object):
                 'result_total': result_total,
                 'iplimit': iplimit,
                 'speed': speed,
+                'limit': limit,
                 'timeout': timeout,
                 'update_datetime': project.update_datetime.strftime("%Y-%m-%d %H:%M:%S"),
                 'add_datetime': project.add_datetime.strftime("%Y-%m-%d %H:%M:%S"),
@@ -232,6 +234,7 @@ class Handler(object):
                 'invalid_m': invalid_m,
                 'result_total': result_total,
                 'speed': int(project.downloader_dispatch),
+                'limit': int(project.downloader_limit),
                 'iplimit': int(project.downloader_interval),
                 'timeout': int(project.timeout),
                 'update_datetime': project.update_datetime.strftime("%Y-%m-%d %H:%M:%S"),
@@ -462,16 +465,15 @@ class Query(object):
             if node == '--all':
                 all_keys = r.hgetall(settings.NODES).keys()
                 for key in all_keys:
-                    if key == 'None':
-                        continue
-                    else:
-                        _value = r.hget(settings.NODES, key)
-                        value = json.loads(_value)
-                        is_local = value.get('is_local', False)
-                        if is_local is True:
-                            local[key] = value
-                        else:
-                            proxies[key] = value
+                    _value = r.hget(settings.NODES, key)
+                    value = json.loads(_value)
+                    local[key] = value
+                all_keys = r.hgetall(settings.PROXIES).keys()
+                for key in all_keys:
+                    _value = r.hget(settings.PROXIES, key)
+                    value = json.loads(_value)
+                    proxies[key] = value
+
                 result = {
                     'local': local,
                     'proxies':  proxies,
@@ -479,7 +481,7 @@ class Query(object):
                     'message': 'Success'
                 }
             else:
-                value = r.hget(settings.NODES, node)
+                value = r.hget(settings.NODES, node) or r.hget(settings.PROXIES, node) or '{}'
                 result = { 
                     'node': {node: json.loads(value)},
                     'stauts': True,
