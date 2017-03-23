@@ -111,11 +111,13 @@ class Manager (object):
         :param node
         :return:
         """
-        # iplimit = float(download_setting.get('iplimit', 1000.0))
-        # downloader_limit = float(download_setting.get('downloader_limit', 1000.0))
+
+        iplimit = float(download_setting.get('iplimit', 1000.0))
+        downloader_limit = float(download_setting.get('downloader_limit', 1000.0))
 
         now_time = float(self._get_now_timestamp())
         count = 0
+        total = 0
 
         for key in self.r.hgetall(self.proxies).keys():
             proxy_key = self.r.hget(self.proxies, key)
@@ -131,7 +133,7 @@ class Manager (object):
                 )
                 return True, key, 1, 1
             else:
-                # result = self.get_node(download_setting, proxy)
+                # # result = self.get_node(download_setting, proxy)
                 # used_time = float(proxy.get(self.project_name).get('used_time'))
                 # refresh_time = float(proxy.get(self.project_name).get('refresh_time'))
                 # status = proxy.get('status', False)
@@ -139,40 +141,40 @@ class Manager (object):
                 # total = int(proxy.get(self.project_name).get('total'))
                 # online = proxy.get(self.project_name).get('online')
 
-                return self.get_node(download_setting, proxy, node)
+                # is_granted, ip_port, count, total = self.get_node(download_setting, proxy, node)
 
                 # iplimit = float(download_setting.get('iplimit', 1000.0))
                 # downloader_limit = float(download_setting.get('downloader_limit', 1000.0))
-                # project = node.get(self.project_name)
-                # status = node.get('status', True)
-                # online = project.get('online')
-                # used_time = float(project.get('used_time'))
-                # refresh_time = float(project.get('refresh_time'))
-                # count = int(project.get('count', 0))
-                # total = int(project.get('total', 0))
-                # now_time = float(self._get_now_timestamp())
-                #
-                # if status and online and used_time + iplimit <= now_time:
-                #
-                #     if now_time - refresh_time > 3600:
-                #         project.update({
-                #             'refresh_time': now_time,
-                #             'count': 0
-                #         })
-                #     if count < downloader_limit:
-                #         project.update({
-                #             'used_time': now_time,
-                #             'count': count + 1,
-                #             'total': total + 1,
-                #         })
-                #         self.r.hset(self.nodes, self.ip, json.dumps(node))
-                #         self.r.save()
-                #         return True, self.ip, count + 1, total + 1
-                #     else:
-                #         return False, "0.0.0.0", count + 1, total + 1
-                # else:
-                #     return False, '0.0.0.0', count + 1, total + 1
 
+                project = node.get(self.project_name)
+                status = node.get('status', True)
+                online = project.get('online')
+                used_time = float(project.get('used_time'))
+                refresh_time = float(project.get('refresh_time'))
+                count = int(project.get('count', 0))
+                total = int(project.get('total', 0))
+                now_time = float(self._get_now_timestamp())
+
+                if status and online and used_time + iplimit <= now_time:
+
+                    if now_time - refresh_time > 3600:
+                        project.update({
+                            'refresh_time': now_time,
+                            'count': 0
+                        })
+                    if count < downloader_limit:
+                        project.update({
+                            'used_time': now_time,
+                            'count': count + 1,
+                            'total': total + 1,
+                        })
+                        self.r.hset(self.nodes, self.ip, json.dumps(node))
+                        self.r.save()
+                        return True, self.ip, count + 1, total + 1
+                    else:
+                        continue
+                else:
+                    continue
 
                 # if (count == 0) or (status and online and (used_time + iplimit <= now_time)):
                 #     is_granted, ip_port = True, key
@@ -184,10 +186,10 @@ class Manager (object):
                 #     self.r.hset(self.nodes, key, json.dumps(proxy))
                 #     self.r.save()
                 #     break
-        else:
-            is_granted, ip_port, count = False, None, count
+        # else:
+        #     is_granted, ip_port, count, total = False, None, count, total
         
-        return is_granted, ip_port, count
+        return False, None, count, total
 
     def _do_alanysis_with_redis(self, node=None, download_setting=None):
         """
