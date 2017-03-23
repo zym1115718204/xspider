@@ -30,7 +30,7 @@ class Manager (object):
         self.proxies = settings.PROXIES
         self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
-    def _add_node(self, node=None, key=None, project_name=None, is_local=False):
+    def _add_node(self, nodes_name=None, node=None, key=None, project_name=None, is_local=False):
         """
         Add Node to Nodes
         :param node: Node IP
@@ -54,7 +54,7 @@ class Manager (object):
             node.update({'is_local': is_local})
         if not node.has_key('add_time'):
             node.update({'add_time': self._get_now_timestamp()})
-        self.r.hset(self.nodes, key, json.dumps(node))
+        self.r.hset(nodes_name, key, json.dumps(node))
         self.r.save()
 
     @staticmethod
@@ -126,6 +126,7 @@ class Manager (object):
 
             if not project and proxy.get('status'):
                 self._add_node(
+                    nodes_name=self.proxies,
                     node=proxy,
                     project_name=self.project_name,
                     key=key,
@@ -168,7 +169,7 @@ class Manager (object):
                             'count': count + 1,
                             'total': total + 1,
                         })
-                        self.r.hset(self.nodes, proxy_key, json.dumps(node))
+                        self.r.hset(self.proxies, proxy_key, json.dumps(node))
                         self.r.save()
                         return True, proxy_key, count + 1, total + 1
                     else:
@@ -213,6 +214,7 @@ class Manager (object):
 
         else:
             self._add_node(
+                nodes_name = self.nodes,
                 node=node,
                 key=self.ip,
                 project_name=self.project_name,
@@ -237,7 +239,7 @@ class Manager (object):
         """
         handler = Handler()
         projects = handler.query_projects_status_by_redis(name=self.project_name)
-        if projects:
+        if not projects:
             return {
                 "status": False,
                 "message": "Project does not exist."
