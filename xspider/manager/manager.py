@@ -8,11 +8,14 @@ import redis
 import copy
 from datetime import datetime
 from collector.models import Project
+from dashboard.handler import Handler
 from django.conf import settings
 
 
 class Manager (object):
-
+    """
+    Xspider Nodes and Proxies Manager
+    """
     def __init__(self, ip='127.0.0.1', project_name=None):
         """
         :param ip:
@@ -20,62 +23,81 @@ class Manager (object):
         """
         self.ip = ip
         self.project_name = project_name
-        self.ip_rule_key = settings.IP_RULE_KEY
-        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=settings.REDIS_NUMBER)
+        self.nodes = settings.NODES
+        self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
-    def _add_ip_record(self, reference_dict=None, key=None, project_name=None, is_local=False):
-        # if reference_dict is not None:
-        reference_dict.update({project_name: {
+    def _add_node(self, node=None, key=None, project_name=None, is_local=False):
+        """
+        Add Node to Nodes
+        :param node: Node IP
+        :param key:
+        :param project_name:
+        :param is_local:
+        :return:
+        """
+        # if node is not None:
+        node.update({project_name: {
             "add_time": self._get_now_timestamp(),
             "last_used_time": self._get_now_timestamp(),
             "used_num": 1,
             "is_online": True
             }
         })
-        if not reference_dict.has_key('status'):
-            reference_dict.update({'status': True})
-        if not reference_dict.has_key('is_local'):
-            reference_dict.update({'is_local': is_local})
-        if not reference_dict.has_key('add_time'):
-            reference_dict.update({'add_time': self._get_now_timestamp()})
+        if not node.has_key('status'):
+            node.update({'status': True})
+        if not node.has_key('is_local'):
+            node.update({'is_local': is_local})
+        if not node.has_key('add_time'):
+            node.update({'add_time': self._get_now_timestamp()})
 
-        self.r.hset(self.ip_rule_key, key, json.dumps(reference_dict))
+        self.r.hset(self.nodes, key, json.dumps(node))
         self.r.save()
 
-    def _get_now_timestamp(self):
+    @staticmethod
+    def _get_now_timestamp():
+        """
+        Get Current TimeStamp
+        :return:
+        """
         return time.time()
 
-    def _is_the_first_local_ip_can_use(self, target_dict=None, reference_dict=None):
-        downloader_interval = float(target_dict.get('downloader_interval', 1000.0))
-        project_in_ip = reference_dict.get(self.project_name)
-        status = reference_dict.get('status', True)
-        is_online = project_in_ip.get('is_online')
-        last_used_time = float(project_in_ip.get('last_used_time'))
-        used_num = int(project_in_ip.get('used_num', 0))
+    def _is_the_first_local_ip_can_use(self, download_setting=None, node=None):
+        """
+        #
+        :param download_setting:
+        :param node:
+        :return:
+        """
+        downloader_interval = float(download_setting.get('downloader_interval', 1000.0))
+        project_status = node.get(self.project_name)
+        status = node.get('status', True)
+        is_online = project_status.get('is_online')
+        last_used_time = float(project_status.get('last_used_time'))
+        used_num = int(project_status.get('used_num', 0))
         now_time = float(self._get_now_timestamp())
         if status and is_online and last_used_time + downloader_interval <= now_time:
-            project_in_ip.update({
+            project_status.update({
                 'last_used_time': now_time,
                 'used_num': used_num + 1
             })
             used_num = used_num + 1
-            # self._update_ip_record(reference_dict=reference_dict, is_local=True)
-            self.r.hset(self.ip_rule_key, self.ip, json.dumps(reference_dict))
+            # self._update_ip_record(node=node, is_local=True)
+            self.r.hset(self.nodes, self.ip, json.dumps(node))
             self.r.save()
             return True, self.ip, used_num
         else:
             return False, '0.0.0.0', used_num
 
-    def _is_the_proxies_ip_can_use(self, target_dict=None, reference_dict=None):
-        downloader_interval = float(target_dict.get('downloader_interval', 1000.0))
+    def _is_the_proxies_ip_can_use(self, download_setting=None, node=None):
+        downloader_interval = float(download_setting.get('downloader_interval', 1000.0))
         now_time = float(self._get_now_timestamp())
         used_num = 0
-        for key in self.r.hgetall(self.ip_rule_key).keys():
+        for key in self.r.hgetall(self.nodes).keys():
             if ':' in key:
-                _str = self.r.hget(self.ip_rule_key, key)
+                _str = self.r.hget(self.nodes, key)
                 _dict = json.loads(_str) or {}
                 if (not _dict.get(self.project_name)) and _dict.get('status'):
-                    self._add_ip_record(reference_dict=_dict, project_name=self.project_name, key=key, is_local=False)
+                    self._add_node(node=_dict, project_name=self.project_name, key=key, is_local=False)
                     return True, key, 1
                 else:
                     last_used_time = float(_dict.get(self.project_name).get('last_used_time'))
@@ -89,7 +111,7 @@ class Manager (object):
                             'used_num': used_num + 1
                         })
                         used_num = used_num + 1
-                        self.r.hset(self.ip_rule_key, key, json.dumps(_dict))
+                        self.r.hset(self.nodes, key, json.dumps(_dict))
                         self.r.save()
                         break
             else:
@@ -99,24 +121,24 @@ class Manager (object):
         
         return is_granted, ip_port, used_num
 
-    def _do_alanysis_with_redis(self, reference_dict=None, target_dict=None):
+    def _do_alanysis_with_redis(self, node=None, download_setting=None):
         """
-        :param target_dict:
-        :param reference_dict:
+        :param download_setting:
+        :param node:
         :return: a_json_str
         """
 
-        _dict = reference_dict.get(str(self.project_name), {})
+        _dict = node.get(self.project_name, {})
         if _dict:
-            project_in_ip = reference_dict.get(self.project_name)
-            if project_in_ip:
-                is_granted, ip_port, used_num = self._is_the_first_local_ip_can_use(target_dict, reference_dict)
+            project_status = node.get(self.project_name)
+            if project_status:
+                is_granted, ip_port, used_num = self._is_the_first_local_ip_can_use(download_setting, node)
                 print '-----' * 10, is_granted
                 if not is_granted:
-                    is_granted, ip_port, used_num = self._is_the_proxies_ip_can_use(target_dict, reference_dict)
+                    is_granted, ip_port, used_num = self._is_the_proxies_ip_can_use(download_setting, node)
 
         else:
-            self._add_ip_record(reference_dict=reference_dict, project_name=self.project_name, is_local=True)
+            self._add_node(node=node, project_name=self.project_name, is_local=True)
             is_granted = True
             ip_port = self.ip
             used_num = 1
@@ -127,10 +149,8 @@ class Manager (object):
             'proxies_ip': ip_port if len(str(ip_port).split(':')) >= 2 else None,
             'count': used_num
         }
-        
-        
 
-    def _get_target_dict(self):
+    def _get_downloader_interval(self):
         """
         :return: a_dict
         """
@@ -144,30 +164,36 @@ class Manager (object):
             print (u'数据库查询出错了, %s project可能并不存在mongodb。' % (self.project_name))
             raise ValueError
 
-        target_dict = {
-            'name': self.project_name,
-            'ip': self.ip,
-            'generator_interval': one_project.generator_interval,
-            'downloader_interval': one_project.downloader_interval,
-            'downloader_dispatch': one_project.downloader_dispatch
-        }
-        return target_dict
+        downloader_interval = one_project.downloader_interval
 
-    def _get_reference_dict(self):
+        # download_setting = {
+        #     'name': self.project_name,
+        #     'ip': self.ip,
+        #     'generator_interval': one_project.generator_interval,
+        #     'downloader_interval': one_project.downloader_interval,
+        #     'downloader_dispatch': one_project.downloader_dispatch
+        # }
+
+        return {
+            "status": True,
+            "downloader_interval":downloader_interval,
+            "downloader_limit": 60
+        }
+
+    def _get_node(self):
         """
         :return: a_dict
         """
-        reference_str = self.r.hget(str(self.ip_rule_key), str(self.ip))
+        reference_str = self.r.hget(str(self.nodes), str(self.ip))
         print 'reference_str:', reference_str
         if reference_str is None or reference_str == 'None':
             return {}
         return json.loads(reference_str) or {}
-        
 
     def get_ip(self):
-        target_dict = self._get_target_dict()
-        reference_dict = self._get_reference_dict()
-        result = self._do_alanysis_with_redis(target_dict=target_dict, reference_dict=reference_dict)
+        download_setting = self._get_downloader_interval()
+        node = self._get_node()
+        result = self._do_alanysis_with_redis(download_setting=download_setting, node=node)
         print result
         return result
 
@@ -175,7 +201,7 @@ class Manager (object):
 class SmartProxyPool(object):
 
     def __init__(self):
-        self.ip_rule_key = settings.IP_RULE_KEY
+        self.nodes = settings.NODES
         self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=settings.REDIS_NUMBER)
 
     def get_proxies_ip_list(self):
@@ -204,9 +230,9 @@ class SmartProxyPool(object):
 
     def update_redis_proxies_ip_pool(self):
         proxies_ip_list = self.get_proxies_ip_list()
-        for key in self.r.hgetall(self.ip_rule_key).keys():
+        for key in self.r.hgetall(self.nodes).keys():
             if ':' in key or key=='None':
-                self.r.hdel(self.ip_rule_key, key)
+                self.r.hdel(self.nodes, key)
                 self.r.save()
 
         for item in proxies_ip_list:
@@ -214,11 +240,8 @@ class SmartProxyPool(object):
             temp_dict['status'] = True
             temp_dict['is_local'] = False
             temp_dict['add_time'] = self._get_now_timestamp()
-            self.r.hset(self.ip_rule_key, item, json.dumps(temp_dict))
+            self.r.hset(self.nodes, item, json.dumps(temp_dict))
             self.r.save()
-
-
-
 
 if __name__ == '__main__':
     pass

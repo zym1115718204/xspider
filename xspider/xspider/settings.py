@@ -21,11 +21,8 @@ PROJECTS_PTAH = os.path.join(os.path.dirname(BASE_DIR), "projects")
 # Execute Path
 EXECUTE_PATH = os.path.join(BASE_DIR, "execute")
 
-# Redis Settings
-REDIS_IP = '127.0.0.1'
-REDIS_PORT = '6379'
-REDIS_NUMBER = 10
-IP_RULE_KEY = 'ip_rule_key'
+# Redis Nodes Settings
+NODES= 'xspider_nodes'
 # REDIS_POOL = redis.ConnectionPool(host=REDIS_IP, port=REDIS_PORT)
 
 # Mongodb settings
@@ -52,6 +49,7 @@ for name, db in MongoDBS.iteritems():
 # BROKER_URL = 'amqp://guest:guest@localhost//'
 BROKER_URL = 'redis://localhost:6379/0'
 ANALYSIS_REDIS = 'redis://localhost:6379/1'
+NONDES_REDIS = 'redis://localhost:6379/2'
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
