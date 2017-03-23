@@ -23,6 +23,7 @@ EXECUTE_PATH = os.path.join(BASE_DIR, "execute")
 
 # Redis Nodes Settings
 NODES= 'xspider_nodes'
+PROXIES= 'xspider_proxies'
 # REDIS_POOL = redis.ConnectionPool(host=REDIS_IP, port=REDIS_PORT)
 
 # Mongodb settings
@@ -50,7 +51,6 @@ for name, db in MongoDBS.iteritems():
 BROKER_URL = 'redis://localhost:6379/0'
 ANALYSIS_REDIS = 'redis://localhost:6379/1'
 NODES_REDIS = 'redis://localhost:6379/1'
-IP_RULE_KEY = 'ip_rule_key'
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
