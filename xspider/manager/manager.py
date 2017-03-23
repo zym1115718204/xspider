@@ -132,7 +132,7 @@ class Manager (object):
                     is_local=False
                 )
                 return True, key, 1, 1
-            else:
+            elif project and proxy.get('status'):
                 # # result = self.get_node(download_setting, proxy)
                 # used_time = float(proxy.get(self.project_name).get('used_time'))
                 # refresh_time = float(proxy.get(self.project_name).get('refresh_time'))
@@ -168,9 +168,9 @@ class Manager (object):
                             'count': count + 1,
                             'total': total + 1,
                         })
-                        self.r.hset(self.nodes, self.ip, json.dumps(node))
+                        self.r.hset(self.nodes, proxy_key, json.dumps(node))
                         self.r.save()
-                        return True, self.ip, count + 1, total + 1
+                        return True, proxy_key, count + 1, total + 1
                     else:
                         continue
                 else:
@@ -266,6 +266,7 @@ class Manager (object):
         :return:
         """
         download_setting = self._get_iplimit()
+        print 'download_setting: ', download_setting
         if download_setting.get("status"):
             node = self._get_node()
             result = self._do_alanysis_with_redis(download_setting=download_setting, node=node)
@@ -273,18 +274,20 @@ class Manager (object):
             return result
         else:
             message = "Project does not exist."
-            return {
+            result = {
                 'is_granted': False,
                 'local_ip': self.ip,
                 'proxies_ip': None,
                 'message': message,
             }
+            print result
+            return result
 
 
 class SmartProxyPool(object):
 
     def __init__(self):
-        self.nodes = settings.NODES
+        self.proxies = settings.PROXIES
         self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
     def get_proxies_ip_list(self):
@@ -311,9 +314,9 @@ class SmartProxyPool(object):
 
     def update_redis_proxies_ip_pool(self):
         proxies_ip_list = self.get_proxies_ip_list()
-        for key in self.r.hgetall(self.nodes).keys():
+        for key in self.r.hgetall(self.proxies).keys():
             if ':' in key or key=='None':
-                self.r.hdel(self.nodes, key)
+                self.r.hdel(self.proxies, key)
                 self.r.save()
 
         for item in proxies_ip_list:
@@ -321,7 +324,7 @@ class SmartProxyPool(object):
             temp_dict['status'] = True
             temp_dict['is_local'] = False
             temp_dict['add_time'] = self._get_now_timestamp()
-            self.r.hset(self.nodes, item, json.dumps(temp_dict))
+            self.r.hset(self.proxies, item, json.dumps(temp_dict))
             self.r.save()
 
 if __name__ == '__main__':

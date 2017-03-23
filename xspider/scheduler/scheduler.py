@@ -149,7 +149,7 @@ class XspiderScheduler(object):
         :return:
         """
         handler = Handler()
-        results = handler.query_all_projects_status(None, "--all")
+        results = handler.query_all_projects_status("--all")
         print "[{0}]::Analysis  Dispatch::{1} Updated Success".format(str(datetime.datetime.now())[:-4], len(results))
 
     @staticmethod
