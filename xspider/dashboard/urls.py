@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^data/(?P<name>\w+)/$', views.result),
     url(r'^task/(?P<name>\w+)/$', views.task),
     url(r'^task/(?P<name>\w+)/(?P<task_id>\w+)/$', views.log),
+    url(r'^nodes/$', views.nodes),
+    url(r'^node/(?P<name>.+)$', views.node),
     url(r'^time/$', views.test_current_datetime),
     url(r'^api$', views.api),
 

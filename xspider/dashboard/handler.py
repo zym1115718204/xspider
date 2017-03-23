@@ -16,7 +16,7 @@ from django.conf import settings
 from django.utils.encoding import smart_unicode
 
 from collector.models import Project
-from collector.utils import Generator, Processor
+# from collector.utils import Generator, Processor
 
 
 class Handler(object):
@@ -30,7 +30,7 @@ class Handler(object):
         self._query = Query()
         self._command = Command()
 
-    def query_all_projects_status(self, request, name="--all"):
+    def query_all_projects_status(self, name="--all"):
         """
         Query Projects Status to Redis
         """
@@ -131,7 +131,7 @@ class Handler(object):
 
         return projects
 
-    def query_projects_status_by_redis(self, request, name="--all"):
+    def query_projects_status_by_redis(self, name="--all"):
         """
         Query Projects Status from Redis
          :return:
@@ -269,8 +269,12 @@ class Handler(object):
         result = self._query.dump_task_as_json_by_task_id(name, task_id)
         return result
 
-    def query_nodes_in_redis(self):
-        result = self._query.query_nodes_in_redis()
+    def query_nodes_in_redis(self, node):
+        """
+        Query nodes in redis
+        :return:
+        """
+        result = self._query.query_nodes_in_redis(node)
         return result
 
     def edit_project_settings(self, data):
@@ -445,36 +449,53 @@ class Query(object):
         }
 
     @staticmethod
-    def query_nodes_in_redis():
+    def query_nodes_in_redis(node='--all'):
         """
         Query nodes in redis
         :return:
         """
-        local_ip_list = []
-        proxies_ip_list = []
+        local = {}
+        proxies = {}
 
-        r = redis.Redis(settings.REDIS_IP, settings.REDIS_PORT, settings.REDIS_NUMBER)
-        all_keys = r.hgetall(settings.IP_RULE_KEY).keys()
-        for key in all_keys:
-            if key == 'None':
-                continue
+        r = redis.Redis.from_url(settings.NODES_REDIS)
+        try:
+            if node == '--all':
+                all_keys = r.hgetall(settings.NODES).keys()
+                for key in all_keys:
+                    if key == 'None':
+                        continue
+                    else:
+                        _value = r.hget(settings.NODES, key)
+                        value = json.loads(_value)
+                        is_local = value.get('is_local', False)
+                        if is_local is True:
+                            local[key] = value
+                        else:
+                            proxies[key] = value
+                result = {
+                    'local': local,
+                    'proxies':  proxies,
+                    'status': True,
+                    'message': 'Success'
+                }
             else:
-                _value = r.hget(settings.IP_RULE_KEY, key)
-                _value_dict = json.loads(_value)
-                temp_dict = {}
-                temp_dict['ip'] = key.strip()
-                temp_dict['status'] = _value_dict.get('status', 'unknown')
-                temp_dict['add_time'] = _value_dict.get('add_time', 0)
-                is_local = _value_dict.get('is_local', False)
-                if is_local is True:
-                    local_ip_list.append(temp_dict)
-                else:
-                    proxies_ip_list.append(temp_dict)
-        return {
-            'local': local_ip_list,
-            'proxies':  proxies_ip_list,
-            'status': True
-        }
+                value = r.hget(settings.NODES, node)
+                result = { 
+                    'node': {node: json.loads(value)},
+                    'stauts': True,
+                    'message': 'Success'
+                }
+
+            return result
+
+
+        except Exception:
+            reason = traceback.format_exc()
+            message = 'Failed to query node %s !, reason: %s' % (node, reason)
+            return {
+                "status": False,
+                "message": message
+            }
 
 
     def dump_result_as_json_by_name(self, name, page, rows):
@@ -807,6 +828,7 @@ class Command(object):
                     "message": message
                 }
             else:
+                from collector.utils import Generator
                 project_id = str(project.id)
                 generator = Generator(project_id)
                 task = generator.run_generator()
@@ -851,6 +873,7 @@ class Command(object):
                     "message": message
                 }
             else:
+                from collector.utils import Processor
                 processor = Processor(task=task)
                 result = processor.run_processor()
 

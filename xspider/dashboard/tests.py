@@ -13,11 +13,11 @@ class HandlerTest(TestCase):
 		pass
 
 
-	# def test_query_nodes_in_redis(self):
-	# 	query = Query()
-	# 	local_ip_list, proxies_ip_list = query.query_nodes_in_redis()
-	# 	print local_ip_list
-	# 	print proxies_ip_list
+	def test_query_nodes_in_redis(self):
+		query = Query()
+		result = query.query_nodes_in_redis(node='122.0.0.1')
+		print result
+		
 
 	def test_query_nodes_in_redis_2(self):
 		handler = Handler()

@@ -173,6 +173,36 @@ def log(request, name, task_id):
         #Todo
 
 
+@csrf_exempt
+@render_json
+def nodes(request):
+    """
+    API index page
+    :param request:
+    :return:
+    """
+    handler = Handler()
+    nodes = handler.query_nodes_in_redis(node='--all')
+    return nodes
+    # return render_to_response("nodes.html", {'nodes': nodes})
+
+
+@csrf_exempt
+@render_json
+def node(request, name):
+    """
+    API index page
+    :param request:
+    :return:
+    """
+    # name = request.GET.get('node')
+    # print 'node: ', name
+
+    handler = Handler()
+    nodes = handler.query_nodes_in_redis(node=name)
+    return nodes
+    # return render_to_response("nodes.html", {'nodes': nodes})
+
 
 @csrf_exempt
 @render_json

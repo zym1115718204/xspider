@@ -6,10 +6,12 @@ import json
 import time
 import redis
 import copy
+import requests
+from bs4 import BeautifulSoup
 from datetime import datetime
+from django.conf import settings
 from collector.models import Project
 from dashboard.handler import Handler
-from django.conf import settings
 
 
 class Manager (object):
@@ -35,7 +37,7 @@ class Manager (object):
         :param is_local:
         :return:
         """
-        # if node is not None:
+        
         node.update({project_name: {
             "add_time": self._get_now_timestamp(),
             "last_used_time": self._get_now_timestamp(),
@@ -49,7 +51,6 @@ class Manager (object):
             node.update({'is_local': is_local})
         if not node.has_key('add_time'):
             node.update({'add_time': self._get_now_timestamp()})
-
         self.r.hset(self.nodes, key, json.dumps(node))
         self.r.save()
 
@@ -61,35 +62,35 @@ class Manager (object):
         """
         return time.time()
 
-    def _is_the_first_local_ip_can_use(self, download_setting=None, node=None):
+    def _is_local_ip_can_use(self, download_setting=None, node=None):
         """
         #
         :param download_setting:
         :param node:
         :return:
         """
-        downloader_interval = float(download_setting.get('downloader_interval', 1000.0))
+        iplimit = float(download_setting.get('iplimit', 1000.0))
         project_status = node.get(self.project_name)
         status = node.get('status', True)
         is_online = project_status.get('is_online')
         last_used_time = float(project_status.get('last_used_time'))
         used_num = int(project_status.get('used_num', 0))
         now_time = float(self._get_now_timestamp())
-        if status and is_online and last_used_time + downloader_interval <= now_time:
+        
+        if status and is_online and last_used_time + iplimit <= now_time:
             project_status.update({
                 'last_used_time': now_time,
                 'used_num': used_num + 1
             })
             used_num = used_num + 1
-            # self._update_ip_record(node=node, is_local=True)
             self.r.hset(self.nodes, self.ip, json.dumps(node))
             self.r.save()
             return True, self.ip, used_num
         else:
             return False, '0.0.0.0', used_num
 
-    def _is_the_proxies_ip_can_use(self, download_setting=None, node=None):
-        downloader_interval = float(download_setting.get('downloader_interval', 1000.0))
+    def _is_proxies_ip_can_use(self, download_setting=None, node=None):
+        iplimit = float(download_setting.get('iplimit', 1000.0))
         now_time = float(self._get_now_timestamp())
         used_num = 0
         for key in self.r.hgetall(self.nodes).keys():
@@ -101,10 +102,10 @@ class Manager (object):
                     return True, key, 1
                 else:
                     last_used_time = float(_dict.get(self.project_name).get('last_used_time'))
-                    status = _dict.get('status', True)
+                    status = _dict.get('status', False)
                     used_num = int(_dict.get(self.project_name).get('used_num'))
                     is_online = _dict.get(self.project_name).get('is_online')
-                    if (used_num == 0) or (status and is_online and (last_used_time + downloader_interval <= now_time)):
+                    if (used_num == 0) or (status and is_online and (last_used_time + iplimit <= now_time)):
                         is_granted, ip_port = True, key
                         _dict.get(self.project_name).update({
                             'last_used_time': now_time,
@@ -132,13 +133,16 @@ class Manager (object):
         if _dict:
             project_status = node.get(self.project_name)
             if project_status:
-                is_granted, ip_port, used_num = self._is_the_first_local_ip_can_use(download_setting, node)
+                is_granted, ip_port, used_num = self._is_local_ip_can_use(download_setting, node)
                 print '-----' * 10, is_granted
                 if not is_granted:
-                    is_granted, ip_port, used_num = self._is_the_proxies_ip_can_use(download_setting, node)
+                    is_granted, ip_port, used_num = self._is_proxies_ip_can_use(download_setting, node)
 
         else:
-            self._add_node(node=node, project_name=self.project_name, is_local=True)
+            self._add_node(
+                node=node, key=self.ip, 
+                project_name=self.project_name, is_local=True
+            )
             is_granted = True
             ip_port = self.ip
             used_num = 1
@@ -150,33 +154,22 @@ class Manager (object):
             'count': used_num
         }
 
-    def _get_downloader_interval(self):
+    def _get_iplimit(self):
         """
         :return: a_dict
         """
-        try:
-            one_project = Project.objects.filter(name=self.project_name).first()
-            print 'one_project.name: ', one_project.name
-        except Exception as e:
-            print (u'数据库查询出错了, %s project可能并不存在mongodb。' % (self.project_name))
-            raise e
-        if one_project is None:
+        handler = Handler()
+        projects = handler.query_projects_status_by_redis(name=self.project_name)
+            
+        if not projects:
             print (u'数据库查询出错了, %s project可能并不存在mongodb。' % (self.project_name))
             raise ValueError
 
-        downloader_interval = one_project.downloader_interval
-
-        # download_setting = {
-        #     'name': self.project_name,
-        #     'ip': self.ip,
-        #     'generator_interval': one_project.generator_interval,
-        #     'downloader_interval': one_project.downloader_interval,
-        #     'downloader_dispatch': one_project.downloader_dispatch
-        # }
+        iplimit = projects[0].get("iplimit", 60)
 
         return {
             "status": True,
-            "downloader_interval":downloader_interval,
+            "iplimit":iplimit,
             "downloader_limit": 60
         }
 
@@ -191,7 +184,7 @@ class Manager (object):
         return json.loads(reference_str) or {}
 
     def get_ip(self):
-        download_setting = self._get_downloader_interval()
+        download_setting = self._get_iplimit()
         node = self._get_node()
         result = self._do_alanysis_with_redis(download_setting=download_setting, node=node)
         print result
@@ -202,11 +195,9 @@ class SmartProxyPool(object):
 
     def __init__(self):
         self.nodes = settings.NODES
-        self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=settings.REDIS_NUMBER)
+        self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
     def get_proxies_ip_list(self):
-        import requests
-        from bs4 import BeautifulSoup
         try:
             resp = requests.get('http://www.proxy360.cn/default.aspx')
             if resp.status_code != 200:

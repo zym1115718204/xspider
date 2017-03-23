@@ -9,8 +9,8 @@ from manager import Manager
 class ManagerTestCase(TestCase):
 
 	def setUp(self):
-		self.ip_rule_key = settings.IP_RULE_KEY
-		self.r = redis.Redis(host=settings.REDIS_IP, port=settings.REDIS_PORT, db=10)
+		self.nodes = settings.NODES
+		self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
 	# def test_redis_hash(self):
 	# 	self.r.hset(self.ip_rule_key, '127.0.0.1', '{}')
