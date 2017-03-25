@@ -26,6 +26,7 @@ Writing...
 ### Todo
 
 - [ ] Xspider Shell Command 
+- [ ] Nodes Management
 
 ### License
 
