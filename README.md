@@ -20,7 +20,12 @@
 
 ### Installation
 
-####Todo
+Writing...
+
+
+### Todo
+
+- [ ] Xspider Shell Command 
 
 ### License
 
