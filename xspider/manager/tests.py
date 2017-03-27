@@ -13,13 +13,13 @@ class ManagerTestCase(TestCase):
 		self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
 	# def test_redis_hash(self):
-	# 	self.r.hset(self.ip_rule_key, '127.0.0.1', '{}')
-	# 	self.assertEqual(self.r.hget(self.ip_rule_key, '127.0.0.1'), '{}')
-	# 	self.r.hdel(self.ip_rule_key, '127.0.0.1')
+	# 	self.r.hset(self.nodes, '127.0.0.1', '{}')
+	# 	self.assertEqual(self.r.hget(self.nodes, '127.0.0.1'), '{}')
+	# 	self.r.hdel(self.nodes, '127.0.0.1')
 
 	def test_get_ip(self):
-		c = Manager(ip='123.0.0.1', project_name='guangdong')
-		result = c.get_ip()
+		#c = Manager(ip='123.0.0.1', project_name='guangdong')
+		#result = c.get_ip()
 		c = Manager(ip='122.0.0.1', project_name='baidu')
 		result = c.get_ip()
 		# self.assertEqual(type(result), dict)
@@ -27,7 +27,7 @@ class ManagerTestCase(TestCase):
 
 	def test_get_reference_dict(self):
 		pass
-		# self.r.hset(self.ip_rule_key, '127.0.0.1', '{"baidu":}')
+		# self.r.hset(self.nodes, '127.0.0.1', '{"baidu":}')
 
 if __name__ == '__main__':
 	m = ManagerTestCase()
