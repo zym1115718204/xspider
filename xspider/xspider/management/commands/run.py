@@ -3,12 +3,16 @@
 # Create on 2017.2.20
 
 import os
+import sys
 import datetime
 import string
 import traceback
 import threading
 import multiprocessing
 import subprocess
+
+
+from subprocess import Popen, PIPE
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
@@ -36,6 +40,10 @@ class RunXspider(object):
         :return:
         """
         try:
+            # p = Popen("python manage.py runserver 2017",shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            # output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+            # rc = p.returncode
+
             subprocess.call("python manage.py runserver 2017", shell=True)
 
         except Exception:
@@ -91,7 +99,6 @@ class RunXspider(object):
 
         try:
             subprocess.call("celery worker --app=xspider -l info -n worker2@%h -Q low-processor", shell=True)
-
         except Exception:
             reason = traceback.format_exc()
             raise CommandError('Failed to run celery worker! Reason: %s' % (reason))
@@ -144,7 +151,7 @@ class RunXspider(object):
 
 class Command(BaseCommand):
         help = """
-        Run Xspider Background Management.
+        Run Xspider Background.
         Usage: python manage.py run {all/web/flower/generator/processor}
         """
 
