@@ -21,16 +21,16 @@
 ### Installation
 
 1. Install Python 2.7
-###### $ brew install python
+`$ brew install python`
 2. Install MongoDB & Redis
 
 3. Clone Xspider Code
-######$ git clone https://github.com/zym1115718204/xspider.git
+`$ git clone https://github.com/zym1115718204/xspider.git`
 4. Install Package
-######$ pip install -r requirements.txt
+`$ pip install -r requirements.txt`
 5. Run
-######$ cd xspider/xspider 
-######$ python manage.py run all
+`$ cd xspider/xspider`
+`$ python manage.py run all`
 
 
 ### Todo
