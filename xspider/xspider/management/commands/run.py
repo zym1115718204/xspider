@@ -108,38 +108,52 @@ class RunXspider(object):
         add run command to process
         :return:
         """
-        t = multiprocessing.Process(target=cmd)
-        t.daemon = True
-        t.start()
+        process = multiprocessing.Process(target=cmd)
+        process.daemon = True
+        process.start()
+        return process
 
     def run(self, command):
         """
         Run Scheduler
+        # Todo: Use threading or multiprocessing will make cpu usage to 100%s
         :return:
         """
+        threads = []
         try:
             if command == "all":
-                self._run(self.runweb)
-                self._run(self.rungenerator)
-                self._run(self.runprocessor)
-                self._run(self.runflower)
-                self._run(self.runscheduler)
+                process_1 = self._run(self.runweb)
+                process_2 = self._run(self.rungenerator)
+                process_3 = self._run(self.runprocessor)
+                process_4 = self._run(self.runflower)
+                process_5 = self._run(self.runscheduler)
+
+                process_1.join()
+                process_2.join()
+                process_3.join()
+                process_4.join()
+                process_5.join()
 
             elif command == "web":
-                self._run(self.runweb)
+                process = self._run(self.runweb)
+                process.join()
+                # self.runweb()
             elif command == "flower":
-                self._run(self.runflower)
+                process = self._run(self.runflower)
+                process.join()
+                # self.runflower()
             elif command == "generator":
-                self._run(self.rungenerator)
+                process = self._run(self.rungenerator)
+                process.join()
+                # self.rungenerator()
             elif command == "processor":
-                self._run(self.runprocessor)
+                process = self._run(self.runprocessor)
+                process.join()
             elif command == "scheduler":
-                self._run(self.runscheduler)
+                process = self._run(self.runscheduler)
+                process.join()
             else:
                 raise CommandError("error: too few arguments. {all/web/flower/generator/processor}")
-
-            while True:
-                pass
 
         except KeyboardInterrupt:
             print "Xspider Stoped."
