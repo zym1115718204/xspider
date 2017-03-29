@@ -22,6 +22,7 @@
 
 1. Install Python 2.7
 `$ brew install python`
+
 2. Install MongoDB & Redis
 
 3. Clone Xspider Code
