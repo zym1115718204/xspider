@@ -173,7 +173,7 @@ class Command(BaseCommand):
             :return:
             """
             cmd = options["command"][0]
-            if cmd in ['all', "web", 'generator', 'processor', 'flower']:
+            if cmd in ['all', "web", 'scheduler', 'generator', 'processor', 'flower']:
                 xspider = RunXspider()
                 xspider.run(cmd)
             else:

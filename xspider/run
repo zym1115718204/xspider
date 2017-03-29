@@ -40,13 +40,14 @@ function scheduler()
 
 function usage()
 {
-   echo "Usage: ./run {all/web/flower/generator/processor}" 
+   echo "Usage: ./run {all/web/flower/generator/processor/scheduler}"
    echo ""
    echo "        all:         Run xspider all modules" 
    echo "        web:         Run xspider web module" 
    echo "        flower:      Run xspider celery flower module" 
    echo "        generator:   Run xspider generator celery worker" 
    echo "        processor:   Run xspider processor celery worker" 
+   echo "        scheduler:   Run xspider scheduler"
    echo ""
 }
 
