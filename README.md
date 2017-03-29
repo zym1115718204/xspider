@@ -40,15 +40,14 @@ $ pip install -r requirements.txt
 5. Run
 ```bash
 $ cd xspider/xspider
-$ python manage.py run all
+$ ./run all
 ```
 
 6. Visit: http://localhost:2017
 
-
 ### Todo
 
-- [ ] Nodes Management
+- [ ] Nodes management
 
 ### License
 
