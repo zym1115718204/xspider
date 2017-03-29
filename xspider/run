@@ -1,0 +1,89 @@
+#!/bin/bash
+
+###
+# Use to run xspider module
+# Usage: ./run help
+##
+
+# WORKDIR = "./"
+
+
+function all()
+{
+    python manage.py run all
+}
+
+function wab()
+{
+    python manage.py run web 
+}
+
+function flower()
+{
+    python manage.py run flower 
+}
+
+function generator()
+{
+    python manage.py run generator 
+}
+
+function processor()
+{
+    python manage.py run processor 
+}
+
+function scheduler()
+{
+    python manage.py run scheduler
+}
+
+function usage()
+{
+   echo "Usage: ./run {all/web/flower/generator/processor}" 
+   echo ""
+   echo "        all:         Run xspider all modules" 
+   echo "        web:         Run xspider web module" 
+   echo "        flower:      Run xspider celery flower module" 
+   echo "        generator:   Run xspider generator celery worker" 
+   echo "        processor:   Run xspider processor celery worker" 
+   echo ""
+}
+
+main()
+{
+	file="/tmp/$1.lock"
+	(
+	    flock -xn -w 10 200 || exit 1
+       	
+        case $1 in
+            "web")
+            	app
+            ;;
+            "flower")
+            	flower
+            ;;
+            "generator")
+                generator
+            ;;
+            "processor")
+            	processor
+            ;;
+            "scheduler")
+            	scheduler
+            ;;
+            "all")
+            	all
+            ;;
+            *)
+            	usage
+            ;;
+            help)
+            	usage
+            ;;
+            esac
+
+	) 200>${file}	
+}
+
+main $*
