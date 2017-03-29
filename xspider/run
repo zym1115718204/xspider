@@ -13,7 +13,7 @@ function all()
     python manage.py run all
 }
 
-function wab()
+function web()
 {
     python manage.py run web 
 }
@@ -58,7 +58,7 @@ main()
        	
         case $1 in
             "web")
-            	app
+            	web
             ;;
             "flower")
             	flower
