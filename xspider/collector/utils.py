@@ -3,7 +3,9 @@
 # Create on 2017.2.21
 
 import os
+import re
 import json
+import psutil
 import time
 import socket
 import hashlib
@@ -160,7 +162,21 @@ class Processor(object):
             # Manager Module
             # localhost = socket.getfqdn(socket.gethostname())
             # local_ip = socket.gethostbyname(localhost)
-            local_ip = '127.0.0.1'
+            _dict = psutil.net_if_addrs()
+            if _dict.has_key('docker0'):
+                del _dict['docker0']
+            _str = str(_dict)
+            m1 = re.search(r".*address='(10.\d+.\d+.\d+)'.*", _str)
+            m2 = re.search(r".*address='(192.\d+.\d+.\d+)'.*", _str)
+            m3 = re.search(r".*address='(172.[1-3]\d.\d+.\d+)'.*", _str)
+            if m1:
+                local_ip = m1.group(1)
+            elif m2:
+                local_ip = m2.group(2)
+            elif m3:
+                local_ip = m3.group(3)
+            else:
+                local_ip = '127.0.0.1'
             manager = Manager(ip=local_ip, project_name=project_name)
             ip_tactics = manager.get_ip()
 
