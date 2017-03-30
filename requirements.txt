@@ -8,3 +8,5 @@ pyquery
 beautifulsoup4
 selenium
 pillow
+redis
+schedule

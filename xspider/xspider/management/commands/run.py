@@ -3,12 +3,16 @@
 # Create on 2017.2.20
 
 import os
+import sys
 import datetime
 import string
 import traceback
 import threading
 import multiprocessing
 import subprocess
+
+
+from subprocess import Popen, PIPE
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
@@ -36,6 +40,10 @@ class RunXspider(object):
         :return:
         """
         try:
+            # p = Popen("python manage.py runserver 2017",shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            # output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+            # rc = p.returncode
+
             subprocess.call("python manage.py runserver 2017", shell=True)
 
         except Exception:
@@ -91,7 +99,6 @@ class RunXspider(object):
 
         try:
             subprocess.call("celery worker --app=xspider -l info -n worker2@%h -Q low-processor", shell=True)
-
         except Exception:
             reason = traceback.format_exc()
             raise CommandError('Failed to run celery worker! Reason: %s' % (reason))
@@ -101,38 +108,52 @@ class RunXspider(object):
         add run command to process
         :return:
         """
-        t = multiprocessing.Process(target=cmd)
-        t.daemon = True
-        t.start()
+        process = multiprocessing.Process(target=cmd)
+        process.daemon = True
+        process.start()
+        return process
 
     def run(self, command):
         """
         Run Scheduler
+        # Todo: Use threading or multiprocessing will make cpu usage to 100%s
         :return:
         """
+        threads = []
         try:
             if command == "all":
-                self._run(self.runweb)
-                self._run(self.rungenerator)
-                self._run(self.runprocessor)
-                self._run(self.runflower)
-                self._run(self.runscheduler)
+                process_1 = self._run(self.runweb)
+                process_2 = self._run(self.rungenerator)
+                process_3 = self._run(self.runprocessor)
+                process_4 = self._run(self.runflower)
+                process_5 = self._run(self.runscheduler)
+
+                process_1.join()
+                process_2.join()
+                process_3.join()
+                process_4.join()
+                process_5.join()
 
             elif command == "web":
-                self._run(self.runweb)
+                process = self._run(self.runweb)
+                process.join()
+                # self.runweb()
             elif command == "flower":
-                self._run(self.runflower)
+                process = self._run(self.runflower)
+                process.join()
+                # self.runflower()
             elif command == "generator":
-                self._run(self.rungenerator)
+                process = self._run(self.rungenerator)
+                process.join()
+                # self.rungenerator()
             elif command == "processor":
-                self._run(self.runprocessor)
+                process = self._run(self.runprocessor)
+                process.join()
             elif command == "scheduler":
-                self._run(self.runscheduler)
+                process = self._run(self.runscheduler)
+                process.join()
             else:
                 raise CommandError("error: too few arguments. {all/web/flower/generator/processor}")
-
-            while True:
-                pass
 
         except KeyboardInterrupt:
             print "Xspider Stoped."
@@ -144,7 +165,7 @@ class RunXspider(object):
 
 class Command(BaseCommand):
         help = """
-        Run Xspider Background Management.
+        Run Xspider Background.
         Usage: python manage.py run {all/web/flower/generator/processor}
         """
 
@@ -166,7 +187,7 @@ class Command(BaseCommand):
             :return:
             """
             cmd = options["command"][0]
-            if cmd in ['all', "web", 'generator', 'processor', 'flower']:
+            if cmd in ['all', "web", 'scheduler', 'generator', 'processor', 'flower']:
                 xspider = RunXspider()
                 xspider.run(cmd)
             else:

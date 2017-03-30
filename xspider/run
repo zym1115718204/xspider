@@ -13,24 +13,28 @@ function all()
     python manage.py run all
 }
 
-function wab()
+function web()
 {
     python manage.py run web 
 }
 
 function flower()
 {
-    python manage.py run flower 
+    python manage.py run flower
+    # celery -A xspider flower
 }
 
 function generator()
 {
-    python manage.py run generator 
+    python manage.py run generator
+	# celery worker --app=xspider -l info -n worker1@%h -Q low-generator
 }
 
 function processor()
 {
-    python manage.py run processor 
+    python manage.py run processor
+    # celery worker --app=xspider -l info -n worker2@%h -Q low-processor
+
 }
 
 function scheduler()
@@ -40,13 +44,14 @@ function scheduler()
 
 function usage()
 {
-   echo "Usage: ./run {all/web/flower/generator/processor}" 
+   echo "Usage: ./run {all/web/flower/generator/processor/scheduler}"
    echo ""
    echo "        all:         Run xspider all modules" 
    echo "        web:         Run xspider web module" 
    echo "        flower:      Run xspider celery flower module" 
    echo "        generator:   Run xspider generator celery worker" 
    echo "        processor:   Run xspider processor celery worker" 
+   echo "        scheduler:   Run xspider scheduler"
    echo ""
 }
 
@@ -58,7 +63,7 @@ main()
        	
         case $1 in
             "web")
-            	app
+            	web
             ;;
             "flower")
             	flower

@@ -20,13 +20,34 @@
 
 ### Installation
 
-Writing...
+1. Install Python 2.7
+```bash
+$ brew install python
+```
 
+2. Install MongoDB & Redis
+
+3. Clone Xspider Code
+```bash
+git clone https://github.com/zym1115718204/xspider.git
+```
+
+4. Install Package
+```bash
+$ pip install -r requirements.txt
+```
+
+5. Run
+```bash
+$ cd xspider/xspider
+$ ./run all
+```
+
+6. Visit: http://localhost:2017
 
 ### Todo
 
-- [ ] Xspider Shell Command 
-- [ ] Nodes Management
+- [ ] Nodes management
 
 ### License
 
