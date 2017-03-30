@@ -10,3 +10,4 @@ selenium
 pillow
 redis
 schedule
+psutil
