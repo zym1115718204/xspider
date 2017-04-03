@@ -144,7 +144,7 @@ class Processor(object):
         """
         # Debug Status
         if isinstance(task, dict):
-            project_id = task.get("project")
+            project_id = task.get("result").get("project")
             self.project = Project.objects(id=project_id).first()
             self.storage = Storage(self.project)
             self.task = self.storage.package_task(task=task)
