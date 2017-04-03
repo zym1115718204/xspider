@@ -62,7 +62,7 @@ class BaseSpider(object):
                 kwargs['data'] = args.get('data', {})
 
             # try:
-            resp = self.reqst.request(method=method, url=url, **kwargs)
+            resp = self.reqst.request(method=method, url=url, verify=False, **kwargs)
             if resp.status_code != 200:
                 raise ConnectionError("ConnectionError, {0}".format(resp.status_code))
             resp.doc = PyQuery(resp.content)
