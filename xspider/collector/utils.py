@@ -85,7 +85,15 @@ class Generator(object):
         # if ip_tactics_dict.get('granted', False) is False:
         #     return None
 
-        _spider= __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
+        # exec("from execute import {0}_spider".format(project_name))
+        # exec ("_spider = {0}_spider".format(project_name))
+
+        # exec("import execute.{0}_spider".format(project_name))
+        # exec("_spider = execute.{0}_spider".format(project_name))
+
+        _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
+
+        reload(_spider)
         spider = _spider.Spider()
         result = spider.start_generator()
 
@@ -193,6 +201,8 @@ class Processor(object):
                 args = json.dumps(args)
 
             _spider = __import__("execute.{0}_spider".format(project_name), fromlist=["*"])
+
+            reload(_spider)
             spider = _spider.Spider()
 
             resp = spider.start_downloader(task_url, args)
