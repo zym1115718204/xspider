@@ -56,7 +56,7 @@ class BaseSpider(object):
                 'cookies': args.get('cookies', None),
                 'proxies': args.get('proxies', None),
                 'timeout': args.get('timeout', 30),
-                'verify': True
+                 # 'verify': True
             }
             if str(method).upper() == 'GET':
                 kwargs['params'] = args.get('params', {})
