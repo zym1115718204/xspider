@@ -125,13 +125,13 @@ class RunXspider(object):
                 process_1 = self._run(self.runweb)
                 process_2 = self._run(self.rungenerator)
                 process_3 = self._run(self.runprocessor)
-                process_4 = self._run(self.runflower)
+                # process_4 = self._run(self.runflower)
                 process_5 = self._run(self.runscheduler)
 
                 process_1.join()
                 process_2.join()
                 process_3.join()
-                process_4.join()
+                # process_4.join()
                 process_5.join()
 
             elif command == "web":
