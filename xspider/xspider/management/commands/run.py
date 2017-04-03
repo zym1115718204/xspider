@@ -23,7 +23,9 @@ Run Xspider Background.
 Usage: python manage.py run {all/web/flower/generator/processor}
     all:         Run xspider all modules.
     web:         Run xspider web modules.
+    background:  Run xspider background modules.
     flower:      Run xspider celery flower.
+    scheduler:   Run scheduler modules.
     generator:   Run xspider celery generator workers.
     processor:   Run xspider celery processor workers.
 """
@@ -134,7 +136,7 @@ class RunXspider(object):
                 process_4.join()
                 process_5.join()
 
-            if command == "dev":
+            if command == "background":
                 # process_1 = self._run(self.runweb)
                 process_2 = self._run(self.rungenerator)
                 process_3 = self._run(self.runprocessor)
@@ -179,7 +181,7 @@ class RunXspider(object):
 class Command(BaseCommand):
         help = """
         Run Xspider Background.
-        Usage: python manage.py run {all/web/flower/generator/processor}
+        Usage: python manage.py run {all/web/background/flower/scheduler/generator/processor}
         """
 
         def add_arguments(self, parser):
@@ -200,10 +202,10 @@ class Command(BaseCommand):
             :return:
             """
             cmd = options["command"][0]
-            if cmd in ['all', "web", 'scheduler', 'generator', 'processor', 'flower','dev']:
+            if cmd in ['all', "web", 'background', 'scheduler', 'generator', 'processor', 'flower']:
                 xspider = RunXspider()
                 xspider.run(cmd)
             else:
                 print HELP
-                raise CommandError("error: too few arguments. {all/web/flower/generator/processor}")
+                raise CommandError("error: too few arguments. {all/web/background/flower/scheduler/generator/processor}")
 

@@ -13,9 +13,14 @@ function all()
     python manage.py run all
 }
 
+function background()
+{
+    python manage.py run background
+}
+
 function web()
 {
-    python manage.py run web 
+    python manage.py run web
 }
 
 function flower()
@@ -44,14 +49,15 @@ function scheduler()
 
 function usage()
 {
-   echo "Usage: ./run {all/web/flower/generator/processor/scheduler}"
+   echo "Usage: ./run {all/web/background/flower/generator/processor/scheduler}"
    echo ""
-   echo "        all:         Run xspider all modules" 
-   echo "        web:         Run xspider web module" 
-   echo "        flower:      Run xspider celery flower module" 
-   echo "        generator:   Run xspider generator celery worker" 
-   echo "        processor:   Run xspider processor celery worker" 
+   echo "        all:         Run xspider all modules"
+   echo "        web:         Run xspider web module"
+   echo "        background:  Run xspider background scheduler/generator/processor"
    echo "        scheduler:   Run xspider scheduler"
+   echo "        flower:      Run xspider celery flower module"
+   echo "        generator:   Run xspider generator celery worker"
+   echo "        processor:   Run xspider processor celery worker"
    echo ""
 }
 
@@ -60,7 +66,7 @@ main()
 	file="/tmp/$1.lock"
 	(
 	    flock -xn -w 10 200 || exit 1
-       	
+
         case $1 in
             "web")
             	web
@@ -79,6 +85,9 @@ main()
             ;;
             "all")
             	all
+            ;;
+            "background")
+            	background
             ;;
             *)
             	usage
