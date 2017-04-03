@@ -55,14 +55,16 @@ class BaseSpider(object):
                 'headers': args.get('headers', self.headers),
                 'cookies': args.get('cookies', None),
                 'proxies': args.get('proxies', None),
-                'timeout': args.get('timeout', 30)}
+                'timeout': args.get('timeout', 30),
+                'verify': False
+            }
             if str(method).upper() == 'GET':
                 kwargs['params'] = args.get('params', {})
             elif str(method).upper() == 'POST':
                 kwargs['data'] = args.get('data', {})
 
             # try:
-            resp = self.reqst.request(method=method, url=url, verify=False, **kwargs)
+            resp = self.reqst.request(method=method, url=url, **kwargs)
             if resp.status_code != 200:
                 raise ConnectionError("ConnectionError, {0}".format(resp.status_code))
             resp.doc = PyQuery(resp.content)
