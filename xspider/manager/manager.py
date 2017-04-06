@@ -28,6 +28,7 @@ class Manager (object):
         self.project_name = project_name
         self.nodes = settings.NODES
         self.proxies = settings.PROXIES
+        self.refresh_interval = 3600
         self.r = redis.Redis.from_url(settings.NODES_REDIS)
 
     def _add_node(self, nodes_name=None, node=None, key=None, project_name=None, is_local=False):
@@ -85,7 +86,8 @@ class Manager (object):
         
         if status and online and used_time + iplimit <= now_time:
 
-            if now_time - refresh_time > 3600:
+            if now_time - refresh_time > self.refresh_interval:
+                count = 0
                 project.update({
                     'refresh_time': now_time,
                     'count': 0
@@ -158,7 +160,8 @@ class Manager (object):
 
                 if status and online and used_time + iplimit <= now_time:
 
-                    if now_time - refresh_time > 3600:
+                    if now_time - refresh_time > self.refresh_interval:
+                        count = 0
                         project.update({
                             'refresh_time': now_time,
                             'count': 0
@@ -176,19 +179,6 @@ class Manager (object):
                         continue
                 else:
                     continue
-
-                # if (count == 0) or (status and online and (used_time + iplimit <= now_time)):
-                #     is_granted, ip_port = True, key
-                #     proxy.get(self.project_name).update({
-                #         'used_time': now_time,
-                #         'count': count + 1
-                #     })
-                #     count = count + 1
-                #     self.r.hset(self.nodes, key, json.dumps(proxy))
-                #     self.r.save()
-                #     break
-        # else:
-        #     is_granted, ip_port, count, total = False, None, count, total
         
         return False, None, count, total
 

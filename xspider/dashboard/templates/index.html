@@ -164,9 +164,10 @@
 									<th class="col-md-1">Group</th>
 									<th class="col-md-1">Project</th>
 									<th class="col-md-1">Status</th>
-									<th class="col-md-1">Generate Interval</th>
-									<th class="col-md-1">Dispatch Number</th>
-									<th class="col-md-1">IP Limit</th>
+									<th class="col-md-1">Generate </br>Interval</th>
+									<th class="col-md-1">Dispatch </br>Number</th>
+                                    <th class="col-md-1">Download </br>Interval</th>
+									<th class="col-md-1 hidden">Download </br>Limit</th>
 									<th class="col-md-1">Progress</th>
 									<th class="col-md-1"></th>
 									<th class="col-md-1"></th>
@@ -198,6 +199,7 @@
 									<td>{{ project.interval }} </td>
 									<td>{{ project.speed }} </td>
 									<td>{{ project.iplimit }}</td>
+									<td class="hidden">{{ project.limit }}</td>
 
 									<td class="middle-align progress-align" title="1 minute:
 total(): 	{{ project.total_m }}
@@ -724,38 +726,48 @@ failed({{ project.failed_rate }}%): 	{{ project.failed }}">
 						<!--</div>-->
 
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-6">
 
 								<div class="form-group">
-									<label for="field-4" class="control-label"><strong>Generate Interval</strong><br /></label>
+									<label for="field-4" class="control-label"><strong>Generate Interval </strong><br /></label>
 
 									<input type="text" class="form-control" id="field-4" placeholder="">
 								</div>
 
 							</div>
 
-							<div class="col-md-4">
+							<div class="col-md-6">
 
 								<div class="form-group">
-									<label for="field-5" class="control-label"><strong>Dispatch Number</strong><br /></label>
+									<label for="field-5" class="control-label"><strong>Download Dispatch</strong><br /></label>
 
 									<input type="text" class="form-control" id="field-5" placeholder="">
 								</div>
 
 							</div>
 
-							<div class="col-md-4">
+							<div class="col-md-6">
 
 								<div class="form-group">
-									<label for="field-6" class="control-label"><strong>IP Limit Interval</strong><br /></label>
+									<label for="field-6" class="control-label"><strong>Download Interval</strong><br /></label>
 
 									<input type="text" class="form-control" id="field-6" placeholder="">
 								</div>
 
 							</div>
+
+                            <div class="col-md-6">
+
+								<div class="form-group">
+									<label for="field-7" class="control-label"><strong>Download Limit </strong><br /></label>
+
+									<input type="text" class="form-control" id="field-7" placeholder="">
+								</div>
+
+							</div>
 						</div>
 
-						<div class="row" id="field-7" value="">
+						<div class="row" id="field-8" value="">
 							<div class="col-md-12">
 								<strong>Status</strong>
 								<br />

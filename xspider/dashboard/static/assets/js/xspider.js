@@ -109,6 +109,7 @@ jQuery(document).ready(function($)
         var interval = tds.eq(3).text();
         var number = tds.eq(4).text();
         var ip_limit = tds.eq(5).text();
+        var limit = tds.eq(6).text();
 
         $("#field-1").attr("placeholder", group).val('');
         $("#field-2").attr("placeholder", name).val('');
@@ -116,8 +117,9 @@ jQuery(document).ready(function($)
         $("#field-4").attr("placeholder", interval).val('');
         $("#field-5").attr("placeholder", number).val('');
         $("#field-6").attr("placeholder", ip_limit).val('');
-        $("#field-7").attr("value", status);
-        $("#field-7").find("input").eq(status).prop("checked",true);
+        $("#field-7").attr("placeholder", limit).val('');
+        $("#field-8").attr("value", status);
+        $("#field-8").find("input").eq(status).prop("checked",true);
 
         // Styles
         $('input.icheck-11').iCheck({
@@ -139,12 +141,13 @@ jQuery(document).ready(function($)
         var interval = inputs.eq(2).val();
         var number = inputs.eq(3).val();
         var ip_limit = inputs.eq(4).val();
+        var limit = inputs.eq(5).val();
         var status = $("#field-7").attr("value");
         var data = {
             command: true,
             project: name
         };
-        $("#field-7 input").each(function(){
+        $("#field-8 input").each(function(){
 
             if($(this).prop('checked')){
                 var _status = $(this).attr("value");
@@ -177,6 +180,11 @@ jQuery(document).ready(function($)
 
         if(ip_limit){
             data['ip_limit']=ip_limit;
+            flag = true
+        }
+
+        if(limit){
+            data['limit']=limit;
             flag = true
         }
 

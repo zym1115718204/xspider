@@ -34,7 +34,7 @@ class Project(Document):
     last_generator_time = DateTimeField()
     downloader_interval = StringField(max_length=20)
     downloader_dispatch = IntField(default=60)
-    downloader_limit = IntField(default=60)
+    downloader_limit = IntField(default=3600)
     meta = {
         "db_alias": "xspider_project",
         "indexes": [

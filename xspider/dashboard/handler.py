@@ -584,6 +584,8 @@ class Command(object):
                     project.update(generator_interval=str(int(data.get("interval").strip())))
                 if data.get("ip_limit", False):
                     project.update(downloader_interval=str(int(data.get("ip_limit").strip())))
+                if data.get("limit", False):
+                    project.update(downloader_limit=str(int(data.get("limit").strip())))
                 if data.get("number", False):
                     project.update(downloader_dispatch=int(data.get("number").strip()))
 
