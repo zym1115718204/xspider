@@ -166,13 +166,9 @@
 							<thead>
 								<tr>
 									<th class="col-md-1">Node</th>
-									<th class="col-md-1">Is_local</th>
 									<th class="col-md-1">Status</th>
 									<th class="col-md-1">Add Time</th>
-							<!-- 		<th class="col-md-1">Success</th>
-									<th class="col-md-1">Result</th>
-									<th class="col-md-2">Start Time</th> -->
-									<th class="col-md-2">Download</th>
+									<th class="col-md-2">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -183,9 +179,7 @@
 											<strong class="text-secondary">{{ local }}</strong>
 										</a>
 									</td>
-									<td>
-										{{ node.is_local }}
-									</td>
+
 									<td>
 										{% if node.status == False %}
 										<span class="label label-danger" value="0">offline</span>
@@ -194,12 +188,9 @@
 										{% endif %}
 									</td>
 									<td>{{ node.add_time }}</td>
-									<!-- <td>{{ project.success }}</td>
-									<td>{{ project.result_total }}</td>
-									<td>{{ project.add_datetime }}</td> -->
+
 									<td>
-									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-secondary btn-sm btn-icon icon-left json-btn">JSON</a>
-									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-info btn-sm btn-icon icon-left json-btn">CSV</a>
+									 <a href="/dashboard/node/{{ local }}"  name='{{ project.name }}' class="btn btn-secondary btn-sm btn-icon icon-left json-btn">JSON</a>
 									</td>
 
 								</tr>
@@ -235,13 +226,9 @@
 							<thead>
 								<tr>
 									<th class="col-md-1">Node</th>
-									<th class="col-md-1">Is_local</th>
 									<th class="col-md-1">Status</th>
 									<th class="col-md-1">Add Time</th>
-							<!-- 		<th class="col-md-1">Success</th>
-									<th class="col-md-1">Result</th>
-									<th class="col-md-2">Start Time</th> -->
-									<th class="col-md-2">Download</th>
+									<th class="col-md-2">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -255,9 +242,6 @@
 										</a>
 									</td>
 									<td>
-										{{ node.is_local }}
-									</td>
-									<td>
 										{% if node.status == False %}
 										<span class="label label-danger" value="0">offline</span>
 										{% elif node.status == True %}
@@ -265,12 +249,8 @@
 										{% endif %}
 									</td>
 									<td>{{ node.add_time }}</td>
-									<!-- <td>{{ project.success }}</td>
-									<td>{{ project.result_total }}</td>
-									<td>{{ project.add_datetime }}</td> -->
 									<td>
-									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-secondary btn-sm btn-icon icon-left json-btn">JSON</a>
-									 <a href="" onclick="return false" name='{{ project.name }}' class="btn btn-info btn-sm btn-icon icon-left json-btn">CSV</a>
+									 <a href="/dashboard/node/{{ local }}"  name='{{ project.name }}' class="btn btn-secondary btn-sm btn-icon icon-left json-btn">JSON</a>
 									</td>
 
 								</tr>
@@ -347,67 +327,7 @@
 
 					<!--</div>-->
 				<!--</div>-->
-				<div class="panel panel-default">
-					<h3 class="text-gray">
-						Project Data <br />
-						<small class="text-muted">From-to based counters who start counting once they appear on screen and they are all available in 15 color variants.</small>
-					</h3>
 
-
-					<!-- Xenon Block Counter Widget -->
-					<div class="row">
-
-						{% for project in projects %}
-						<a href="/dashboard/data/{{project.name}}">
-
-							<div class="col-sm-3">
-							<div class="xe-widget
-							{% if project.index == 0 %}
-							xe-counter-block
-							{% elif project.index == 1 %}
-							xe-counter-block xe-counter-block-purple
-							{% elif project.index == 2 %}
-							xe-counter-block xe-counter-block-blue
-							{% elif project.index == 3 %}
-							xe-counter-block xe-counter-block-orange
-							{% elif project.index == 4 %}
-							xe-counter-block xe-counter-block-pink
-							{% elif project.index == 5 %}
-							xe-counter-block xe-counter-block-turquoise
-							{% elif project.index == 6 %}
-							xe-counter-block xe-counter-block-info
-							{% elif project.index == 7 %}
-							xe-counter-block xe-counter-block-red
-							{% endif %}
-							" data-count=".num" data-from="0" data-to="{{ project.result_total }}" data-suffix="" data-duration="2">
-								<div class="xe-upper">
-
-									<div class="xe-icon">
-										<i class="linecons-cloud"></i>
-									</div>
-									<div class="xe-label">
-										<strong class="num"></strong>
-										<span><strong>{{ project.name }}</strong></span>
-									</div>
-
-								</div>
-								<div class="xe-lower">
-									<div class="border"></div>
-
-									<span>Start Time</span>
-									<strong>{{ project.add_datetime}}</strong>
-								</div>
-							</div>
-
-						</div>
-
-						</a>
-
-						{% endfor %}
-
-					</div>
-
-				</div>
 
 				<!--<div class="row">-->
 

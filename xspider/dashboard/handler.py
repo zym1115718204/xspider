@@ -733,6 +733,27 @@ class Command(object):
                 "message": message
             }
 
+    def delete_project(self, project_name):
+        """
+        Delete Project
+        :return:
+        """
+        try:
+
+            project_name = project_name.strip().lower()
+
+            # todo
+
+        except Exception:
+            reason = traceback.format_exc()
+            message = ('Failed to delete project %s !, Reason: %s' % (project_name, reason))
+
+            return {
+                "status": False,
+                "reason": reason,
+                "message": message
+            }
+
     def _load_project(self, project_name, spider_path, models_path):
         """
         _load project
