@@ -63,9 +63,9 @@ function usage()
 
 main()
 {
-	file="/tmp/$1.lock"
-	(
-	    flock -xn -w 10 200 || exit 1
+	#file="/tmp/$1.lock"
+	#(
+	#    flock -xn -w 10 200 || exit 1
 
         case $1 in
             "web")
@@ -97,7 +97,7 @@ main()
             ;;
             esac
 
-	) 200>${file}	
+	#) 200>${file}	
 }
 
 main $*
